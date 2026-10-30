@@ -8,6 +8,7 @@ includes/config.local.php
 *.local.php
 .env
 .env.*
+!.env.example
 .env.local
 
 # Database Files (Local SQLite databases must not be tracked or committed)

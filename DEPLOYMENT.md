@@ -129,35 +129,43 @@ If you prefer a dedicated MySQL database:
 
 ---
 
-## 5. Managing Secrets with `config.local.php`
+## 5. Managing Secrets with `.env` (or `config.local.php`)
 
-To keep your production passwords, custom admin passphrases, and database credentials 100% secure:
+To keep your production passwords, admin credentials, and database keys 100% secure:
 
-1. In your live web directory (e.g., `/home/YOUR_CPANEL_USER/public_html/`), create a file named `config.local.php`.
-2. Add your custom configurations:
+1. In your project directory (e.g. `/home/YOUR_CPANEL_USER/silverspringscare/`), copy `.env.example` to `.env`:
+   ```bash
+   cp .env.example .env
+   ```
+   *(Or in cPanel File Manager, create a file named `.env` and copy the contents from `.env.example`)*.
 
-```php
-<?php
-// Production Environment
-define('APP_ENV', 'production');
-define('BASE_URL', 'https://silverspringscare.com.au');
+2. Edit `.env` with your production settings:
 
-// Confirmed Australian Business Number (ABN)
-define('APP_ABN', 'XX XXX XXX XXX');
+```ini
+APP_ENV=production
+# BASE_URL=https://silverspringscare.com.au
 
-// Custom Administrative Portal Login
-define('ADMIN_USER', 'admin');
-define('ADMIN_PASS', 'YourSecureProductionPassword2026!');
+APP_ABN="XX XXX XXX XXX"
 
-// If using MySQL (uncomment and fill in):
-// define('DB_DRIVER', 'mysql');
-// define('DB_HOST', 'localhost');
-// define('DB_NAME', 'cpaneluser_silversprings');
-// define('DB_USER', 'cpaneluser_dbuser');
-// define('DB_PASS', 'YourMySQLPassword');
+# Staff Administration Portal (/admin/)
+ADMIN_USER=admin
+ADMIN_PASS="YourSecureProductionPassword2026!"
+
+# Database Selection ('sqlite' or 'mysql')
+DB_DRIVER=sqlite
+
+# If using cPanel MySQL, set DB_DRIVER=mysql and fill in:
+# DB_HOST=localhost
+# DB_PORT=3306
+# DB_NAME=cpaneluser_silversprings
+# DB_USER=cpaneluser_dbuser
+# DB_PASS="YourDatabasePasswordHere"
 ```
 
 3. **Why this is safe:**
+   - `.env` is listed in `.gitignore`. It is **never** committed or pushed to GitHub.
+   - `.htaccess` blocks public web access to all `.env` files with a strict `403 Forbidden`.
+   - Future `git pull` operations or cPanel automated deployments will **never** overwrite or touch your live `.env`.
    - `config.local.php` is listed in `.gitignore`. It will never be committed to GitHub.
    - Future `git pull` operations or cPanel automated deployments will **never** overwrite or touch `config.local.php`.
    - Your live credentials remain safe and private.
