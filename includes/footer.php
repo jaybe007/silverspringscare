@@ -74,6 +74,7 @@ require_once __DIR__ . '/config.php';
             <li><a href="<?= BASE_PATH ?>/support-journey.php" class="footer-link">The Support Journey Wizard</a></li>
             <li><a href="<?= BASE_PATH ?>/careers.php" class="footer-link">Careers &amp; Support Worker Roles</a></li>
             <li><a href="<?= BASE_PATH ?>/resources.php" class="footer-link">NDIS Guides &amp; Resources</a></li>
+            <li><a href="<?= BASE_PATH ?>/admin/index.php" class="footer-link" style="color: var(--color-sage-300); font-weight: 600;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: -2px; margin-right: 5px;" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>Staff &amp; Admin Portal</a></li>
           </ul>
         </div>
 
@@ -116,6 +117,9 @@ require_once __DIR__ . '/config.php';
       <div class="footer-bottom">
         <div>
           &copy; <?= date('Y') ?> Silver Springs Care. All rights reserved. Registered Australian Disability Support Services.
+          <span style="display: inline-block; margin-left: 6px;">
+            • Designed by <a href="https://cloudcurrentng.com" target="_blank" rel="noopener noreferrer" style="color: var(--color-sage-300); text-decoration: underline; font-weight: 600;">cloudcurrentng.com</a>
+          </span>
         </div>
 
         <nav class="footer-legal-links" aria-label="Legal and governance links">
@@ -131,7 +135,10 @@ require_once __DIR__ . '/config.php';
             Privacy Settings
           </button>
           <span aria-hidden="true">•</span>
-          <a href="<?= BASE_PATH ?>/admin/index.php" style="opacity: 0.5;">Staff Portal</a>
+          <a href="<?= BASE_PATH ?>/admin/index.php" style="color: var(--color-sage-300); font-weight: 600; display: inline-flex; align-items: center; gap: 4px;" aria-label="Admin Portal Login">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+            Admin Login
+          </a>
         </nav>
       </div>
 

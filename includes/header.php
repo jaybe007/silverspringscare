@@ -90,6 +90,11 @@ $page_desc = $page_desc ?? 'Discover personalised Australian disability support 
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
           <?= SITE_EMAIL ?>
         </a>
+        <span aria-hidden="true">•</span>
+        <a href="<?= BASE_PATH ?>/admin/index.php" class="utility-link" aria-label="Staff Administration Portal Login" style="font-weight: 600;">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+          Admin Login
+        </a>
       </div>
 
       <div class="utility-controls" role="region" aria-label="Display accessibility controls">
@@ -161,6 +166,9 @@ $page_desc = $page_desc ?? 'Discover personalised Australian disability support 
         </a>
         <a href="<?= BASE_PATH ?>/referrals.php" class="btn btn-primary" style="width: 100%;">
           Make a Referral
+        </a>
+        <a href="<?= BASE_PATH ?>/admin/index.php" class="btn btn-secondary" style="width: 100%;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: -2px; margin-right: 6px;"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>Staff &amp; Admin Portal
         </a>
         <a href="tel:<?= SITE_PHONE_RAW ?>" class="btn btn-secondary" style="width: 100%;">
           Call <?= SITE_PHONE ?>
