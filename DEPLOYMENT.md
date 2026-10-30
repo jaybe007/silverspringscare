@@ -56,6 +56,14 @@ cPanel includes built-in Git Version Control with support for automated deployme
      *(Recommended: Keep this outside `public_html` so the `.git` directory is never publicly accessible via the web)*
    - **Repository Name**: `silverspringscare`
 5. Click **Create**. cPanel will clone the repository.
+   - *Note on Branches:* Both `main` and `master` are pushed to GitHub and point to the same code. If cPanel prompts you for a branch or defaults to `master`, both will be accepted.
+
+> [!TIP]
+> **If cPanel shows "not a valid branch":**  
+> 1. In cPanel Git Version Control, click **Manage** next to your repository.
+> 2. Under the **Basic Information** tab, look at **Active Branch**.
+> 3. Select either `main` or `master` from the dropdown and click **Update**.
+> 4. Go to **Deploy HEAD Commit** and click **Deploy HEAD Commit**.
 
 ### Step 2: Configure the `.cpanel.yml` Deployment Path
 1. In cPanel, click **Manage** next to `silverspringscare`.
