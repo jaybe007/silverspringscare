@@ -1,0 +1,50 @@
+# ==============================================================================
+# Silver Springs Care - Git Ignore Rules
+# ==============================================================================
+
+# Environment & Local Configuration Overrides
+config.local.php
+includes/config.local.php
+*.local.php
+.env
+.env.*
+.env.local
+
+# Database Files (Local SQLite databases must not be tracked or committed)
+data/*.sqlite
+data/*.sqlite3
+data/*.db
+data/*.sqlite-journal
+data/*.sqlite-wal
+data/*.sqlite-shm
+*.sqlite
+*.sqlite3
+*.db
+!data/.htaccess
+!data/.gitkeep
+
+# Temporary & Testing Artifacts
+tests/test_cookie.txt
+*.log
+temp/
+tmp/
+cache/
+
+# Operating System Files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+[Dd]esktop.ini
+
+# IDE, Editor & Tooling Files
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+*.swp
+*.swo
+*~

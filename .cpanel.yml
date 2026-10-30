@@ -1,0 +1,43 @@
+---
+# ==============================================================================
+# cPanel Git™ Version Control Automated Deployment Configuration
+# Silver Springs Care Platform (https://silverspringscare.com.au)
+# ==============================================================================
+#
+# QUICK START FOR CPANEL GIT DEPLOYMENT:
+# 1. In your cPanel dashboard, open "Git™ Version Control" (under "Files").
+# 2. Click "Create" to clone your GitHub repository:
+#      - Clone URL: https://github.com/jaybe007/silverspringscare.git
+#      - Repository Path: /home/YOUR_CPANEL_USER/repositories/silverspringscare
+#      - Repository Name: silverspringscare
+# 3. In the repository clone, edit this file (`.cpanel.yml`) and replace:
+#      `/home/username/public_html/`
+#    with your actual cPanel home directory path (e.g., `/home/myuser/public_html/`
+#    or `/home/myuser/silverspringscare.com.au/` for an addon domain).
+# 4. Under cPanel "Git™ Version Control" -> click "Manage" -> click "Deploy HEAD Commit".
+# 5. If you push new commits to GitHub, you can click "Update from Remote" and
+#    "Deploy HEAD Commit", or configure a GitHub Webhook for zero-click auto-deploy!
+# ==============================================================================
+
+deployment:
+  tasks:
+    # 1. Define Target Production Web Root
+    # IMPORTANT: Replace 'username' with your actual cPanel account username
+    - export DEPLOYPATH=/home/username/public_html/
+
+    # 2. Deploy repository codebase to public web root
+    - /bin/cp -R * $DEPLOYPATH/
+
+    # 3. Explicitly deploy root .htaccess (ensures Apache security headers & 404 rules)
+    - /bin/cp .htaccess $DEPLOYPATH/
+
+    # 4. Ensure data folder exists with .htaccess protection and writable permissions for SQLite
+    - /bin/mkdir -p $DEPLOYPATH/data
+    - /bin/cp data/.htaccess $DEPLOYPATH/data/
+    - /bin/chmod 775 $DEPLOYPATH/data
+
+    # 5. Ensure core directories have standard executable permissions
+    - /bin/chmod 755 $DEPLOYPATH/assets
+    - /bin/chmod 755 $DEPLOYPATH/admin
+    - /bin/chmod 755 $DEPLOYPATH/api
+    - /bin/chmod 755 $DEPLOYPATH/includes

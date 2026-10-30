@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /api/
+Disallow: /data/
+Disallow: /includes/
+
+Sitemap: https://silverspringscare.com.au/sitemap.xml

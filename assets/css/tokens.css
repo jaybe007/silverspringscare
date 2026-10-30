@@ -1,0 +1,147 @@
+/**
+ * Silver Springs Care - Design Tokens & Variables
+ * WCAG 2.2 AA Compliant Color & Typography System
+ */
+
+:root {
+  /* Brand Core Palette */
+  --color-navy-950: #0d1624;
+  --color-navy-900: #17233B; /* Primary Midnight Navy */
+  --color-navy-850: #1c2a46;
+  --color-navy-800: #223456;
+  --color-navy-700: #2d426d;
+  
+  --color-forest-800: #235235;
+  --color-forest-700: #2d6340;
+  --color-forest-600: #397B50; /* Primary Forest Green Accent */
+  --color-forest-500: #469362;
+  --color-forest-400: #58ab76;
+  
+  --color-sage-300: #A9C9A5; /* Fresh Sage */
+  --color-sage-200: #c2dac0;
+  --color-sage-100: #e2efe0;
+  --color-sage-50: #f2f7f1;
+  
+  --color-warm-ivory: #F8F7F2; /* Warm Ivory background */
+  --color-warm-cream: #f2ede2;
+  --color-white: #ffffff;
+  
+  --color-slate-900: #1e2837;
+  --color-slate-700: #414d60;
+  --color-slate-600: #596579;
+  --color-slate-400: #8894a6;
+  --color-slate-200: #dde2ea;
+  --color-slate-100: #eff2f6;
+  --color-slate-50: #f8fafc;
+  
+  /* Accessible Text Colors (WCAG AA & AAA compliant) */
+  --color-text-main: #202c3d;      /* 9.4:1 contrast on white, 8.6:1 on warm ivory */
+  --color-text-muted: #4e5c70;     /* 5.1:1 contrast on white */
+  --color-text-inverse: #ffffff;
+  --color-text-inverse-muted: #c9d3e2;
+  
+  /* State Colors */
+  --color-success: #227042;
+  --color-success-bg: #eaf7ee;
+  --color-warning: #92580a;
+  --color-warning-bg: #fef8eb;
+  --color-emergency: #b91c1c;
+  --color-emergency-bg: #fef2f2;
+  --color-emergency-border: #fecaca;
+  
+  /* Typography System */
+  --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --font-serif: 'Fraunces', Georgia, 'Times New Roman', serif;
+  
+  --text-xs: 0.75rem;     /* 12px */
+  --text-sm: 0.875rem;    /* 14px */
+  --text-base: 1rem;      /* 16px */
+  --text-lg: 1.125rem;    /* 18px */
+  --text-xl: 1.25rem;     /* 20px */
+  --text-2xl: 1.5rem;     /* 24px */
+  --text-3xl: 1.875rem;   /* 30px */
+  --text-4xl: 2.25rem;    /* 36px */
+  --text-5xl: 3rem;       /* 48px */
+  --text-6xl: 3.75rem;    /* 60px */
+  
+  --leading-tight: 1.15;
+  --leading-snug: 1.3;
+  --leading-normal: 1.6;
+  --leading-relaxed: 1.75;
+  
+  /* Spacing Scale */
+  --space-1: 0.25rem;   /* 4px */
+  --space-2: 0.5rem;    /* 8px */
+  --space-3: 0.75rem;   /* 12px */
+  --space-4: 1rem;      /* 16px */
+  --space-5: 1.25rem;   /* 20px */
+  --space-6: 1.5rem;    /* 24px */
+  --space-8: 2rem;      /* 32px */
+  --space-10: 2.5rem;   /* 40px */
+  --space-12: 3rem;     /* 48px */
+  --space-16: 4rem;     /* 64px */
+  --space-20: 5rem;     /* 80px */
+  --space-24: 6rem;     /* 96px */
+  --space-32: 8rem;     /* 128px */
+  
+  /* Layout Containers */
+  --container-max: 1240px;
+  --container-narrow: 920px;
+  --container-gutter: clamp(1rem, 4vw, 2.5rem);
+  
+  /* Radii */
+  --radius-xs: 4px;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-2xl: 32px;
+  --radius-full: 9999px;
+  
+  /* Refined Elevation Shadows */
+  --shadow-xs: 0 1px 2px rgba(23, 35, 59, 0.05);
+  --shadow-sm: 0 2px 4px rgba(23, 35, 59, 0.06), 0 1px 2px rgba(23, 35, 59, 0.04);
+  --shadow-md: 0 6px 14px rgba(23, 35, 59, 0.07), 0 2px 4px rgba(23, 35, 59, 0.04);
+  --shadow-lg: 0 14px 28px rgba(23, 35, 59, 0.08), 0 4px 8px rgba(23, 35, 59, 0.04);
+  --shadow-xl: 0 24px 48px rgba(23, 35, 59, 0.10), 0 8px 16px rgba(23, 35, 59, 0.05);
+  
+  /* Transitions */
+  --transition-fast: 0.15s ease;
+  --transition-base: 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-smooth: 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  
+  /* Accessibility Indicators */
+  --focus-ring: 3px solid #397B50;
+  --focus-offset: 3px;
+  --font-scale-factor: 1;
+}
+
+/* User Accessible High Contrast Mode */
+[data-high-contrast="true"] {
+  --color-navy-900: #080f1a;
+  --color-forest-600: #1b532e;
+  --color-warm-ivory: #ffffff;
+  --color-text-main: #000000;
+  --color-text-muted: #1c2635;
+  --color-slate-200: #7c889b;
+  --shadow-md: 0 0 0 2px #000000;
+  --focus-ring: 4px solid #000000;
+}
+
+/* Larger Font Accessible Mode */
+[data-font-size="large"] {
+  --font-scale-factor: 1.15;
+}
+[data-font-size="xlarge"] {
+  --font-scale-factor: 1.25;
+}
+
+/* Reduced Motion Preference Support */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
