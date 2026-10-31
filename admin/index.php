@@ -663,7 +663,7 @@ $email_short = explode('@', $site_email)[0] . '@';
         </p>
 
         <div class="exec-hero-actions">
-          <a href="mailto:<?= htmlspecialchars($site_email, ENT_QUOTES, 'UTF-8') ?>" class="exec-btn-glass">
+          <a href="<?= BASE_PATH ?>/admin/webmail.php" class="exec-btn-glass">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
             Open Webmail (<?= htmlspecialchars($email_short, ENT_QUOTES, 'UTF-8') ?>)
           </a>
@@ -810,8 +810,8 @@ $email_short = explode('@', $site_email)[0] . '@';
           <!-- Panel 2: Recent Contact Enquiries -->
           <section id="sec-inquiries" class="exec-panel">
             <div class="exec-panel-header">
-              <h2 class="exec-panel-title">Recent Contact Enquiries</h2>
-              <span style="font-size: 0.8rem; color: #64748b;">Showing last 10 messages</span>
+              <h2 class="exec-panel-title">Recent Contact Enquiries (&ldquo;Send Our Team a Message&rdquo;)</h2>
+              <a href="<?= BASE_PATH ?>/admin/webmail.php?folder=inquiry" class="ssc-topbar-btn" style="font-size: 0.78rem;">Open in Webmail Inbox &rarr;</a>
             </div>
 
             <?php if (empty($recent_inquiries)): ?>
@@ -828,6 +828,7 @@ $email_short = explode('@', $site_email)[0] . '@';
                       <th>INTEREST &amp; ROLE</th>
                       <th>MESSAGE EXCERPT</th>
                       <th>STATUS</th>
+                      <th>ACTION</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -839,7 +840,7 @@ $email_short = explode('@', $site_email)[0] . '@';
                         </td>
                         <td>
                           <strong><?= htmlspecialchars($inq['full_name'], ENT_QUOTES, 'UTF-8') ?></strong>
-                          <div style="font-size: 0.78rem;"><a href="mailto:<?= htmlspecialchars($inq['email'], ENT_QUOTES, 'UTF-8') ?>"><?= htmlspecialchars($inq['email'], ENT_QUOTES, 'UTF-8') ?></a></div>
+                          <div style="font-size: 0.78rem;"><a href="<?= BASE_PATH ?>/admin/webmail.php?folder=inquiry&amp;q=<?= urlencode($inq['email']) ?>"><?= htmlspecialchars($inq['email'], ENT_QUOTES, 'UTF-8') ?></a></div>
                         </td>
                         <td>
                           <strong><?= htmlspecialchars($inq['service_interest'], ENT_QUOTES, 'UTF-8') ?></strong>
@@ -852,6 +853,11 @@ $email_short = explode('@', $site_email)[0] . '@';
                           <span class="status-badge status-<?= htmlspecialchars($inq['status'], ENT_QUOTES, 'UTF-8') ?>">
                             <?= htmlspecialchars($inq['status'], ENT_QUOTES, 'UTF-8') ?>
                           </span>
+                        </td>
+                        <td>
+                          <a href="<?= BASE_PATH ?>/admin/webmail.php?folder=inquiry&amp;q=<?= urlencode($inq['email']) ?>" class="btn btn-secondary btn-sm" style="font-size: 0.75rem; padding: 0.2rem 0.55rem;">
+                            Read &amp; Reply
+                          </a>
                         </td>
                       </tr>
                     <?php endforeach; ?>

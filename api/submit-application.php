@@ -63,11 +63,33 @@ try {
         $has_drivers_license,
         $_SERVER['REMOTE_ADDR'] ?? ''
     ]);
+    $app_id = (int)$pdo->lastInsertId();
+    $ref_code = 'APP-' . strtoupper(substr(bin2hex(random_bytes(3)), 0, 6));
+
+    record_and_dispatch_inbound_mail([
+        'source_type'  => 'application',
+        'source_id'    => $app_id,
+        'ref_code'     => $ref_code,
+        'sender_name'  => $full_name,
+        'sender_email' => $email,
+        'sender_phone' => $phone,
+        'subject'      => "[Career Application {$ref_code}] {$role_applied} — {$full_name}",
+        'body'         => "Applicant: {$full_name}\n"
+                        . "Role Applied: {$role_applied}\n"
+                        . "Email: {$email}\n"
+                        . "Phone: {$phone}\n"
+                        . "Preferred Location: {$location_pref}\n"
+                        . "Credentials: NDIS Screening=" . ($has_ndis_screening ? 'Yes' : 'No')
+                        . ", First Aid=" . ($has_first_aid ? 'Yes' : 'No')
+                        . ", Driver Licence=" . ($has_drivers_license ? 'Yes' : 'No') . "\n"
+                        . "----------------------------------------\n\n"
+                        . $experience_summary
+    ]);
 
     json_response([
         'success' => true,
         'message' => 'Thank you for your application to Silver Springs Care. Our recruitment team will review your submission and contact shortlisted candidates for an interview.',
-        'ref_code' => 'APP-' . strtoupper(substr(bin2hex(random_bytes(3)), 0, 6))
+        'ref_code' => $ref_code
     ]);
 } catch (PDOException $e) {
     error_log('Application Insert Error: ' . $e->getMessage());

@@ -54,11 +54,31 @@ try {
         $message,
         $_SERVER['REMOTE_ADDR'] ?? ''
     ]);
+    $inq_id = (int)$pdo->lastInsertId();
+    $ref_code = 'INQ-' . strtoupper(substr(bin2hex(random_bytes(3)), 0, 6));
+
+    // Deliver into Corporate Webmail Inbox & dispatch email notification
+    record_and_dispatch_inbound_mail([
+        'source_type'  => 'inquiry',
+        'source_id'    => $inq_id,
+        'ref_code'     => $ref_code,
+        'sender_name'  => $full_name,
+        'sender_email' => $email,
+        'sender_phone' => $phone,
+        'subject'      => "[Website Enquiry] {$service_interest} — from {$full_name}",
+        'body'         => "Enquirer Name: {$full_name}\n"
+                        . "Email: {$email}\n"
+                        . "Phone: " . ($phone ?: 'Not provided') . "\n"
+                        . "Role: {$participant_role}\n"
+                        . "Primary Interest: {$service_interest}\n"
+                        . "----------------------------------------\n\n"
+                        . $message
+    ]);
 
     json_response([
         'success' => true,
         'message' => 'Thank you for reaching out. Your enquiry has been received and our team will get back to you within 1 business day.',
-        'ref_code' => 'INQ-' . strtoupper(substr(bin2hex(random_bytes(3)), 0, 6))
+        'ref_code' => $ref_code
     ]);
 } catch (PDOException $e) {
     error_log('Inquiry Insert Error: ' . $e->getMessage());

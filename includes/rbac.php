@@ -1661,12 +1661,14 @@ function render_admin_header(string $badge_label = 'Dashboard Overview'): void {
           <?php endif; ?>
         </a>
 
-        <a href="mailto:<?= htmlspecialchars($site_email, ENT_QUOTES, 'UTF-8') ?>" class="ssc-sidebar-link">
+        <a href="<?= BASE_PATH ?>/admin/webmail.php" class="ssc-sidebar-link <?= $current_script === 'webmail.php' ? 'is-active' : '' ?>">
           <span class="ssc-sidebar-link-left">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
             <span>Corporate Webmail</span>
           </span>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 13px; height: 13px; opacity: 0.5;"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          <?php if ($sb_inq_count > 0): ?>
+            <span class="ssc-sidebar-badge"><?= $sb_inq_count ?></span>
+          <?php endif; ?>
         </a>
 
         <?php if ($can_view_content): ?>
@@ -1790,7 +1792,7 @@ function render_admin_header(string $badge_label = 'Dashboard Overview'): void {
       </div>
 
       <div class="ssc-topbar-right">
-        <a href="mailto:<?= htmlspecialchars($site_email, ENT_QUOTES, 'UTF-8') ?>" class="ssc-topbar-btn">
+        <a href="<?= BASE_PATH ?>/admin/webmail.php" class="ssc-topbar-btn">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
           Webmail (<?= htmlspecialchars($email_prefix, ENT_QUOTES, 'UTF-8') ?>)
         </a>

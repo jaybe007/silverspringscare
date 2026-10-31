@@ -93,6 +93,27 @@ try {
         $notes,
         $_SERVER['REMOTE_ADDR'] ?? ''
     ]);
+    $ref_id = (int)$pdo->lastInsertId();
+
+    record_and_dispatch_inbound_mail([
+        'source_type'  => 'referral',
+        'source_id'    => $ref_id,
+        'ref_code'     => $ref_code,
+        'sender_name'  => $referrer_name,
+        'sender_email' => $referrer_email,
+        'sender_phone' => $referrer_phone,
+        'subject'      => "[Professional Referral {$ref_code}] Participant: {$participant_name} ({$preferred_suburb})",
+        'body'         => "Referral Reference: {$ref_code}\n"
+                        . "Referrer: {$referrer_name} ({$referrer_role} - {$referrer_org})\n"
+                        . "Referrer Email: {$referrer_email}\n"
+                        . "Referrer Phone: {$referrer_phone}\n"
+                        . "Participant Name: {$participant_name}\n"
+                        . "Preferred Suburb: {$preferred_suburb}\n"
+                        . "Support Categories: {$categories_str}\n"
+                        . "Contact Protocol: {$participant_contact_pref} ({$participant_contact_detail})\n"
+                        . "----------------------------------------\n\n"
+                        . ($notes ?: 'No additional notes provided.')
+    ]);
 
     json_response([
         'success' => true,

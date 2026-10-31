@@ -6,6 +6,7 @@
 require_once __DIR__ . '/config.php';
 require_once __DIR__ . '/db.php';
 require_once __DIR__ . '/cms.php';
+require_once __DIR__ . '/mailer.php';
 
 function generate_csrf_token() {
     if (empty($_SESSION['csrf_token'])) {

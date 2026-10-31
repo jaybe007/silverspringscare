@@ -65,6 +65,25 @@ try {
         $suburb,
         $message
     ]);
+    $jrn_id = (int)$pdo->lastInsertId();
+
+    record_and_dispatch_inbound_mail([
+        'source_type'  => 'journey',
+        'source_id'    => $jrn_id,
+        'ref_code'     => $ref_code,
+        'sender_name'  => $full_name,
+        'sender_email' => $email,
+        'sender_phone' => $phone,
+        'subject'      => "[Support Journey {$ref_code}] {$full_name} ({$suburb}) — {$timeframe}",
+        'body'         => "Participant / Enquirer: {$full_name} ({$participant_type})\n"
+                        . "Email: {$email}\n"
+                        . "Phone: {$phone}\n"
+                        . "Suburb: {$suburb}\n"
+                        . "Timeframe: {$timeframe}\n"
+                        . "Selected Goals: {$goals_str}\n"
+                        . "----------------------------------------\n\n"
+                        . $message
+    ]);
 
     json_response([
         'success' => true,
