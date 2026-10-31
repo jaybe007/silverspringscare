@@ -1104,16 +1104,25 @@ function get_user_effective_permissions(int $user_id): array {
 /**
  * Check if a user has a specific permission (e.g. 'users.create', 'properties.delete', 'reports.view')
  */
-function user_has_permission(string $permission_slug, ?int $user_id = null): bool {
+function user_has_permission($permission_slug, $user_id = null): bool {
+    // Support reversed arguments gracefully if called as user_has_permission($user_id, $slug)
+    if (is_numeric($permission_slug) && is_string($user_id) && !is_numeric($user_id)) {
+        $tmp = $permission_slug;
+        $permission_slug = $user_id;
+        $user_id = (int)$tmp;
+    }
+
     if ($user_id === null) {
         $curr = get_current_admin_user();
         if (!$curr) return false;
         $user_id = (int)$curr['id'];
+    } else {
+        $user_id = (int)$user_id;
     }
 
     if ($user_id <= 0) return false;
 
-    $normalized = normalize_permission_slug($permission_slug);
+    $normalized = normalize_permission_slug((string)$permission_slug);
     $perms = get_user_effective_permissions($user_id);
 
     if (!$perms['is_active']) {

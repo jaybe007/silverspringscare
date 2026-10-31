@@ -405,7 +405,7 @@ if ($tab === 'testimonials' && !empty($_GET['edit_id'])) {
       </div>
       <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
         <a href="<?= BASE_PATH ?>/index.php" target="_blank" class="btn btn-secondary btn-sm">Preview Live Homepage &nearr;</a>
-        <?php if (user_has_permission($current_admin['id'], 'users.view')): ?>
+        <?php if (user_has_permission('users.view', (int)$current_admin['id'])): ?>
           <a href="<?= BASE_PATH ?>/admin/users.php" class="btn btn-navy btn-sm">Manage Users, Roles &amp; Permissions &rarr;</a>
         <?php endif; ?>
       </div>
