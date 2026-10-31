@@ -165,4 +165,118 @@ INSERT INTO `resources` (`title`, `category`, `read_time`, `excerpt`, `takeaway`
 ('Understanding Core vs Capacity Building: What Can You Use?', 'Budgeting', '4 min read', 'Demystifying the difference between Core Supports (daily personal care, domestic tasks, community outings) and Capacity Building (skill development, therapy, mentoring).', 'Core supports are generally flexible between categories, whereas Capacity Building funds are tied to specific developmental outcomes.', 1),
 ('The Family Guide to Supported Independent Living (SIL) Transitions', 'Living Options', '6 min read', 'What to expect when a family member prepares to move out of the family home into supported accommodation: trial visits, housemate matching, and roster planning.', 'Never rush a move. Ensure multiple pre-transition dinners and overnight trial stays to confirm mutual comfort.', 1);
 
+-- ------------------------------------------------------------------------------
+-- 10. Enterprise RBAC: Users, Roles, Permissions, Overrides & Audit Logs
+-- ------------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `users` (
+  `id` INT AUTO_INCREMENT PRIMARY KEY,
+  `username` VARCHAR(100) UNIQUE NOT NULL,
+  `email` VARCHAR(191) UNIQUE NOT NULL,
+  `full_name` VARCHAR(255) NOT NULL,
+  `phone` VARCHAR(50) DEFAULT NULL,
+  `job_title` VARCHAR(150) DEFAULT NULL,
+  `department` VARCHAR(150) DEFAULT NULL,
+  `notes` TEXT DEFAULT NULL,
+  `password_hash` VARCHAR(255) NOT NULL,
+  `status` VARCHAR(30) NOT NULL DEFAULT 'active',
+  `is_super_admin` TINYINT NOT NULL DEFAULT 0,
+  `force_password_change` TINYINT NOT NULL DEFAULT 0,
+  `invitation_token` VARCHAR(128) DEFAULT NULL,
+  `invitation_sent_at` DATETIME DEFAULT NULL,
+  `password_reset_token` VARCHAR(128) DEFAULT NULL,
+  `password_reset_expires` DATETIME DEFAULT NULL,
+  `failed_login_attempts` INT NOT NULL DEFAULT 0,
+  `locked_until` DATETIME DEFAULT NULL,
+  `last_login_at` DATETIME DEFAULT NULL,
+  `last_login_ip` VARCHAR(50) DEFAULT NULL,
+  `deleted_at` DATETIME DEFAULT NULL,
+  `created_by` INT DEFAULT NULL,
+  `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  INDEX `idx_users_status` (`status`),
+  INDEX `idx_users_created_at` (`created_at`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `roles` (
+  `id` INT AUTO_INCREMENT PRIMARY KEY,
+  `name` VARCHAR(150) UNIQUE NOT NULL,
+  `slug` VARCHAR(150) UNIQUE NOT NULL,
+  `description` TEXT DEFAULT NULL,
+  `is_system` TINYINT NOT NULL DEFAULT 0,
+  `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `permissions` (
+  `id` INT AUTO_INCREMENT PRIMARY KEY,
+  `module` VARCHAR(100) NOT NULL,
+  `action` VARCHAR(100) NOT NULL,
+  `slug` VARCHAR(191) UNIQUE NOT NULL,
+  `name` VARCHAR(255) NOT NULL,
+  `description` TEXT DEFAULT NULL,
+  `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP,
+  UNIQUE KEY `uq_module_action` (`module`, `action`),
+  INDEX `idx_perm_module` (`module`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `user_roles` (
+  `user_id` INT NOT NULL,
+  `role_id` INT NOT NULL,
+  `assigned_by` INT DEFAULT NULL,
+  `assigned_at` DATETIME DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`user_id`, `role_id`),
+  CONSTRAINT `fk_ur_user` FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE CASCADE,
+  CONSTRAINT `fk_ur_role` FOREIGN KEY (`role_id`) REFERENCES `roles`(`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `role_permissions` (
+  `role_id` INT NOT NULL,
+  `permission_id` INT NOT NULL,
+  `granted_at` DATETIME DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`role_id`, `permission_id`),
+  CONSTRAINT `fk_rp_role` FOREIGN KEY (`role_id`) REFERENCES `roles`(`id`) ON DELETE CASCADE,
+  CONSTRAINT `fk_rp_perm` FOREIGN KEY (`permission_id`) REFERENCES `permissions`(`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `user_permissions` (
+  `user_id` INT NOT NULL,
+  `permission_id` INT NOT NULL,
+  `access_type` VARCHAR(20) NOT NULL DEFAULT 'allow',
+  `granted_by` INT DEFAULT NULL,
+  `updated_at` DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`user_id`, `permission_id`),
+  CONSTRAINT `fk_up_user` FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE CASCADE,
+  CONSTRAINT `fk_up_perm` FOREIGN KEY (`permission_id`) REFERENCES `permissions`(`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `audit_logs` (
+  `id` INT AUTO_INCREMENT PRIMARY KEY,
+  `actor_user_id` INT DEFAULT NULL,
+  `actor_username` VARCHAR(150) DEFAULT NULL,
+  `target_user_id` INT DEFAULT NULL,
+  `target_identifier` VARCHAR(255) DEFAULT NULL,
+  `module` VARCHAR(100) NOT NULL,
+  `action` VARCHAR(150) NOT NULL,
+  `description` TEXT DEFAULT NULL,
+  `old_values` LONGTEXT DEFAULT NULL,
+  `new_values` LONGTEXT DEFAULT NULL,
+  `ip_address` VARCHAR(50) DEFAULT NULL,
+  `user_agent` VARCHAR(255) DEFAULT NULL,
+  `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP,
+  INDEX `idx_audit_module` (`module`),
+  INDEX `idx_audit_action` (`action`),
+  INDEX `idx_audit_actor` (`actor_user_id`),
+  INDEX `idx_audit_target` (`target_user_id`),
+  INDEX `idx_audit_created` (`created_at`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `login_attempts` (
+  `id` INT AUTO_INCREMENT PRIMARY KEY,
+  `ip_address` VARCHAR(50) NOT NULL,
+  `username` VARCHAR(191) DEFAULT NULL,
+  `was_successful` TINYINT NOT NULL DEFAULT 0,
+  `attempted_at` DATETIME DEFAULT CURRENT_TIMESTAMP,
+  INDEX `idx_login_ip_time` (`ip_address`, `attempted_at`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 SET FOREIGN_KEY_CHECKS = 1;

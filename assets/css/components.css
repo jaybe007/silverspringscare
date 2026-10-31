@@ -398,9 +398,21 @@
   color: #92400e;
 }
 
-.status-completed {
+.status-completed,
+.status-active {
   background-color: #d1fae5;
   color: #065f46;
+}
+
+.status-inactive {
+  background-color: #fef3c7;
+  color: #92400e;
+}
+
+.status-suspended,
+.status-deleted {
+  background-color: #fee2e2;
+  color: #991b1b;
 }
 
 /* ==========================================================================

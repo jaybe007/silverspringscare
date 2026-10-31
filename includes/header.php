@@ -7,7 +7,19 @@ require_once __DIR__ . '/config.php';
 require_once __DIR__ . '/functions.php';
 
 $current_page = basename($_SERVER['PHP_SELF'], '.php');
-$page_title = $page_title ?? 'Silver Springs Care | Empowering Abilities, Enriching Lives';
+$site_name = get_site_setting('site_name', defined('APP_NAME') ? APP_NAME : 'Silver Springs Care');
+$site_tagline = get_site_setting('site_tagline', defined('APP_TAGLINE') ? APP_TAGLINE : 'Empowering Abilities, Enriching Lives.');
+$site_phone = get_site_setting('site_phone', SITE_PHONE);
+$site_phone_raw = preg_replace('/[^0-9+]/', '', $site_phone) ?: SITE_PHONE_RAW;
+$site_email = get_site_setting('site_email', SITE_EMAIL);
+$site_logo_src = get_site_asset_url('site_logo_url', 'assets/images/logo.svg');
+$site_logo_alt = get_site_setting('site_logo_alt', 'Silver Springs Care - Empowering Abilities, Enriching Lives');
+$site_favicon_src = get_site_asset_url('site_favicon_url', 'assets/images/favicon.svg');
+$utility_bar_text = get_site_setting('utility_bar_text', 'Serving Melbourne Metropolitan & Victorian Communities');
+$header_cta_primary_text = get_site_setting('header_cta_primary_text', 'Make an Enquiry');
+$header_cta_secondary_text = get_site_setting('header_cta_secondary_text', 'Support Journey');
+
+$page_title = $page_title ?? ($site_name . ' | ' . rtrim($site_tagline, '.'));
 $page_desc = $page_desc ?? 'Discover personalised Australian disability support services designed around your choices, goals, and dignity. Serving Melbourne and Victorian communities.';
 ?>
 <!DOCTYPE html>
@@ -24,10 +36,10 @@ $page_desc = $page_desc ?? 'Discover personalised Australian disability support 
   <meta property="og:description" content="<?= htmlspecialchars($page_desc, ENT_QUOTES, 'UTF-8') ?>">
   <meta property="og:type" content="website">
   <meta property="og:url" content="<?= BASE_URL ?>">
-  <meta property="og:site_name" content="Silver Springs Care">
+  <meta property="og:site_name" content="<?= htmlspecialchars($site_name, ENT_QUOTES, 'UTF-8') ?>">
   
   <!-- Favicon -->
-  <link rel="icon" type="image/svg+xml" href="<?= BASE_PATH ?>/assets/images/favicon.svg">
+  <link rel="icon" type="image/svg+xml" href="<?= htmlspecialchars($site_favicon_src, ENT_QUOTES, 'UTF-8') ?>">
   
   <!-- Google Fonts: Plus Jakarta Sans & Fraunces (Editorial Healthcare) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -42,13 +54,13 @@ $page_desc = $page_desc ?? 'Discover personalised Australian disability support 
       {
         "@type": "Organization",
         "@id": "<?= BASE_URL ?>/#organization",
-        "name": "Silver Springs Care Pty Ltd",
+        "name": "<?= htmlspecialchars($site_name, ENT_QUOTES, 'UTF-8') ?> Pty Ltd",
         "url": "<?= BASE_URL ?>",
-        "logo": "<?= BASE_URL ?>/assets/images/logo.svg",
-        "slogan": "Empowering Abilities, Enriching Lives.",
+        "logo": "<?= htmlspecialchars($site_logo_src, ENT_QUOTES, 'UTF-8') ?>",
+        "slogan": "<?= htmlspecialchars($site_tagline, ENT_QUOTES, 'UTF-8') ?>",
         "description": "Australian person-centred disability support services across Melbourne and Victoria.",
-        "telephone": "1300 772 273",
-        "email": "hello@silverspringscare.com.au",
+        "telephone": "<?= htmlspecialchars($site_phone, ENT_QUOTES, 'UTF-8') ?>",
+        "email": "<?= htmlspecialchars($site_email, ENT_QUOTES, 'UTF-8') ?>",
         "areaServed": {
           "@type": "AdministrativeArea",
           "name": "Victoria, Australia"
@@ -58,7 +70,7 @@ $page_desc = $page_desc ?? 'Discover personalised Australian disability support 
         "@type": "WebSite",
         "@id": "<?= BASE_URL ?>/#website",
         "url": "<?= BASE_URL ?>",
-        "name": "Silver Springs Care",
+        "name": "<?= htmlspecialchars($site_name, ENT_QUOTES, 'UTF-8') ?>",
         "publisher": { "@id": "<?= BASE_URL ?>/#organization" }
       }
     ]
@@ -79,16 +91,16 @@ $page_desc = $page_desc ?? 'Discover personalised Australian disability support 
   <aside class="utility-bar" aria-label="Quick contact and accessibility controls">
     <div class="container">
       <div class="utility-info">
-        <span>Serving Melbourne Metropolitan &amp; Victorian Communities</span>
+        <span><?= htmlspecialchars($utility_bar_text, ENT_QUOTES, 'UTF-8') ?></span>
         <span aria-hidden="true">•</span>
-        <a href="tel:<?= SITE_PHONE_RAW ?>" class="utility-link" aria-label="Call Silver Springs Care on <?= SITE_PHONE ?>">
+        <a href="tel:<?= htmlspecialchars($site_phone_raw, ENT_QUOTES, 'UTF-8') ?>" class="utility-link" aria-label="Call <?= htmlspecialchars($site_name, ENT_QUOTES, 'UTF-8') ?> on <?= htmlspecialchars($site_phone, ENT_QUOTES, 'UTF-8') ?>">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-          <?= SITE_PHONE ?>
+          <?= htmlspecialchars($site_phone, ENT_QUOTES, 'UTF-8') ?>
         </a>
         <span aria-hidden="true">•</span>
-        <a href="mailto:<?= SITE_EMAIL ?>" class="utility-link" aria-label="Email Silver Springs Care">
+        <a href="mailto:<?= htmlspecialchars($site_email, ENT_QUOTES, 'UTF-8') ?>" class="utility-link" aria-label="Email <?= htmlspecialchars($site_name, ENT_QUOTES, 'UTF-8') ?>">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-          <?= SITE_EMAIL ?>
+          <?= htmlspecialchars($site_email, ENT_QUOTES, 'UTF-8') ?>
         </a>
         <span aria-hidden="true">•</span>
         <a href="<?= BASE_PATH ?>/admin/index.php" class="utility-link" aria-label="Staff Administration Portal Login" style="font-weight: 600;">
@@ -111,8 +123,8 @@ $page_desc = $page_desc ?? 'Discover personalised Australian disability support 
   <header class="site-header" role="banner">
     <div class="container header-inner">
       <!-- Brand Logo -->
-      <a href="<?= BASE_PATH ?>/index.php" class="brand-link" aria-label="Silver Springs Care Homepage">
-        <img src="<?= BASE_PATH ?>/assets/images/logo.svg" alt="Silver Springs Care - Empowering Abilities, Enriching Lives" class="brand-logo-img" width="280" height="58">
+      <a href="<?= BASE_PATH ?>/index.php" class="brand-link" aria-label="<?= htmlspecialchars($site_name, ENT_QUOTES, 'UTF-8') ?> Homepage">
+        <img src="<?= htmlspecialchars($site_logo_src, ENT_QUOTES, 'UTF-8') ?>" alt="<?= htmlspecialchars($site_logo_alt, ENT_QUOTES, 'UTF-8') ?>" class="brand-logo-img" width="280" height="58">
       </a>
 
       <!-- Desktop Navigation -->
@@ -131,10 +143,10 @@ $page_desc = $page_desc ?? 'Discover personalised Australian disability support 
       <!-- Primary Action Buttons -->
       <div class="header-actions">
         <a href="<?= BASE_PATH ?>/support-journey.php" class="btn btn-secondary btn-sm" aria-label="Explore the interactive Silver Springs Support Journey">
-          Support Journey
+          <?= htmlspecialchars($header_cta_secondary_text, ENT_QUOTES, 'UTF-8') ?>
         </a>
         <a href="<?= BASE_PATH ?>/contact.php" class="btn btn-primary btn-sm">
-          Make an Enquiry
+          <?= htmlspecialchars($header_cta_primary_text, ENT_QUOTES, 'UTF-8') ?>
         </a>
       </div>
 
@@ -170,8 +182,8 @@ $page_desc = $page_desc ?? 'Discover personalised Australian disability support 
         <a href="<?= BASE_PATH ?>/admin/index.php" class="btn btn-secondary" style="width: 100%;">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: -2px; margin-right: 6px;"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>Staff &amp; Admin Portal
         </a>
-        <a href="tel:<?= SITE_PHONE_RAW ?>" class="btn btn-secondary" style="width: 100%;">
-          Call <?= SITE_PHONE ?>
+        <a href="tel:<?= htmlspecialchars($site_phone_raw, ENT_QUOTES, 'UTF-8') ?>" class="btn btn-secondary" style="width: 100%;">
+          Call <?= htmlspecialchars($site_phone, ENT_QUOTES, 'UTF-8') ?>
         </a>
       </div>
     </div>

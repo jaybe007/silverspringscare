@@ -18,6 +18,7 @@ data/*.db
 data/*.sqlite-journal
 data/*.sqlite-wal
 data/*.sqlite-shm
+data/backups/
 *.sqlite
 *.sqlite3
 *.db
@@ -26,6 +27,7 @@ data/*.sqlite-shm
 
 # Temporary & Testing Artifacts
 tests/test_cookie.txt
+tests/test_*_cookie.txt
 *.log
 temp/
 tmp/

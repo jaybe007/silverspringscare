@@ -5,6 +5,7 @@
  */
 
 require_once __DIR__ . '/config.php';
+require_once __DIR__ . '/rbac.php';
 
 function get_db_connection() {
     static $pdo = null;
@@ -29,6 +30,8 @@ function get_db_connection() {
             $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
             $pdo->exec('PRAGMA foreign_keys = ON;');
+            $pdo->exec('PRAGMA journal_mode = WAL;');
+            $pdo->exec('PRAGMA busy_timeout = 5000;');
         } else {
             $port_str = (defined('DB_PORT') && DB_PORT) ? ';port=' . DB_PORT : '';
             $dsn = sprintf('mysql:host=%s%s;dbname=%s;charset=utf8mb4', DB_HOST, $port_str, DB_NAME);
@@ -276,6 +279,9 @@ function migrate_database(PDO $pdo) {
 
     // Seed default content if tables are empty
     seed_default_content($pdo);
+
+    // Migrate and seed Enterprise RBAC tables (users, roles, permissions, user_roles, role_permissions, user_permissions, audit_logs)
+    migrate_rbac_tables($pdo);
 }
 
 function seed_default_content(PDO $pdo) {

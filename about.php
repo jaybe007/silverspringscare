@@ -25,9 +25,9 @@ require_once __DIR__ . '/includes/header.php';
 <div class="service-detail-hero">
   <div class="container">
     <span class="badge badge-sage" style="margin-bottom: 1rem;">Who We Are</span>
-    <h1 style="color: #ffffff; margin-bottom: 1rem;">Dedicated to Dignity, Growth &amp; Meaningful Lives</h1>
+    <h1 style="color: #ffffff; margin-bottom: 1rem;"><?= htmlspecialchars(get_site_setting('about_hero_title', 'Dedicated to Dignity, Growth & Meaningful Lives'), ENT_QUOTES, 'UTF-8') ?></h1>
     <p class="lead" style="color: var(--color-text-inverse-muted); max-width: 760px;">
-      Silver Springs Care is an Australian disability support organisation built on the belief that support should empower individual agency, not restrict it.
+      <?= htmlspecialchars(get_site_setting('about_hero_lead', 'Silver Springs Care is an Australian disability support organisation built on the belief that support should empower individual agency, not restrict it.'), ENT_QUOTES, 'UTF-8') ?>
     </p>
   </div>
 </div>
@@ -40,15 +40,15 @@ require_once __DIR__ . '/includes/header.php';
     <div class="grid-2 items-center gap-8">
       <div>
         <span class="badge badge-navy">Our Story</span>
-        <h2 class="section-title">Founded with a vision for genuinely individualised care.</h2>
+        <h2 class="section-title"><?= htmlspecialchars(get_site_setting('about_story_title', 'Founded with a vision for genuinely individualised care.'), ENT_QUOTES, 'UTF-8') ?></h2>
         <p class="lead">
-          Silver Springs Care was formed to bridge the gap between large, impersonal support bureaucracies and the real, everyday aspirations of people living with disabilities in Australia.
+          <?= htmlspecialchars(get_site_setting('about_story_lead', 'Silver Springs Care was formed to bridge the gap between large, impersonal support bureaucracies and the real, everyday aspirations of people living with disabilities in Australia.'), ENT_QUOTES, 'UTF-8') ?>
         </p>
         <p>
-          We observed too many participants feeling like numbers on a roster, handed support workers they had never met, and forced into schedules that suited providers rather than their own lives. We established Silver Springs Care to offer a refreshing, human alternative: a service that listens first, respects personal choice, and delivers reliable support with warmth and professionalism.
+          <?= htmlspecialchars(get_site_setting('about_story_body_1', 'We observed too many participants feeling like numbers on a roster, handed support workers they had never met, and forced into schedules that suited providers rather than their own lives. We established Silver Springs Care to offer a refreshing, human alternative: a service that listens first, respects personal choice, and delivers reliable support with warmth and professionalism.'), ENT_QUOTES, 'UTF-8') ?>
         </p>
         <p>
-          Today, we work alongside individuals, families, support coordinators, and allied health professionals across Melbourne and surrounding Victorian communities, creating pathways toward true independence and community belonging.
+          <?= htmlspecialchars(get_site_setting('about_story_body_2', 'Today, we work alongside individuals, families, support coordinators, and allied health professionals across Melbourne and surrounding Victorian communities, creating pathways toward true independence and community belonging.'), ENT_QUOTES, 'UTF-8') ?>
         </p>
       </div>
 
@@ -80,7 +80,7 @@ require_once __DIR__ . '/includes/header.php';
         <span class="badge badge-sage" style="margin-bottom: 0.75rem;">Our Vision</span>
         <h3 style="font-size: 1.75rem; margin-bottom: 1rem; color: var(--color-navy-900);">A Community of Respect &amp; Inclusion</h3>
         <blockquote class="serif-quote" style="font-size: 1.25rem; color: var(--color-navy-800); line-height: 1.5; margin: 0;">
-          “A community where every person is respected, included, and empowered to pursue a life that is genuinely meaningful to them.”
+          “<?= htmlspecialchars(get_site_setting('about_vision_quote', 'A community where every person is respected, included, and empowered to pursue a life that is genuinely meaningful to them.'), ENT_QUOTES, 'UTF-8') ?>”
         </blockquote>
       </div>
 
@@ -91,7 +91,7 @@ require_once __DIR__ . '/includes/header.php';
         <span class="badge badge-navy" style="margin-bottom: 0.75rem;">Our Mission</span>
         <h3 style="font-size: 1.75rem; margin-bottom: 1rem; color: var(--color-navy-900);">Thoughtful, Person-Centred Support</h3>
         <blockquote class="serif-quote" style="font-size: 1.25rem; color: var(--color-navy-800); line-height: 1.5; margin: 0;">
-          “To provide thoughtful, person-centred support that respects individual choices, strengthens independence, and creates opportunities for meaningful participation in everyday life.”
+          “<?= htmlspecialchars(get_site_setting('about_mission_quote', 'To provide thoughtful, person-centred support that respects individual choices, strengthens independence, and creates opportunities for meaningful participation in everyday life.'), ENT_QUOTES, 'UTF-8') ?>”
         </blockquote>
       </div>
     </div>

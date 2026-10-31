@@ -5,6 +5,18 @@
  */
 
 require_once __DIR__ . '/config.php';
+require_once __DIR__ . '/functions.php';
+
+$footer_site_name = get_site_setting('site_name', defined('APP_NAME') ? APP_NAME : 'Silver Springs Care');
+$footer_tagline = get_site_setting('site_tagline', defined('APP_TAGLINE') ? APP_TAGLINE : 'Empowering Abilities, Enriching Lives.');
+$footer_phone = get_site_setting('site_phone', SITE_PHONE);
+$footer_email = get_site_setting('site_email', SITE_EMAIL);
+$footer_hours = get_site_setting('site_hours', SITE_HOURS);
+$footer_locations = get_site_setting('primary_locations', PRIMARY_LOCATIONS);
+$footer_ack = get_site_setting('footer_acknowledgment', 'Silver Springs Care acknowledges the Traditional Custodians of the lands, winds, and waters on which we live and provide support. We recognise their continuous connection to country, culture, and community. We pay our deepest respects to Elders past and present, and extend that respect to all Aboriginal and Torres Strait Islander people with disability, their families, and carers.');
+$footer_brand_summary = get_site_setting('footer_brand_summary', 'A compassionate Australian disability support organisation delivering person-centred care, choice, independence, and dignity for individuals and their families.');
+$footer_copyright = get_site_setting('footer_copyright', 'Silver Springs Care. All rights reserved. Registered Australian Disability Support Services.');
+$footer_custom_logo = get_site_setting('site_logo_url', 'assets/images/logo.svg');
 ?>
   </main>
 
@@ -21,7 +33,7 @@ require_once __DIR__ . '/config.php';
           <span class="dot-blue"></span>
         </div>
         <p class="acknowledgment-text">
-          <strong>Acknowledgment of Country:</strong> Silver Springs Care acknowledges the Traditional Custodians of the lands, winds, and waters on which we live and provide support. We recognise their continuous connection to country, culture, and community. We pay our deepest respects to Elders past and present, and extend that respect to all Aboriginal and Torres Strait Islander people with disability, their families, and carers.
+          <strong>Acknowledgment of Country:</strong> <?= htmlspecialchars($footer_ack, ENT_QUOTES, 'UTF-8') ?>
         </p>
       </section>
 
@@ -35,18 +47,22 @@ require_once __DIR__ . '/config.php';
         <!-- Col 1: Brand & Philosophy -->
         <div class="footer-brand">
           <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 0.75rem;">
-            <svg width="34" height="34" viewBox="0 0 64 64" fill="none" aria-hidden="true">
-              <rect width="64" height="64" rx="14" fill="#397B50"/>
-              <path d="M 28 8 C 16 8, 6 18, 6 30 C 6 42, 16 52, 28 52 C 35 52, 41 49, 45 44 C 43 44, 40 44, 38 43 C 29 39, 23 31, 23 22 C 23 16, 26 10, 30 7 Z" fill="#A9C9A5"/>
-              <path d="M 28 14 C 21 18, 17 26, 18 34 C 19 41, 25 47, 32 48 C 40 49, 47 43, 48 35 C 49 26, 41 17, 28 14 Z" fill="#ffffff"/>
-            </svg>
-            <span style="font-size: 1.25rem; font-weight: 800; color: #ffffff; letter-spacing: -0.02em;">SILVER SPRINGS <span style="color: var(--color-sage-300); font-weight: 400;">CARE</span></span>
+            <?php if ($footer_custom_logo !== 'assets/images/logo.svg' && $footer_custom_logo !== ''): ?>
+              <img src="<?= htmlspecialchars(get_site_asset_url('site_logo_url', 'assets/images/logo.svg'), ENT_QUOTES, 'UTF-8') ?>" alt="<?= htmlspecialchars($footer_site_name, ENT_QUOTES, 'UTF-8') ?>" style="height: 36px; width: auto; max-width: 200px; object-fit: contain;">
+            <?php else: ?>
+              <svg width="34" height="34" viewBox="0 0 64 64" fill="none" aria-hidden="true">
+                <rect width="64" height="64" rx="14" fill="#397B50"/>
+                <path d="M 28 8 C 16 8, 6 18, 6 30 C 6 42, 16 52, 28 52 C 35 52, 41 49, 45 44 C 43 44, 40 44, 38 43 C 29 39, 23 31, 23 22 C 23 16, 26 10, 30 7 Z" fill="#A9C9A5"/>
+                <path d="M 28 14 C 21 18, 17 26, 18 34 C 19 41, 25 47, 32 48 C 40 49, 47 43, 48 35 C 49 26, 41 17, 28 14 Z" fill="#ffffff"/>
+              </svg>
+              <span style="font-size: 1.25rem; font-weight: 800; color: #ffffff; letter-spacing: -0.02em;">SILVER SPRINGS <span style="color: var(--color-sage-300); font-weight: 400;">CARE</span></span>
+            <?php endif; ?>
           </div>
           <p>
-            <em>“Empowering Abilities, Enriching Lives.”</em>
+            <em>“<?= htmlspecialchars($footer_tagline, ENT_QUOTES, 'UTF-8') ?>”</em>
           </p>
           <p style="font-size: 0.85rem; color: rgba(255, 255, 255, 0.65); margin-top: 0.75rem;">
-            A compassionate Australian disability support organisation delivering person-centred care, choice, independence, and dignity for individuals and their families.
+            <?= htmlspecialchars($footer_brand_summary, ENT_QUOTES, 'UTF-8') ?>
           </p>
         </div>
 
@@ -54,12 +70,12 @@ require_once __DIR__ . '/config.php';
         <div>
           <h4 class="footer-col-title">Support Services</h4>
           <ul class="footer-links">
-            <li><a href="<?= BASE_PATH ?>/services.php#daily-life" class="footer-link">Assistance with Daily Life</a></li>
-            <li><a href="<?= BASE_PATH ?>/services.php#community" class="footer-link">Community &amp; Social Participation</a></li>
-            <li><a href="<?= BASE_PATH ?>/services.php#sil" class="footer-link">Supported Independent Living (SIL)</a></li>
-            <li><a href="<?= BASE_PATH ?>/services.php#capacity" class="footer-link">Capacity Building &amp; Life Skills</a></li>
-            <li><a href="<?= BASE_PATH ?>/services.php#respite" class="footer-link">Short-Term Accommodation &amp; Respite</a></li>
-            <li><a href="<?= BASE_PATH ?>/services.php#coordination" class="footer-link">Support Coordination Guidance</a></li>
+            <li><a href="<?= BASE_PATH ?>/services.php#daily-life" class="footer-link"><?= htmlspecialchars(get_site_setting('service_1_title', 'Assistance with Daily Life'), ENT_QUOTES, 'UTF-8') ?></a></li>
+            <li><a href="<?= BASE_PATH ?>/services.php#community" class="footer-link"><?= htmlspecialchars(get_site_setting('service_2_title', 'Community & Social Participation'), ENT_QUOTES, 'UTF-8') ?></a></li>
+            <li><a href="<?= BASE_PATH ?>/services.php#sil" class="footer-link"><?= htmlspecialchars(get_site_setting('service_3_title', 'Supported Independent Living (SIL)'), ENT_QUOTES, 'UTF-8') ?></a></li>
+            <li><a href="<?= BASE_PATH ?>/services.php#capacity" class="footer-link"><?= htmlspecialchars(get_site_setting('service_4_title', 'Capacity Building & Life Skills'), ENT_QUOTES, 'UTF-8') ?></a></li>
+            <li><a href="<?= BASE_PATH ?>/services.php#respite" class="footer-link"><?= htmlspecialchars(get_site_setting('service_5_title', 'Short-Term Accommodation & Respite'), ENT_QUOTES, 'UTF-8') ?></a></li>
+            <li><a href="<?= BASE_PATH ?>/services.php#coordination" class="footer-link"><?= htmlspecialchars(get_site_setting('service_6_title', 'Support Coordination Guidance'), ENT_QUOTES, 'UTF-8') ?></a></li>
           </ul>
         </div>
 
@@ -84,15 +100,15 @@ require_once __DIR__ . '/config.php';
           <div class="footer-contact-item">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
             <div>
-              <strong><?= SITE_PHONE ?></strong>
-              <div style="font-size: 0.75rem; color: rgba(255, 255, 255, 0.6);"><?= SITE_HOURS ?></div>
+              <strong><?= htmlspecialchars($footer_phone, ENT_QUOTES, 'UTF-8') ?></strong>
+              <div style="font-size: 0.75rem; color: rgba(255, 255, 255, 0.6);"><?= htmlspecialchars($footer_hours, ENT_QUOTES, 'UTF-8') ?></div>
             </div>
           </div>
 
           <div class="footer-contact-item">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
             <div>
-              <a href="mailto:<?= SITE_EMAIL ?>" class="footer-link"><?= SITE_EMAIL ?></a>
+              <a href="mailto:<?= htmlspecialchars($footer_email, ENT_QUOTES, 'UTF-8') ?>" class="footer-link"><?= htmlspecialchars($footer_email, ENT_QUOTES, 'UTF-8') ?></a>
             </div>
           </div>
 
@@ -100,7 +116,7 @@ require_once __DIR__ . '/config.php';
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
             <div>
               <div style="font-size: 0.85rem;">
-                <?= PRIMARY_LOCATIONS ?>
+                <?= htmlspecialchars($footer_locations, ENT_QUOTES, 'UTF-8') ?>
               </div>
             </div>
           </div>
@@ -116,7 +132,7 @@ require_once __DIR__ . '/config.php';
       <!-- Legal & Accreditations Bottom Bar -->
       <div class="footer-bottom">
         <div>
-          &copy; <?= date('Y') ?> Silver Springs Care. All rights reserved. Registered Australian Disability Support Services.
+          &copy; <?= date('Y') ?> <?= htmlspecialchars($footer_copyright, ENT_QUOTES, 'UTF-8') ?>
           <span style="display: inline-block; margin-left: 6px;">
             • Designed by <a href="https://cloudcurrentng.com" target="_blank" rel="noopener noreferrer" style="color: var(--color-sage-300); text-decoration: underline; font-weight: 600;">cloudcurrentng.com</a>
           </span>

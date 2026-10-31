@@ -5,6 +5,7 @@
 
 require_once __DIR__ . '/config.php';
 require_once __DIR__ . '/db.php';
+require_once __DIR__ . '/cms.php';
 
 function generate_csrf_token() {
     if (empty($_SESSION['csrf_token'])) {
@@ -104,7 +105,14 @@ function get_flash_message() {
 }
 
 function is_admin_logged_in() {
-    return !empty($_SESSION['admin_logged_in']) && $_SESSION['admin_logged_in'] === true;
+    if (empty($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== true) {
+        return false;
+    }
+    if (function_exists('get_current_admin_user')) {
+        $u = get_current_admin_user();
+        return $u !== null;
+    }
+    return true;
 }
 
 function get_active_faqs() {
