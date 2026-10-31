@@ -286,3 +286,4 @@ function send_outbound_webmail(string $to_email, string $subject, string $body, 
         'mail_sent'       => $mail_sent
     ];
 }
+

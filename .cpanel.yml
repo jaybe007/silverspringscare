@@ -21,22 +21,21 @@
 
 deployment:
   tasks:
-    # 1. Define Target Production Web Root
-    # IMPORTANT: Replace 'username' with your actual cPanel account username
-    - export DEPLOYPATH=/home/username/public_html/
+    # 1. Auto-detect Target Production Web Root ($HOME/public_html or addon domain root)
+    - export DEPLOYPATH=$HOME/public_html
+    - if [ -d "$HOME/silverspringscare.com.au" ]; then export DEPLOYPATH=$HOME/silverspringscare.com.au; fi
 
-    # 2. Deploy repository codebase to public web root
-    - /bin/cp -R * $DEPLOYPATH/
+    # 2. Deploy repository codebase to public web root (unless repo is already cloned directly inside DEPLOYPATH)
+    - if [ "$(pwd)" != "$DEPLOYPATH" ]; then /bin/cp -Rf * $DEPLOYPATH/; /bin/cp -f .htaccess $DEPLOYPATH/; fi
 
-    # 3. Explicitly deploy root .htaccess (ensures Apache security headers & 404 rules)
-    - /bin/cp .htaccess $DEPLOYPATH/
-
-    # 4. Ensure data folder exists with .htaccess protection and writable permissions for SQLite
+    # 3. Ensure data & upload folders exist with proper permissions
     - /bin/mkdir -p $DEPLOYPATH/data
-    - /bin/cp data/.htaccess $DEPLOYPATH/data/
-    - /bin/chmod 775 $DEPLOYPATH/data
+    - /bin/mkdir -p $DEPLOYPATH/assets/images/uploads
+    - /bin/cp -f data/.htaccess $DEPLOYPATH/data/
+    - /bin/chmod 755 $DEPLOYPATH/data
+    - /bin/chmod 755 $DEPLOYPATH/assets/images/uploads
 
-    # 5. Ensure core directories have standard executable permissions
+    # 4. Ensure core directories have standard cPanel PHP permissions (755 for dirs, 644 for files)
     - /bin/chmod 755 $DEPLOYPATH/assets
     - /bin/chmod 755 $DEPLOYPATH/admin
     - /bin/chmod 755 $DEPLOYPATH/api
