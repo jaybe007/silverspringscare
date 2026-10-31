@@ -46,14 +46,22 @@ require_once __DIR__ . '/includes/header.php';
 
         <div style="display: flex; flex-direction: column; gap: 1.5rem; margin: 2rem 0;">
           <!-- Phone -->
+          <?php
+          $cnt_phone = get_site_setting('site_phone', SITE_PHONE);
+          $cnt_phone_raw = preg_replace('/[^0-9+]/', '', $cnt_phone) ?: SITE_PHONE_RAW;
+          $cnt_hours = get_site_setting('site_hours', SITE_HOURS);
+          $cnt_email = get_site_setting('site_email', SITE_EMAIL);
+          $cnt_ref_email = get_site_setting('site_referral_email', SITE_REFERRAL_EMAIL);
+          $cnt_locations = get_site_setting('primary_locations', PRIMARY_LOCATIONS);
+          ?>
           <div style="display: flex; gap: 1rem; align-items: flex-start; background: var(--color-warm-ivory); padding: 1.5rem; border-radius: var(--radius-xl); border: 1px solid var(--color-slate-200);">
             <div style="width: 44px; height: 44px; border-radius: 50%; background: var(--color-forest-600); color: #ffffff; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
             </div>
             <div>
               <div style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--color-text-muted); font-weight: 700;">General &amp; Intake Phone</div>
-              <a href="tel:<?= SITE_PHONE_RAW ?>" style="font-size: 1.4rem; font-weight: 800; color: var(--color-navy-900); display: block; margin: 0.2rem 0;"><?= SITE_PHONE ?></a>
-              <div style="font-size: 0.85rem; color: var(--color-text-muted);"><?= SITE_HOURS ?></div>
+              <a href="tel:<?= htmlspecialchars($cnt_phone_raw, ENT_QUOTES, 'UTF-8') ?>" style="font-size: 1.4rem; font-weight: 800; color: var(--color-navy-900); display: block; margin: 0.2rem 0;"><?= htmlspecialchars($cnt_phone, ENT_QUOTES, 'UTF-8') ?></a>
+              <div style="font-size: 0.85rem; color: var(--color-text-muted);"><?= htmlspecialchars($cnt_hours, ENT_QUOTES, 'UTF-8') ?></div>
             </div>
           </div>
 
@@ -64,8 +72,8 @@ require_once __DIR__ . '/includes/header.php';
             </div>
             <div>
               <div style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--color-text-muted); font-weight: 700;">Direct Email</div>
-              <a href="mailto:<?= SITE_EMAIL ?>" style="font-size: 1.15rem; font-weight: 750; color: var(--color-navy-900); display: block; margin: 0.2rem 0;"><?= SITE_EMAIL ?></a>
-              <div style="font-size: 0.85rem; color: var(--color-text-muted);">Referrals: <a href="mailto:<?= SITE_REFERRAL_EMAIL ?>" style="color: var(--color-forest-700); font-weight: 600;"><?= SITE_REFERRAL_EMAIL ?></a></div>
+              <a href="mailto:<?= htmlspecialchars($cnt_email, ENT_QUOTES, 'UTF-8') ?>" style="font-size: 1.15rem; font-weight: 750; color: var(--color-navy-900); display: block; margin: 0.2rem 0;"><?= htmlspecialchars($cnt_email, ENT_QUOTES, 'UTF-8') ?></a>
+              <div style="font-size: 0.85rem; color: var(--color-text-muted);">Referrals: <a href="mailto:<?= htmlspecialchars($cnt_ref_email, ENT_QUOTES, 'UTF-8') ?>" style="color: var(--color-forest-700); font-weight: 600;"><?= htmlspecialchars($cnt_ref_email, ENT_QUOTES, 'UTF-8') ?></a></div>
             </div>
           </div>
 
@@ -76,7 +84,7 @@ require_once __DIR__ . '/includes/header.php';
             </div>
             <div>
               <div style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--color-text-muted); font-weight: 700;">Service Regions</div>
-              <div style="font-size: 1.1rem; font-weight: 750; color: var(--color-navy-900); margin: 0.2rem 0;"><?= PRIMARY_LOCATIONS ?></div>
+              <div style="font-size: 1.1rem; font-weight: 750; color: var(--color-navy-900); margin: 0.2rem 0;"><?= htmlspecialchars($cnt_locations, ENT_QUOTES, 'UTF-8') ?></div>
               <div style="font-size: 0.85rem; color: var(--color-text-muted);">In-home and community-based support across Victoria.</div>
             </div>
           </div>

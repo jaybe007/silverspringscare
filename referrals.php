@@ -72,10 +72,16 @@ require_once __DIR__ . '/includes/header.php';
           <p style="color: var(--color-text-inverse-muted); font-size: 0.9rem; margin-bottom: 1.25rem;">
             If you have an existing referral pack or documentation ready to submit:
           </p>
+          <?php
+          $ref_desk_email = get_site_setting('site_referral_email', SITE_REFERRAL_EMAIL);
+          $ref_desk_phone = get_site_setting('site_phone', SITE_PHONE);
+          $ref_desk_phone_raw = preg_replace('/[^0-9+]/', '', $ref_desk_phone) ?: SITE_PHONE_RAW;
+          $ref_desk_locations = get_site_setting('primary_locations', PRIMARY_LOCATIONS);
+          ?>
           <div style="font-size: 0.95rem; display: flex; flex-direction: column; gap: 0.5rem;">
-            <div><strong>Referrals Desk:</strong> <a href="mailto:<?= SITE_REFERRAL_EMAIL ?>" style="color: var(--color-sage-300); text-decoration: underline;"><?= SITE_REFERRAL_EMAIL ?></a></div>
-            <div><strong>Intake Phone:</strong> <a href="tel:<?= SITE_PHONE_RAW ?>" style="color: var(--color-sage-300); text-decoration: underline;"><?= SITE_PHONE ?></a></div>
-            <div><strong>Coverage:</strong> <?= PRIMARY_LOCATIONS ?></div>
+            <div><strong>Referrals Desk:</strong> <a href="mailto:<?= htmlspecialchars($ref_desk_email, ENT_QUOTES, 'UTF-8') ?>" style="color: var(--color-sage-300); text-decoration: underline;"><?= htmlspecialchars($ref_desk_email, ENT_QUOTES, 'UTF-8') ?></a></div>
+            <div><strong>Intake Phone:</strong> <a href="tel:<?= htmlspecialchars($ref_desk_phone_raw, ENT_QUOTES, 'UTF-8') ?>" style="color: var(--color-sage-300); text-decoration: underline;"><?= htmlspecialchars($ref_desk_phone, ENT_QUOTES, 'UTF-8') ?></a></div>
+            <div><strong>Coverage:</strong> <?= htmlspecialchars($ref_desk_locations, ENT_QUOTES, 'UTF-8') ?></div>
           </div>
         </div>
       </div>

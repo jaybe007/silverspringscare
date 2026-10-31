@@ -67,6 +67,20 @@ if ($requested_module !== '') {
 }
 
 $flash = get_flash_message();
+
+$live_module_links = [
+    'dashboard'     => ['url' => BASE_PATH . '/admin/index.php',                            'label' => 'Open Live Dashboard'],
+    'users'         => ['url' => BASE_PATH . '/admin/users.php?tab=users',                  'label' => 'Open User Directory'],
+    'roles'         => ['url' => BASE_PATH . '/admin/users.php?tab=roles',                  'label' => 'Open Role Manager'],
+    'permissions'   => ['url' => BASE_PATH . '/admin/users.php?tab=permissions',            'label' => 'Open Permissions Matrix'],
+    'audit logs'    => ['url' => BASE_PATH . '/admin/users.php?tab=audit_logs',             'label' => 'Open Audit Logs'],
+    'content'       => ['url' => BASE_PATH . '/admin/content.php?tab=branding',             'label' => 'Open Website & Logo CMS'],
+    'settings'      => ['url' => BASE_PATH . '/admin/content.php?tab=branding',             'label' => 'Open Brand & Site Settings'],
+    'referrals'     => ['url' => BASE_PATH . '/admin/index.php?section=referrals#sec-referrals',     'label' => 'Manage Professional Referrals'],
+    'inquiries'     => ['url' => BASE_PATH . '/admin/webmail.php?folder=inquiry',           'label' => 'Open Enquiries Inbox'],
+    'notifications' => ['url' => BASE_PATH . '/admin/webmail.php',                          'label' => 'Open Corporate Webmail'],
+    'applications'  => ['url' => BASE_PATH . '/admin/index.php?section=applications#sec-applications', 'label' => 'Manage Job Applications'],
+];
 ?>
 <!DOCTYPE html>
 <html lang="en-AU">
@@ -122,7 +136,13 @@ $flash = get_flash_message();
               Server-side RBAC verified for <strong><?= htmlspecialchars($user['full_name'], ENT_QUOTES, 'UTF-8') ?></strong>.
             </p>
           </div>
-          <a href="<?= BASE_PATH ?>/admin/modules.php" class="btn btn-secondary btn-sm">&larr; All Permitted Modules</a>
+          <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+            <?php $mod_link = $live_module_links[strtolower($canon_mod)] ?? null; ?>
+            <?php if ($mod_link): ?>
+              <a href="<?= htmlspecialchars($mod_link['url'], ENT_QUOTES, 'UTF-8') ?>" class="btn btn-primary btn-sm"><?= htmlspecialchars($mod_link['label'], ENT_QUOTES, 'UTF-8') ?> &rarr;</a>
+            <?php endif; ?>
+            <a href="<?= BASE_PATH ?>/admin/modules.php" class="btn btn-secondary btn-sm">&larr; All Permitted Modules</a>
+          </div>
         </div>
 
         <h3 style="font-size: 1.1rem; color: var(--color-navy-900); margin-bottom: 1rem;">Module Operations &amp; Granular Action Controls</h3>
@@ -200,9 +220,17 @@ $flash = get_flash_message();
               </div>
             </div>
 
-            <a href="?module=<?= urlencode($mod_name) ?>" class="btn btn-navy btn-sm" style="width: 100%;">
-              Open <?= htmlspecialchars($mod_name, ENT_QUOTES, 'UTF-8') ?> Module &rarr;
-            </a>
+            <div style="display: flex; flex-direction: column; gap: 0.45rem;">
+              <?php $card_link = $live_module_links[strtolower($mod_name)] ?? null; ?>
+              <?php if ($card_link): ?>
+                <a href="<?= htmlspecialchars($card_link['url'], ENT_QUOTES, 'UTF-8') ?>" class="btn btn-primary btn-sm" style="width: 100%;">
+                  <?= htmlspecialchars($card_link['label'], ENT_QUOTES, 'UTF-8') ?> &rarr;
+                </a>
+              <?php endif; ?>
+              <a href="?module=<?= urlencode($mod_name) ?>" class="btn btn-navy btn-sm" style="width: 100%;">
+                Inspect <?= htmlspecialchars($mod_name, ENT_QUOTES, 'UTF-8') ?> Permissions &rarr;
+              </a>
+            </div>
           </div>
         <?php endforeach; ?>
       </div>

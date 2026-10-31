@@ -49,10 +49,10 @@ require_once __DIR__ . '/includes/header.php';
   <div class="container">
     <div class="grid-2 gap-8 items-start">
       <div>
-        <span class="badge badge-sage">Core Supports &bull; Daily Activities</span>
-        <h2 class="section-title">Assistance with Daily Life &amp; Personal Care</h2>
+        <span class="badge badge-sage"><?= htmlspecialchars(get_site_setting('service_1_badge', 'Core Supports • Daily Activities'), ENT_QUOTES, 'UTF-8') ?></span>
+        <h2 class="section-title"><?= htmlspecialchars(get_site_setting('service_1_title', 'Assistance with Daily Life & Personal Care'), ENT_QUOTES, 'UTF-8') ?></h2>
         <p class="lead">
-          Respectful, reliable in-home support that enables you to maintain your home environment, manage personal care, and live with comfort and independence.
+          <?= htmlspecialchars(get_site_setting('service_1_desc', 'Respectful, reliable in-home support that enables you to maintain your home environment, manage personal care, and live with comfort and independence.'), ENT_QUOTES, 'UTF-8') ?>
         </p>
 
         <h3 style="font-size: 1.25rem; margin-top: 1.75rem; margin-bottom: 0.75rem; color: var(--color-navy-900);">Who This Service May Suit</h3>
@@ -127,10 +127,10 @@ require_once __DIR__ . '/includes/header.php';
       </div>
 
       <div>
-        <span class="badge badge-navy">Social &amp; Civic Inclusion</span>
-        <h2 class="section-title">Community, Social &amp; Civic Participation</h2>
+        <span class="badge badge-navy"><?= htmlspecialchars(get_site_setting('service_2_badge', 'Social & Civic Inclusion'), ENT_QUOTES, 'UTF-8') ?></span>
+        <h2 class="section-title"><?= htmlspecialchars(get_site_setting('service_2_title', 'Community, Social & Civic Participation'), ENT_QUOTES, 'UTF-8') ?></h2>
         <p class="lead">
-          Meaningful support to connect with people, discover passions, and take active part in your local neighbourhood.
+          <?= htmlspecialchars(get_site_setting('service_2_desc', 'Meaningful support to connect with people, discover passions, and take active part in your local neighbourhood.'), ENT_QUOTES, 'UTF-8') ?>
         </p>
 
         <h3 style="font-size: 1.25rem; margin-top: 1.75rem; margin-bottom: 0.75rem; color: var(--color-navy-900);">Who This Service May Suit</h3>
@@ -162,10 +162,10 @@ require_once __DIR__ . '/includes/header.php';
   <div class="container">
     <div class="grid-2 gap-8 items-start">
       <div>
-        <span class="badge badge-forest">Home &amp; Living Options</span>
-        <h2 class="section-title">Supported Independent Living (SIL)</h2>
+        <span class="badge badge-forest"><?= htmlspecialchars(get_site_setting('service_3_badge', 'Home & Living Options'), ENT_QUOTES, 'UTF-8') ?></span>
+        <h2 class="section-title"><?= htmlspecialchars(get_site_setting('service_3_title', 'Supported Independent Living (SIL)'), ENT_QUOTES, 'UTF-8') ?></h2>
         <p class="lead">
-          Nurturing home environments designed to help you live as independently as possible while receiving 24/7 or scheduled rostered care.
+          <?= htmlspecialchars(get_site_setting('service_3_desc', 'Nurturing home environments designed to help you live as independently as possible while receiving 24/7 or scheduled rostered care.'), ENT_QUOTES, 'UTF-8') ?>
         </p>
 
         <h3 style="font-size: 1.25rem; margin-top: 1.75rem; margin-bottom: 0.75rem; color: var(--color-navy-900);">Who This Service May Suit</h3>
@@ -224,10 +224,10 @@ require_once __DIR__ . '/includes/header.php';
       </div>
 
       <div>
-        <span class="badge badge-sage">Rejuvenation &amp; Relief</span>
-        <h2 class="section-title">Short-Term Accommodation (STA) &amp; Respite</h2>
+        <span class="badge badge-sage"><?= htmlspecialchars(get_site_setting('service_5_badge', 'Rejuvenation & Relief'), ENT_QUOTES, 'UTF-8') ?></span>
+        <h2 class="section-title"><?= htmlspecialchars(get_site_setting('service_5_title', 'Short-Term Accommodation (STA) & Respite'), ENT_QUOTES, 'UTF-8') ?></h2>
         <p class="lead">
-          A change of scenery that participants look forward to, while providing informal family carers with essential time to recharge.
+          <?= htmlspecialchars(get_site_setting('service_5_desc', 'A change of scenery that participants look forward to, while providing informal family carers with essential time to recharge.'), ENT_QUOTES, 'UTF-8') ?>
         </p>
 
         <h3 style="font-size: 1.25rem; margin-top: 1.75rem; margin-bottom: 0.75rem; color: var(--color-navy-900);">Who This Service May Suit</h3>
@@ -255,10 +255,10 @@ require_once __DIR__ . '/includes/header.php';
   <div class="container">
     <div class="grid-2 gap-8 items-start">
       <div>
-        <span class="badge badge-navy">Goal Attainment</span>
-        <h2 class="section-title">Capacity Building &amp; Life Skills</h2>
+        <span class="badge badge-navy"><?= htmlspecialchars(get_site_setting('service_4_badge', 'Goal Attainment'), ENT_QUOTES, 'UTF-8') ?></span>
+        <h2 class="section-title"><?= htmlspecialchars(get_site_setting('service_4_title', 'Capacity Building & Life Skills'), ENT_QUOTES, 'UTF-8') ?></h2>
         <p class="lead">
-          Structured, one-on-one mentoring to develop the practical skills you need to achieve greater independence.
+          <?= htmlspecialchars(get_site_setting('service_4_desc', 'Structured, one-on-one mentoring to develop the practical skills you need to achieve greater independence.'), ENT_QUOTES, 'UTF-8') ?>
         </p>
 
         <h3 style="font-size: 1.25rem; margin-top: 1.75rem; margin-bottom: 0.75rem; color: var(--color-navy-900);">Who This Service May Suit</h3>
@@ -302,10 +302,10 @@ require_once __DIR__ . '/includes/header.php';
       </div>
 
       <div>
-        <span class="badge badge-forest">Navigation &amp; Connection</span>
-        <h2 class="section-title">Support Coordination Guidance</h2>
+        <span class="badge badge-forest"><?= htmlspecialchars(get_site_setting('service_6_badge', 'Navigation & Connection'), ENT_QUOTES, 'UTF-8') ?></span>
+        <h2 class="section-title"><?= htmlspecialchars(get_site_setting('service_6_title', 'Support Coordination Guidance'), ENT_QUOTES, 'UTF-8') ?></h2>
         <p class="lead">
-          Clear, ethical coordination to help you make the most of your NDIS funding and connect with the right providers.
+          <?= htmlspecialchars(get_site_setting('service_6_desc', 'Clear, ethical coordination to help you make the most of your NDIS funding and connect with the right providers.'), ENT_QUOTES, 'UTF-8') ?>
         </p>
 
         <h3 style="font-size: 1.25rem; margin-top: 1.75rem; margin-bottom: 0.75rem; color: var(--color-navy-900);">Who This Service May Suit</h3>

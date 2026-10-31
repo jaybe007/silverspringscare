@@ -122,9 +122,14 @@ function migrate_database(PDO $pdo) {
 
         $pdo->exec("CREATE TABLE IF NOT EXISTS site_settings (
             setting_key VARCHAR(191) PRIMARY KEY,
-            setting_val TEXT NOT NULL,
+            setting_val LONGTEXT NOT NULL,
             updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;");
+        try {
+            $pdo->exec("ALTER TABLE site_settings MODIFY setting_val LONGTEXT NOT NULL;");
+        } catch (Exception $e) {
+            // Ignore if already LONGTEXT
+        }
 
         $pdo->exec("CREATE TABLE IF NOT EXISTS faqs (
             id INT AUTO_INCREMENT PRIMARY KEY,

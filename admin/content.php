@@ -18,21 +18,6 @@ $current_admin = require_permission('content.view', 'You do not have permission 
 
 $pdo = get_db_connection();
 
-// Ensure resources table exists for dynamic resources management
-if ($pdo) {
-    $pdo->exec("CREATE TABLE IF NOT EXISTS resources (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        category VARCHAR(80) NOT NULL DEFAULT 'NDIS Guide',
-        title VARCHAR(255) NOT NULL,
-        summary TEXT NOT NULL,
-        read_time VARCHAR(50) DEFAULT '5 min read',
-        link_url VARCHAR(255) DEFAULT 'support-journey.php',
-        link_text VARCHAR(100) DEFAULT 'Read Guide',
-        is_active TINYINT(1) DEFAULT 1,
-        created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-    )");
-}
-
 // Handle POST Actions
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $token = $_POST['csrf_token'] ?? '';
@@ -60,7 +45,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
 
-        // Handle optional file uploads (Logo, Favicon, Hero Image, Section Images)
+        // Handle optional file uploads (Logo, Favicon, Hero Image, Section Images) + base64 fallbacks
         $upload_fields = [
             'upload_site_logo'      => ['setting_key' => 'site_logo_url',      'prefix' => 'logo'],
             'upload_site_favicon'   => ['setting_key' => 'site_favicon_url',   'prefix' => 'favicon'],
@@ -72,8 +57,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         $upload_errors = [];
         foreach ($upload_fields as $file_input => $meta) {
-            if (!empty($_FILES[$file_input]) && ($_FILES[$file_input]['error'] ?? UPLOAD_ERR_NO_FILE) !== UPLOAD_ERR_NO_FILE) {
-                $up = handle_cms_image_upload($file_input, $meta['prefix']);
+            $has_file = !empty($_FILES[$file_input]) && ($_FILES[$file_input]['error'] ?? UPLOAD_ERR_NO_FILE) !== UPLOAD_ERR_NO_FILE;
+            $has_b64  = !empty($_POST[$file_input . '_base64']);
+            if ($has_file || $has_b64) {
+                $up = handle_cms_image_upload($file_input, $meta['prefix'], $_POST[$file_input . '_base64'] ?? null);
                 if ($up['success']) {
                     $clean_settings[$meta['setting_key']] = $up['path'];
                 } else {
@@ -291,6 +278,71 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         header('Location: ' . BASE_PATH . '/admin/content.php?tab=testimonials');
         exit;
     }
+
+    // 14. Add Resource Guide
+    if ($action === 'add_resource') {
+        require_permission('content.create', 'You do not have permission to create resource guides.');
+        $title = sanitize_input($_POST['title'] ?? '');
+        $category = sanitize_input($_POST['category'] ?? 'NDIS Planning');
+        $read_time = sanitize_input($_POST['read_time'] ?? '5 min read');
+        $excerpt = sanitize_input($_POST['excerpt'] ?? '');
+        $takeaway = sanitize_input($_POST['takeaway'] ?? '');
+        if (!empty($title) && !empty($excerpt)) {
+            $stmt = $pdo->prepare("INSERT INTO resources (title, category, read_time, excerpt, takeaway) VALUES (?, ?, ?, ?, ?)");
+            $stmt->execute([$title, $category, $read_time, $excerpt, $takeaway]);
+            log_audit_event('content.resource_created', 'Content', "Created resource guide: '{$title}'", null, $title);
+            set_flash_message('success', 'Resource guide added successfully.');
+        }
+        header('Location: ' . BASE_PATH . '/admin/content.php?tab=resources');
+        exit;
+    }
+
+    // 15. Edit Resource Guide
+    if ($action === 'edit_resource') {
+        require_permission('content.edit', 'You do not have permission to edit resource guides.');
+        $id = (int)($_POST['id'] ?? 0);
+        $title = sanitize_input($_POST['title'] ?? '');
+        $category = sanitize_input($_POST['category'] ?? 'NDIS Planning');
+        $read_time = sanitize_input($_POST['read_time'] ?? '5 min read');
+        $excerpt = sanitize_input($_POST['excerpt'] ?? '');
+        $takeaway = sanitize_input($_POST['takeaway'] ?? '');
+        if ($id > 0 && !empty($title) && !empty($excerpt)) {
+            $stmt = $pdo->prepare("UPDATE resources SET title = ?, category = ?, read_time = ?, excerpt = ?, takeaway = ? WHERE id = ?");
+            $stmt->execute([$title, $category, $read_time, $excerpt, $takeaway, $id]);
+            log_audit_event('content.resource_updated', 'Content', "Updated resource guide #{$id}: '{$title}'", null, "resource#{$id}");
+            set_flash_message('success', 'Resource guide updated successfully.');
+        }
+        header('Location: ' . BASE_PATH . '/admin/content.php?tab=resources');
+        exit;
+    }
+
+    // 16. Toggle Resource Guide
+    if ($action === 'toggle_resource') {
+        require_permission('content.edit', 'You do not have permission to modify resource guides.');
+        $id = (int)($_POST['id'] ?? 0);
+        $curr = (int)($_POST['curr_status'] ?? 0);
+        $new_val = $curr === 1 ? 0 : 1;
+        $stmt = $pdo->prepare("UPDATE resources SET is_active = ? WHERE id = ?");
+        $stmt->execute([$new_val, $id]);
+        log_audit_event('content.resource_toggled', 'Content', "Updated resource #{$id} visibility to " . ($new_val ? 'Published' : 'Hidden'), null, "resource#{$id}");
+        set_flash_message('success', 'Resource guide status updated.');
+        header('Location: ' . BASE_PATH . '/admin/content.php?tab=resources');
+        exit;
+    }
+
+    // 17. Delete Resource Guide
+    if ($action === 'delete_resource') {
+        require_permission('content.delete', 'You do not have permission to delete resource guides.');
+        $id = (int)($_POST['id'] ?? 0);
+        if ($id > 0) {
+            $stmt = $pdo->prepare("DELETE FROM resources WHERE id = ?");
+            $stmt->execute([$id]);
+            log_audit_event('content.resource_deleted', 'Content', "Deleted resource guide #{$id}", null, "resource#{$id}");
+            set_flash_message('success', 'Resource guide deleted.');
+        }
+        header('Location: ' . BASE_PATH . '/admin/content.php?tab=resources');
+        exit;
+    }
 }
 
 $tab = $_GET['tab'] ?? 'branding';
@@ -301,6 +353,7 @@ $s = get_all_site_settings(true);
 $all_faqs = $pdo ? $pdo->query("SELECT * FROM faqs ORDER BY sort_order ASC, id ASC")->fetchAll() : [];
 $all_vacancies = $pdo ? $pdo->query("SELECT * FROM vacancies ORDER BY id DESC")->fetchAll() : [];
 $all_testimonials = $pdo ? $pdo->query("SELECT * FROM testimonials ORDER BY id DESC")->fetchAll() : [];
+$all_resources = $pdo ? $pdo->query("SELECT * FROM resources ORDER BY id DESC")->fetchAll() : [];
 
 $edit_faq = null;
 if ($tab === 'faqs' && !empty($_GET['edit_id'])) {
@@ -327,6 +380,16 @@ if ($tab === 'testimonials' && !empty($_GET['edit_id'])) {
     foreach ($all_testimonials as $t) {
         if ((int)$t['id'] === (int)$_GET['edit_id']) {
             $edit_testimonial = $t;
+            break;
+        }
+    }
+}
+
+$edit_resource = null;
+if ($tab === 'resources' && !empty($_GET['edit_id'])) {
+    foreach ($all_resources as $res_item) {
+        if ((int)$res_item['id'] === (int)$_GET['edit_id']) {
+            $edit_resource = $res_item;
             break;
         }
     }
@@ -420,6 +483,7 @@ if ($tab === 'testimonials' && !empty($_GET['edit_id'])) {
       <a href="?tab=faqs" class="filter-chip <?= $tab === 'faqs' ? 'is-active' : '' ?>">FAQs (<?= count($all_faqs) ?>)</a>
       <a href="?tab=vacancies" class="filter-chip <?= $tab === 'vacancies' ? 'is-active' : '' ?>">Careers &amp; Vacancies (<?= count($all_vacancies) ?>)</a>
       <a href="?tab=testimonials" class="filter-chip <?= $tab === 'testimonials' ? 'is-active' : '' ?>">Testimonials (<?= count($all_testimonials) ?>)</a>
+      <a href="?tab=resources" class="filter-chip <?= $tab === 'resources' ? 'is-active' : '' ?>">Resources &amp; Guides (<?= count($all_resources) ?>)</a>
     </div>
 
     <!-- ======================================================================
@@ -444,14 +508,19 @@ if ($tab === 'testimonials' && !empty($_GET['edit_id'])) {
             <!-- Primary Website Logo -->
             <div>
               <label class="form-label">Current Website Logo (Header &amp; Admin Portal)</label>
-              <div class="cms-light-preview-box">
-                <img src="<?= htmlspecialchars(get_site_asset_url('site_logo_url', 'assets/images/logo.svg'), ENT_QUOTES, 'UTF-8') ?>" alt="Current Logo Preview" style="max-height: 64px; max-width: 100%; object-fit: contain;">
+              <div class="cms-light-preview-box" style="flex-direction: column; gap: 0.5rem;">
+                <img id="preview_site_logo" src="<?= htmlspecialchars(get_site_asset_url('site_logo_url', 'assets/images/logo.svg'), ENT_QUOTES, 'UTF-8') ?>" alt="Current Logo Preview" style="max-height: 64px; max-width: 100%; object-fit: contain;">
+                <span id="preview_site_logo_badge" style="display: none; font-size: 0.75rem; font-weight: 700; color: var(--color-forest-700); background: var(--color-sage-100); padding: 0.15rem 0.6rem; border-radius: 99px;">New Logo Selected &mdash; Click &ldquo;Upload &amp; Apply New Logo&rdquo; below</span>
               </div>
 
               <div class="form-group">
                 <label for="upload_site_logo" class="form-label">Upload New Logo Image (SVG, PNG, JPG, WEBP)</label>
-                <input type="file" id="upload_site_logo" name="upload_site_logo" class="form-control" accept=".svg,.png,.jpg,.jpeg,.webp">
-                <span class="form-hint">Recommended size: 280x58px transparent SVG or PNG. Max 5MB.</span>
+                <div style="display: flex; gap: 0.5rem; align-items: center;">
+                  <input type="file" id="upload_site_logo" name="upload_site_logo" class="form-control" accept=".svg,.png,.jpg,.jpeg,.webp,.gif" data-preview-target="preview_site_logo" data-badge-target="preview_site_logo_badge" data-b64-target="upload_site_logo_base64">
+                  <input type="hidden" id="upload_site_logo_base64" name="upload_site_logo_base64" value="">
+                  <button type="submit" class="btn btn-primary btn-sm" style="white-space: nowrap;">Upload &amp; Apply New Logo</button>
+                </div>
+                <span class="form-hint">Select a logo file (SVG, PNG, JPG, WEBP) and click <strong>Upload &amp; Apply New Logo</strong>. Recommended size: 280x58px.</span>
               </div>
 
               <div class="form-group">
@@ -471,13 +540,18 @@ if ($tab === 'testimonials' && !empty($_GET['edit_id'])) {
             <!-- Favicon & Core Brand Names -->
             <div>
               <label class="form-label">Current Browser Favicon</label>
-              <div class="cms-light-preview-box">
-                <img src="<?= htmlspecialchars(get_site_asset_url('site_favicon_url', 'assets/images/favicon.svg'), ENT_QUOTES, 'UTF-8') ?>" alt="Favicon Preview" style="height: 48px; width: 48px; object-fit: contain;">
+              <div class="cms-light-preview-box" style="flex-direction: column; gap: 0.5rem;">
+                <img id="preview_site_favicon" src="<?= htmlspecialchars(get_site_asset_url('site_favicon_url', 'assets/images/favicon.svg'), ENT_QUOTES, 'UTF-8') ?>" alt="Favicon Preview" style="height: 48px; width: 48px; object-fit: contain;">
+                <span id="preview_site_favicon_badge" style="display: none; font-size: 0.75rem; font-weight: 700; color: var(--color-forest-700); background: var(--color-sage-100); padding: 0.15rem 0.6rem; border-radius: 99px;">New Favicon Selected</span>
               </div>
 
               <div class="form-group">
                 <label for="upload_site_favicon" class="form-label">Upload New Favicon (SVG, PNG, ICO)</label>
-                <input type="file" id="upload_site_favicon" name="upload_site_favicon" class="form-control" accept=".svg,.png,.ico">
+                <div style="display: flex; gap: 0.5rem; align-items: center;">
+                  <input type="file" id="upload_site_favicon" name="upload_site_favicon" class="form-control" accept=".svg,.png,.ico,.jpg,.webp" data-preview-target="preview_site_favicon" data-badge-target="preview_site_favicon_badge" data-b64-target="upload_site_favicon_base64">
+                  <input type="hidden" id="upload_site_favicon_base64" name="upload_site_favicon_base64" value="">
+                  <button type="submit" class="btn btn-primary btn-sm" style="white-space: nowrap;">Upload Favicon</button>
+                </div>
               </div>
 
               <div class="form-group">
@@ -636,12 +710,14 @@ if ($tab === 'testimonials' && !empty($_GET['edit_id'])) {
 
             <div>
               <label class="form-label">Current Hero Image Preview</label>
-              <div class="cms-light-preview-box">
-                <img src="<?= htmlspecialchars(get_site_asset_url('hero_image_url', 'assets/images/hero-community.jpg'), ENT_QUOTES, 'UTF-8') ?>" alt="Hero Image" style="max-height: 150px; border-radius: var(--radius-md); object-fit: cover;">
+              <div class="cms-light-preview-box" style="flex-direction: column; gap: 0.5rem;">
+                <img id="preview_hero_image" src="<?= htmlspecialchars(get_site_asset_url('hero_image_url', 'assets/images/hero-community.jpg'), ENT_QUOTES, 'UTF-8') ?>" alt="Hero Image" style="max-height: 150px; border-radius: var(--radius-md); object-fit: cover;">
+                <span id="preview_hero_image_badge" style="display: none; font-size: 0.75rem; font-weight: 700; color: var(--color-forest-700); background: var(--color-sage-100); padding: 0.15rem 0.6rem; border-radius: 99px;">New Hero Image Selected</span>
               </div>
               <div class="form-group">
                 <label class="form-label">Upload Replacement Hero Image</label>
-                <input type="file" name="upload_hero_image" class="form-control" accept=".jpg,.jpeg,.png,.webp,.svg">
+                <input type="file" name="upload_hero_image" class="form-control" accept=".jpg,.jpeg,.png,.webp,.svg" data-preview-target="preview_hero_image" data-badge-target="preview_hero_image_badge" data-b64-target="upload_hero_image_base64">
+                <input type="hidden" id="upload_hero_image_base64" name="upload_hero_image_base64" value="">
               </div>
               <div class="form-group">
                 <label class="form-label">Hero Image Path / URL</label>
@@ -1357,7 +1433,7 @@ if ($tab === 'testimonials' && !empty($_GET['edit_id'])) {
               <textarea id="t_quote" name="quote" class="form-control" rows="4" required placeholder="Enter the exact words approved by the participant or guardian..."><?= htmlspecialchars($edit_testimonial['quote'] ?? '', ENT_QUOTES, 'UTF-8') ?></textarea>
             </div>
 
-            <div style="display: flex; gap: 0.5rem;">
+            <div style=" display: flex; gap: 0.5rem;">
               <button type="submit" class="btn btn-primary" style="flex: 1;"><?= $edit_testimonial ? 'Update Reflection' : 'Save Approved Reflection' ?></button>
               <?php if ($edit_testimonial): ?>
                 <a href="?tab=testimonials" class="btn btn-secondary">Cancel</a>
@@ -1368,6 +1444,144 @@ if ($tab === 'testimonials' && !empty($_GET['edit_id'])) {
       </div>
     <?php endif; ?>
 
+    <!-- ======================================================================
+         TAB 8: RESOURCES & NDIS GUIDES
+         ====================================================================== -->
+    <?php if ($tab === 'resources'): ?>
+      <div class="grid-2 gap-8 items-start">
+        <!-- Resources List -->
+        <div>
+          <h2 style="font-size: 1.35rem; color: var(--color-navy-900); margin-bottom: 1rem;">Published NDIS Guides &amp; Resources</h2>
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>Category &amp; Read Time</th>
+                <th>Guide Title &amp; Excerpt</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <?php foreach ($all_resources as $res_row): ?>
+                <tr>
+                  <td>
+                    <span class="badge badge-sage"><?= htmlspecialchars($res_row['category'], ENT_QUOTES, 'UTF-8') ?></span>
+                    <div style="font-size: 0.78rem; color: var(--color-text-muted); margin-top: 0.25rem;"><?= htmlspecialchars($res_row['read_time'], ENT_QUOTES, 'UTF-8') ?></div>
+                  </td>
+                  <td>
+                    <strong><?= htmlspecialchars($res_row['title'], ENT_QUOTES, 'UTF-8') ?></strong>
+                    <p style="font-size: 0.82rem; color: var(--color-text-muted); margin: 0.25rem 0 0;"><?= htmlspecialchars(substr($res_row['excerpt'], 0, 110)) ?>...</p>
+                  </td>
+                  <td>
+                    <span class="status-badge <?= $res_row['is_active'] ? 'status-completed' : 'status-contacted' ?>">
+                      <?= $res_row['is_active'] ? 'Published' : 'Hidden' ?>
+                    </span>
+                  </td>
+                  <td>
+                    <div style="display: flex; gap: 0.35rem; flex-wrap: wrap;">
+                      <a href="?tab=resources&amp;edit_id=<?= (int)$res_row['id'] ?>" class="btn btn-secondary btn-sm" style="font-size: 0.75rem; padding: 0.2rem 0.5rem;">Edit</a>
+                      <form method="POST" action="" style="display:inline;">
+                        <?= get_csrf_field() ?>
+                        <input type="hidden" name="action" value="toggle_resource">
+                        <input type="hidden" name="id" value="<?= (int)$res_row['id'] ?>">
+                        <input type="hidden" name="curr_status" value="<?= (int)$res_row['is_active'] ?>">
+                        <button type="submit" class="btn btn-secondary btn-sm" style="font-size: 0.75rem; padding: 0.2rem 0.5rem;">
+                          <?= $res_row['is_active'] ? 'Hide' : 'Publish' ?>
+                        </button>
+                      </form>
+                      <form method="POST" action="" style="display:inline;" onsubmit="return confirm('Delete this resource guide permanently?');">
+                        <?= get_csrf_field() ?>
+                        <input type="hidden" name="action" value="delete_resource">
+                        <input type="hidden" name="id" value="<?= (int)$res_row['id'] ?>">
+                        <button type="submit" class="btn btn-secondary btn-sm" style="font-size: 0.75rem; padding: 0.2rem 0.5rem; color: #b91c1c;">Delete</button>
+                      </form>
+                    </div>
+                  </td>
+                </tr>
+              <?php endforeach; ?>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Add / Edit Resource Form -->
+        <div style="background: #ffffff; padding: 2rem; border-radius: var(--radius-xl); border: 1px solid var(--color-slate-200); box-shadow: var(--shadow-sm);">
+          <h3 style="font-size: 1.25rem; color: var(--color-navy-900); margin-bottom: 1.25rem;">
+            <?= $edit_resource ? 'Edit Resource Guide #' . (int)$edit_resource['id'] : 'Add New NDIS Guide / Resource' ?>
+          </h3>
+          <form method="POST" action="">
+            <?= get_csrf_field() ?>
+            <input type="hidden" name="action" value="<?= $edit_resource ? 'edit_resource' : 'add_resource' ?>">
+            <?php if ($edit_resource): ?>
+              <input type="hidden" name="id" value="<?= (int)$edit_resource['id'] ?>">
+            <?php endif; ?>
+
+            <div class="form-group">
+              <label for="res_title" class="form-label">Guide Title <span class="required-star">*</span></label>
+              <input type="text" id="res_title" name="title" class="form-control" required placeholder="e.g. How to Prepare for Your NDIS Plan Review" value="<?= htmlspecialchars($edit_resource['title'] ?? '', ENT_QUOTES, 'UTF-8') ?>">
+            </div>
+
+            <div class="grid-2">
+              <div class="form-group">
+                <label for="res_cat" class="form-label">Category</label>
+                <input type="text" id="res_cat" name="category" class="form-control" required placeholder="e.g. NDIS Planning, Budgeting" value="<?= htmlspecialchars($edit_resource['category'] ?? 'NDIS Planning', ENT_QUOTES, 'UTF-8') ?>">
+              </div>
+              <div class="form-group">
+                <label for="res_time" class="form-label">Estimated Read Time</label>
+                <input type="text" id="res_time" name="read_time" class="form-control" required placeholder="e.g. 5 min read" value="<?= htmlspecialchars($edit_resource['read_time'] ?? '5 min read', ENT_QUOTES, 'UTF-8') ?>">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="res_excerpt" class="form-label">Guide Summary / Excerpt <span class="required-star">*</span></label>
+              <textarea id="res_excerpt" name="excerpt" class="form-control" rows="3" required placeholder="Clear overview of what the guide covers..."><?= htmlspecialchars($edit_resource['excerpt'] ?? '', ENT_QUOTES, 'UTF-8') ?></textarea>
+            </div>
+
+            <div class="form-group">
+              <label for="res_takeaway" class="form-label">Practical Key Takeaway <span class="required-star">*</span></label>
+              <textarea id="res_takeaway" name="takeaway" class="form-control" rows="3" required placeholder="Actionable tip highlighted in the green takeaway box..."><?= htmlspecialchars($edit_resource['takeaway'] ?? '', ENT_QUOTES, 'UTF-8') ?></textarea>
+            </div>
+
+            <div style="display: flex; gap: 0.5rem;">
+              <button type="submit" class="btn btn-primary" style="flex: 1;"><?= $edit_resource ? 'Update Resource Guide' : 'Publish Resource Guide' ?></button>
+              <?php if ($edit_resource): ?>
+                <a href="?tab=resources" class="btn btn-secondary">Cancel</a>
+              <?php endif; ?>
+            </div>
+          </form>
+        </div>
+      </div>
+    <?php endif; ?>
+
   </main>
+
+  <script>
+    // Instant client-side image preview + Base64 fallback population for reliable logo & image uploads
+    document.querySelectorAll('input[type="file"][data-preview-target]').forEach(function(fileInput) {
+      fileInput.addEventListener('change', function() {
+        var file = fileInput.files && fileInput.files[0];
+        if (!file) return;
+        var reader = new FileReader();
+        reader.onload = function(evt) {
+          var dataUri = evt.target.result;
+          var previewId = fileInput.getAttribute('data-preview-target');
+          var badgeId = fileInput.getAttribute('data-badge-target');
+          var b64Id = fileInput.getAttribute('data-b64-target');
+          if (previewId) {
+            var img = document.getElementById(previewId);
+            if (img) img.src = dataUri;
+          }
+          if (badgeId) {
+            var badge = document.getElementById(badgeId);
+            if (badge) badge.style.display = 'inline-block';
+          }
+          if (b64Id) {
+            var hiddenInput = document.getElementById(b64Id);
+            if (hiddenInput) hiddenInput.value = dataUri;
+          }
+        };
+        reader.readAsDataURL(file);
+      });
+    });
+  </script>
 </body>
 </html>

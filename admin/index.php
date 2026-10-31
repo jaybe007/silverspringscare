@@ -119,8 +119,10 @@ if (is_admin_logged_in() && $_SERVER['REQUEST_METHOD'] === 'POST') {
 
         $upload_errors = [];
         foreach ($upload_fields as $file_input => $meta) {
-            if (!empty($_FILES[$file_input]) && ($_FILES[$file_input]['error'] ?? UPLOAD_ERR_NO_FILE) !== UPLOAD_ERR_NO_FILE) {
-                $up = handle_cms_image_upload($file_input, $meta['prefix']);
+            $has_file = !empty($_FILES[$file_input]) && ($_FILES[$file_input]['error'] ?? UPLOAD_ERR_NO_FILE) !== UPLOAD_ERR_NO_FILE;
+            $has_b64  = !empty($_POST[$file_input . '_base64']);
+            if ($has_file || $has_b64) {
+                $up = handle_cms_image_upload($file_input, $meta['prefix'], $_POST[$file_input . '_base64'] ?? null);
                 if ($up['success']) {
                     $clean_settings[$meta['setting_key']] = $up['path'];
                 } else {
@@ -145,7 +147,12 @@ if (is_admin_logged_in() && $_SERVER['REQUEST_METHOD'] === 'POST') {
         } else {
             set_flash_message('success', 'Website sections and logo updated live!');
         }
-        header('Location: ' . BASE_PATH . '/admin/index.php?view=website_cms');
+        $return_view = $_POST['return_view'] ?? 'website_cms';
+        if ($return_view === 'overview') {
+            header('Location: ' . BASE_PATH . '/admin/index.php');
+        } else {
+            header('Location: ' . BASE_PATH . '/admin/index.php?view=website_cms');
+        }
         exit;
     }
 
@@ -508,12 +515,17 @@ $email_short = explode('@', $site_email)[0] . '@';
           <div class="grid-2 gap-8">
             <div>
               <label class="form-label">Current Website Logo</label>
-              <div style="background: var(--color-slate-50); border: 1px dashed var(--color-slate-300); border-radius: var(--radius-lg); padding: 1.25rem; display: flex; align-items: center; justify-content: center; min-height: 90px; margin-bottom: 1rem;">
-                <img src="<?= htmlspecialchars(get_site_asset_url('site_logo_url', 'assets/images/logo.svg'), ENT_QUOTES, 'UTF-8') ?>" alt="Website Logo Preview" style="max-height: 60px; max-width: 100%; object-fit: contain;">
+              <div style="background: var(--color-slate-50); border: 1px dashed var(--color-slate-300); border-radius: var(--radius-lg); padding: 1.25rem; display: flex; flex-direction: column; gap: 0.45rem; align-items: center; justify-content: center; min-height: 90px; margin-bottom: 1rem;">
+                <img id="cms_view_logo_preview" src="<?= htmlspecialchars(get_site_asset_url('site_logo_url', 'assets/images/logo.svg'), ENT_QUOTES, 'UTF-8') ?>" alt="Website Logo Preview" style="max-height: 60px; max-width: 100%; object-fit: contain;">
+                <span id="cms_view_logo_badge" style="display: none; font-size: 0.72rem; font-weight: 700; color: var(--color-forest-700); background: var(--color-sage-100); padding: 0.1rem 0.55rem; border-radius: 99px;">New Logo Selected</span>
               </div>
               <div class="form-group">
                 <label class="form-label">Upload New Website Logo (SVG, PNG, JPG, WEBP)</label>
-                <input type="file" name="upload_site_logo" class="form-control" accept=".svg,.png,.jpg,.jpeg,.webp">
+                <div style="display: flex; gap: 0.5rem;">
+                  <input type="file" name="upload_site_logo" class="form-control" accept=".svg,.png,.jpg,.jpeg,.webp,.gif" data-preview-target="cms_view_logo_preview" data-badge-target="cms_view_logo_badge" data-b64-target="cms_view_logo_b64">
+                  <input type="hidden" id="cms_view_logo_b64" name="upload_site_logo_base64" value="">
+                  <button type="submit" class="btn btn-primary btn-sm" style="white-space: nowrap;">Upload Logo</button>
+                </div>
               </div>
               <div class="form-group">
                 <label class="form-label">Logo Path / URL</label>
@@ -855,9 +867,23 @@ $email_short = explode('@', $site_email)[0] . '@';
                           </span>
                         </td>
                         <td>
-                          <a href="<?= BASE_PATH ?>/admin/webmail.php?folder=inquiry&amp;q=<?= urlencode($inq['email']) ?>" class="btn btn-secondary btn-sm" style="font-size: 0.75rem; padding: 0.2rem 0.55rem;">
-                            Read &amp; Reply
-                          </a>
+                          <div style="display: inline-flex; gap: 0.4rem; align-items: center; flex-wrap: wrap;">
+                            <form method="POST" action="" style="display: inline-flex; align-items: center;">
+                              <?= get_csrf_field() ?>
+                              <input type="hidden" name="update_status" value="1">
+                              <input type="hidden" name="item_type" value="inquiries">
+                              <input type="hidden" name="item_id" value="<?= (int)$inq['id'] ?>">
+                              <select name="new_status" class="form-control" style="padding: 0.2rem 0.45rem; font-size: 0.75rem; width: auto;" onchange="this.form.submit()">
+                                <option value="new" <?= $inq['status'] === 'new' ? 'selected' : '' ?>>New</option>
+                                <option value="contacted" <?= $inq['status'] === 'contacted' ? 'selected' : '' ?>>Replied</option>
+                                <option value="in_intake" <?= $inq['status'] === 'in_intake' ? 'selected' : '' ?>>In Review</option>
+                                <option value="completed" <?= $inq['status'] === 'completed' ? 'selected' : '' ?>>Resolved</option>
+                              </select>
+                            </form>
+                            <a href="<?= BASE_PATH ?>/admin/webmail.php?folder=inquiry&amp;q=<?= urlencode($inq['email']) ?>" class="btn btn-secondary btn-sm" style="font-size: 0.75rem; padding: 0.2rem 0.55rem;">
+                              Read &amp; Reply
+                            </a>
+                          </div>
                         </td>
                       </tr>
                     <?php endforeach; ?>
@@ -1006,10 +1032,26 @@ $email_short = explode('@', $site_email)[0] . '@';
               <?php endif; ?>
             </div>
 
-            <!-- Active Website Logo Preview -->
+            <!-- Active Website Logo Preview & Direct 1-Click Upload -->
             <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 1rem; text-align: center; margin-bottom: 1rem;">
               <div style="font-size: 0.7rem; text-transform: uppercase; color: #64748b; font-weight: 700; margin-bottom: 0.5rem;">Active Website Logo</div>
-              <img src="<?= htmlspecialchars(get_site_asset_url('site_logo_url', 'assets/images/logo.svg'), ENT_QUOTES, 'UTF-8') ?>" alt="Website Logo" style="max-height: 44px; max-width: 100%; object-fit: contain; margin: 0 auto;">
+              <img id="dash_card_logo_preview" src="<?= htmlspecialchars(get_site_asset_url('site_logo_url', 'assets/images/logo.svg'), ENT_QUOTES, 'UTF-8') ?>" alt="Website Logo" style="max-height: 48px; max-width: 100%; object-fit: contain; margin: 0 auto;">
+              <div id="dash_card_logo_badge" style="display: none; margin-top: 0.4rem; font-size: 0.7rem; font-weight: 700; color: var(--color-forest-700);">New Logo Preview &mdash; Click &ldquo;Save Logo&rdquo;</div>
+
+              <?php if ($can_edit_content): ?>
+                <form method="POST" action="<?= BASE_PATH ?>/admin/index.php" enctype="multipart/form-data" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px dashed #cbd5e1; text-align: left;">
+                  <?= get_csrf_field() ?>
+                  <input type="hidden" name="action" value="save_cms_settings">
+                  <input type="hidden" name="return_view" value="overview">
+                  <input type="hidden" id="dash_card_logo_b64" name="upload_site_logo_base64" value="">
+                  <label for="dash_upload_logo" style="display: block; font-size: 0.72rem; font-weight: 700; color: #334155; margin-bottom: 0.35rem;">Quick Upload / Replace Logo:</label>
+                  <input type="file" id="dash_upload_logo" name="upload_site_logo" class="form-control" accept=".svg,.png,.jpg,.jpeg,.webp,.gif" style="font-size: 0.75rem; padding: 0.35rem; margin-bottom: 0.45rem;" data-preview-target="dash_card_logo_preview" data-badge-target="dash_card_logo_badge" data-b64-target="dash_card_logo_b64">
+                  <div style="display: flex; gap: 0.4rem;">
+                    <button type="submit" class="btn btn-primary btn-sm" style="flex: 1; font-size: 0.75rem; padding: 0.35rem 0.5rem;">Save Logo</button>
+                    <button type="submit" name="reset_logo" value="1" class="btn btn-secondary btn-sm" style="font-size: 0.75rem; padding: 0.35rem 0.5rem;" title="Restore Default Logo">Reset</button>
+                  </div>
+                </form>
+              <?php endif; ?>
             </div>
 
             <div class="exec-meta-item">
@@ -1089,5 +1131,51 @@ $email_short = explode('@', $site_email)[0] . '@';
     <?php endif; ?>
 
   </main>
+
+  <script>
+    // Instant client-side logo/image preview + Base64 fallback population
+    document.querySelectorAll('input[type="file"][data-preview-target]').forEach(function(fileInput) {
+      fileInput.addEventListener('change', function() {
+        var file = fileInput.files && fileInput.files[0];
+        if (!file) return;
+        var reader = new FileReader();
+        reader.onload = function(evt) {
+          var dataUri = evt.target.result;
+          var previewId = fileInput.getAttribute('data-preview-target');
+          var badgeId = fileInput.getAttribute('data-badge-target');
+          var b64Id = fileInput.getAttribute('data-b64-target');
+          if (previewId) {
+            var img = document.getElementById(previewId);
+            if (img) img.src = dataUri;
+          }
+          if (badgeId) {
+            var badge = document.getElementById(badgeId);
+            if (badge) badge.style.display = 'block';
+          }
+          if (b64Id) {
+            var hiddenInput = document.getElementById(b64Id);
+            if (hiddenInput) hiddenInput.value = dataUri;
+          }
+        };
+        reader.readAsDataURL(file);
+      });
+    });
+
+    // Highlight and scroll to selected intake section when clicked from sidebar
+    (function() {
+      var params = new URLSearchParams(window.location.search);
+      var sec = params.get('section');
+      if (sec) {
+        var el = document.getElementById('sec-' + sec);
+        if (el) {
+          el.style.borderColor = '#d97706';
+          el.style.boxShadow = '0 0 0 3px rgba(217, 119, 6, 0.18)';
+          setTimeout(function() {
+            el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }, 80);
+        }
+      }
+    })();
+  </script>
 </body>
 </html>

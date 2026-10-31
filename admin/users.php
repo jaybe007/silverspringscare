@@ -41,12 +41,8 @@ if (isset($_GET['action']) && $_GET['action'] === 'export_users_csv') {
 
     $rows = $pdo->query("
         SELECT u.id, u.username, u.email, u.full_name, u.phone, u.job_title, u.department,
-               u.status, u.is_super_admin, u.last_login_at, u.created_at,
-               GROUP_CONCAT(r.name, '; ') AS assigned_roles
+               u.status, u.is_super_admin, u.last_login_at, u.created_at
         FROM users u
-        LEFT JOIN user_roles ur ON ur.user_id = u.id
-        LEFT JOIN roles r ON r.id = ur.role_id
-        GROUP BY u.id
         ORDER BY u.id ASC
     ")->fetchAll();
 
@@ -57,10 +53,12 @@ if (isset($_GET['action']) && $_GET['action'] === 'export_users_csv') {
     $out = fopen('php://output', 'w');
     fputcsv($out, ['ID', 'Username', 'Email', 'Full Name', 'Phone', 'Job Title', 'Department', 'Status', 'Super Admin', 'Roles', 'Last Login', 'Created At']);
     foreach ($rows as $r) {
+        $u_roles = get_user_roles((int)$r['id']);
+        $role_names = array_map(fn($ur) => $ur['name'], $u_roles);
         fputcsv($out, [
             $r['id'], $r['username'], $r['email'], $r['full_name'], $r['phone'],
             $r['job_title'], $r['department'], $r['status'], $r['is_super_admin'] ? 'Yes' : 'No',
-            $r['assigned_roles'] ?: 'None', $r['last_login_at'] ?: 'Never', $r['created_at']
+            !empty($role_names) ? implode('; ', $role_names) : 'None', $r['last_login_at'] ?: 'Never', $r['created_at']
         ]);
     }
     fclose($out);
@@ -327,22 +325,11 @@ $deleted_users = (int)$pdo->query("SELECT COUNT(*) FROM users WHERE status = 'de
 $total_roles = (int)$pdo->query("SELECT COUNT(*) FROM roles")->fetchColumn();
 $total_permissions = (int)$pdo->query("SELECT COUNT(*) FROM permissions")->fetchColumn();
 
-// Users grouped by role
-$roles_summary = $pdo->query("
-    SELECT r.*, COUNT(ur.user_id) AS user_count,
-           (SELECT COUNT(*) FROM role_permissions rp WHERE rp.role_id = r.id) AS perm_count
-    FROM roles r
-    LEFT JOIN user_roles ur ON ur.role_id = r.id
-    GROUP BY r.id
-    ORDER BY r.is_system DESC, r.name ASC
-")->fetchAll();
+// Users grouped by role (compatible with both MySQL ONLY_FULL_GROUP_BY and SQLite)
+$roles_summary = get_all_roles();
 
 // All permissions grouped by module
-$all_permissions_raw = $pdo->query("SELECT * FROM permissions ORDER BY module ASC, id ASC")->fetchAll();
-$permissions_by_module = [];
-foreach ($all_permissions_raw as $p) {
-    $permissions_by_module[$p['module']][] = $p;
-}
+$permissions_by_module = get_permissions_grouped_by_module();
 
 // Recently created accounts & recent activity
 $recent_accounts = $pdo->query("SELECT id, username, full_name, email, status, created_at FROM users ORDER BY id DESC LIMIT 5")->fetchAll();

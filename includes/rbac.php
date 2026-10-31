@@ -1342,6 +1342,43 @@ function generate_temporary_password(int $length = 14): string {
 }
 
 /**
+ * Fetch all roles with user and permission counts (compatible with both MySQL and SQLite)
+ */
+function get_all_roles(): array {
+    $pdo = get_db_connection();
+    if (!$pdo) return [];
+    try {
+        return $pdo->query("
+            SELECT r.*,
+                   (SELECT COUNT(*) FROM user_roles ur WHERE ur.role_id = r.id) AS user_count,
+                   (SELECT COUNT(*) FROM role_permissions rp WHERE rp.role_id = r.id) AS perm_count
+            FROM roles r
+            ORDER BY r.is_system DESC, r.name ASC
+        ")->fetchAll();
+    } catch (Exception $e) {
+        return [];
+    }
+}
+
+/**
+ * Fetch all permissions grouped by module
+ */
+function get_permissions_grouped_by_module(): array {
+    $pdo = get_db_connection();
+    if (!$pdo) return [];
+    try {
+        $rows = $pdo->query("SELECT * FROM permissions ORDER BY module ASC, id ASC")->fetchAll();
+        $grouped = [];
+        foreach ($rows as $p) {
+            $grouped[$p['module']][] = $p;
+        }
+        return $grouped;
+    } catch (Exception $e) {
+        return [];
+    }
+}
+
+/**
  * Render the unified Enterprise Admin Sidebar & Top Utility Header across all staff portal pages
  */
 function render_admin_header(string $badge_label = 'Dashboard Overview'): void {
@@ -1720,6 +1757,13 @@ function render_admin_header(string $badge_label = 'Dashboard Overview'): void {
             <span class="ssc-sidebar-link-left">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
               <span>Testimonials</span>
+            </span>
+          </a>
+
+          <a href="<?= BASE_PATH ?>/admin/content.php?tab=resources" class="ssc-sidebar-link <?= ($current_script === 'content.php' && $curr_tab === 'resources') ? 'is-active' : '' ?>">
+            <span class="ssc-sidebar-link-left">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+              <span>Resources &amp; Guides</span>
             </span>
           </a>
         <?php endif; ?>

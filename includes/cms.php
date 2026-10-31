@@ -204,7 +204,7 @@ function get_site_setting(string $key, ?string $default = null): string {
 }
 
 /**
- * Resolve an asset path (such as logo or section image) into a full BASE_PATH URL
+ * Resolve an asset path (such as logo or section image) into a full BASE_PATH URL with cache-busting
  */
 function get_site_asset_url(string $setting_key, string $default_rel_path = 'assets/images/logo.svg'): string {
     $val = trim(get_site_setting($setting_key, $default_rel_path));
@@ -214,7 +214,17 @@ function get_site_asset_url(string $setting_key, string $default_rel_path = 'ass
     if (preg_match('#^https?://#i', $val) || strpos($val, 'data:image/') === 0) {
         return $val;
     }
-    return rtrim(BASE_PATH, '/') . '/' . ltrim($val, '/');
+    // Strip any existing query string for local file check
+    $clean_rel = ltrim(explode('?', $val)[0], '/');
+    $abs_file = dirname(__DIR__) . '/' . $clean_rel;
+    $url = rtrim(BASE_PATH, '/') . '/' . $clean_rel;
+    if (is_file($abs_file)) {
+        $mtime = @filemtime($abs_file);
+        if ($mtime) {
+            $url .= '?v=' . $mtime;
+        }
+    }
+    return $url;
 }
 
 /**
@@ -281,44 +291,114 @@ function save_site_settings(array $key_values, ?int $actor_id = null): bool {
 
 /**
  * Securely handle image / logo file upload from Admin CMS
+ * Supports standard multipart file upload PLUS automatic base64 data-URI fallback
+ * so logo/image updates work even if server upload folders are read-only or PHP upload_max_filesize is tight.
  */
-function handle_cms_image_upload(string $file_field, string $prefix = 'brand'): array {
-    if (empty($_FILES[$file_field]) || $_FILES[$file_field]['error'] === UPLOAD_ERR_NO_FILE) {
-        return ['success' => false, 'uploaded' => false, 'error' => 'No file selected.'];
-    }
-
-    $file = $_FILES[$file_field];
-    if ($file['error'] !== UPLOAD_ERR_OK) {
-        return ['success' => false, 'uploaded' => false, 'error' => 'File upload error code: ' . $file['error']];
-    }
-
-    if ($file['size'] > 5 * 1024 * 1024) {
-        return ['success' => false, 'uploaded' => false, 'error' => 'Image file exceeds maximum size of 5MB.'];
-    }
-
-    $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+function handle_cms_image_upload(string $file_field, string $prefix = 'brand', ?string $base64_fallback = null): array {
     $allowed_exts = ['svg', 'png', 'jpg', 'jpeg', 'webp', 'gif', 'ico'];
-    if (!in_array($ext, $allowed_exts, true)) {
-        return ['success' => false, 'uploaded' => false, 'error' => 'Unsupported image format. Allowed: SVG, PNG, JPG, WEBP, GIF, ICO.'];
-    }
+    $mime_map = [
+        'svg'  => 'image/svg+xml',
+        'png'  => 'image/png',
+        'jpg'  => 'image/jpeg',
+        'jpeg' => 'image/jpeg',
+        'webp' => 'image/webp',
+        'gif'  => 'image/gif',
+        'ico'  => 'image/x-icon',
+    ];
 
     $upload_dir = dirname(__DIR__) . '/assets/images/uploads';
     if (!is_dir($upload_dir)) {
-        mkdir($upload_dir, 0755, true);
+        @mkdir($upload_dir, 0755, true);
     }
 
-    $safe_name = preg_replace('/[^a-z0-9_-]/i', '', $prefix) . '-' . date('YmdHis') . '-' . substr(bin2hex(random_bytes(3)), 0, 6) . '.' . $ext;
-    $dest_path = $upload_dir . '/' . $safe_name;
-
-    if (!move_uploaded_file($file['tmp_name'], $dest_path)) {
-        return ['success' => false, 'uploaded' => false, 'error' => 'Failed to save uploaded image to assets/images/uploads/.'];
+    if ($base64_fallback === null && !empty($_POST[$file_field . '_base64'])) {
+        $base64_fallback = trim((string)$_POST[$file_field . '_base64']);
     }
 
-    $rel = 'assets/images/uploads/' . $safe_name;
-    return [
-        'success'  => true,
-        'uploaded' => true,
-        'path'     => $rel,
-        'rel_path' => $rel
-    ];
+    // 1. Check standard $_FILES upload first
+    if (!empty($_FILES[$file_field]) && ($_FILES[$file_field]['error'] ?? UPLOAD_ERR_NO_FILE) !== UPLOAD_ERR_NO_FILE) {
+        $file = $_FILES[$file_field];
+
+        if ($file['error'] === UPLOAD_ERR_OK) {
+            if ($file['size'] > 8 * 1024 * 1024) {
+                return ['success' => false, 'uploaded' => false, 'error' => 'Image file exceeds maximum size of 8MB.'];
+            }
+
+            $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+            if (!in_array($ext, $allowed_exts, true)) {
+                return ['success' => false, 'uploaded' => false, 'error' => 'Unsupported image format. Allowed: SVG, PNG, JPG, WEBP, GIF, ICO.'];
+            }
+
+            $safe_name = preg_replace('/[^a-z0-9_-]/i', '', $prefix) . '-' . date('YmdHis') . '-' . substr(bin2hex(random_bytes(3)), 0, 6) . '.' . $ext;
+            $dest_path = $upload_dir . '/' . $safe_name;
+
+            if (@move_uploaded_file($file['tmp_name'], $dest_path) || @copy($file['tmp_name'], $dest_path)) {
+                @chmod($dest_path, 0644);
+                $rel = 'assets/images/uploads/' . $safe_name;
+                return [
+                    'success'  => true,
+                    'uploaded' => true,
+                    'path'     => $rel,
+                    'rel_path' => $rel
+                ];
+            }
+
+            // Fallback: if upload directory is not writable on cPanel, store as data URI in DB
+            $raw_bytes = @file_get_contents($file['tmp_name']);
+            if ($raw_bytes !== false && strlen($raw_bytes) > 0) {
+                $mime = $mime_map[$ext] ?? 'image/png';
+                $data_uri = 'data:' . $mime . ';base64,' . base64_encode($raw_bytes);
+                return [
+                    'success'  => true,
+                    'uploaded' => true,
+                    'path'     => $data_uri,
+                    'rel_path' => $data_uri
+                ];
+            }
+        }
+    }
+
+    // 2. Check client-side base64 fallback if $_FILES was blocked or empty
+    if (!empty($base64_fallback) && preg_match('#^data:image/([a-z0-9+.-]+);base64,(.+)$#i', $base64_fallback, $matches)) {
+        $sub_type = strtolower($matches[1]);
+        $b64_data = $matches[2];
+        $decoded = base64_decode($b64_data, true);
+
+        if ($decoded !== false && strlen($decoded) > 0) {
+            $ext = 'png';
+            if (strpos($sub_type, 'svg') !== false) $ext = 'svg';
+            elseif (strpos($sub_type, 'jpeg') !== false || strpos($sub_type, 'jpg') !== false) $ext = 'jpg';
+            elseif (strpos($sub_type, 'webp') !== false) $ext = 'webp';
+            elseif (strpos($sub_type, 'gif') !== false) $ext = 'gif';
+            elseif (strpos($sub_type, 'icon') !== false || strpos($sub_type, 'ico') !== false) $ext = 'ico';
+
+            $safe_name = preg_replace('/[^a-z0-9_-]/i', '', $prefix) . '-' . date('YmdHis') . '-' . substr(bin2hex(random_bytes(3)), 0, 6) . '.' . $ext;
+            $dest_path = $upload_dir . '/' . $safe_name;
+
+            if (is_dir($upload_dir) && is_writable($upload_dir) && @file_put_contents($dest_path, $decoded) !== false) {
+                @chmod($dest_path, 0644);
+                $rel = 'assets/images/uploads/' . $safe_name;
+                return [
+                    'success'  => true,
+                    'uploaded' => true,
+                    'path'     => $rel,
+                    'rel_path' => $rel
+                ];
+            }
+
+            // Otherwise store the data URI directly in site_settings
+            return [
+                'success'  => true,
+                'uploaded' => true,
+                'path'     => $base64_fallback,
+                'rel_path' => $base64_fallback
+            ];
+        }
+    }
+
+    if (!empty($_FILES[$file_field]) && ($_FILES[$file_field]['error'] ?? UPLOAD_ERR_NO_FILE) !== UPLOAD_ERR_NO_FILE) {
+        return ['success' => false, 'uploaded' => false, 'error' => 'File upload error code: ' . $_FILES[$file_field]['error']];
+    }
+
+    return ['success' => false, 'uploaded' => false, 'error' => 'No file selected.'];
 }
