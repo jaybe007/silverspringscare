@@ -1333,55 +1333,478 @@ function generate_temporary_password(int $length = 14): string {
 }
 
 /**
- * Render consistent, design-preserved Admin Top Bar across all staff portal pages
+ * Render the unified Enterprise Admin Sidebar & Top Utility Header across all staff portal pages
  */
-function render_admin_header(string $badge_label = 'Staff Intake Portal'): void {
+function render_admin_header(string $badge_label = 'Dashboard Overview'): void {
     $user = get_current_admin_user();
     $uid = $user ? (int)$user['id'] : 0;
     $is_super = $uid > 0 && is_user_super_admin($uid);
     $current_script = basename($_SERVER['SCRIPT_NAME'] ?? '');
+    $curr_tab = $_GET['tab'] ?? '';
+    $curr_view = $_GET['view'] ?? '';
 
     $can_view_users = $is_super || user_has_any_permission(['users.view', 'users.manage', 'roles.view', 'permissions.view', 'audit_logs.view'], $uid);
     $can_view_content = $is_super || user_has_any_permission(['content.view', 'content.manage', 'content.create', 'content.edit'], $uid);
-    ?>
-    <header style="background: var(--color-navy-950); color: #ffffff; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; border-bottom: 1px solid rgba(255, 255, 255, 0.1);">
-      <div style="display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;">
-        <a href="<?= BASE_PATH ?>/index.php" target="_blank" title="Open Public Website" style="display: flex; align-items: center;">
-          <?php
-          $adm_logo = function_exists('get_site_asset_url') ? get_site_asset_url('site_logo_url', 'assets/images/logo.svg') : (BASE_PATH . '/assets/images/logo.svg');
-          $is_default_svg = (strpos($adm_logo, 'assets/images/logo.svg') !== false);
-          ?>
-          <img src="<?= htmlspecialchars($adm_logo, ENT_QUOTES, 'UTF-8') ?>" alt="Silver Springs Care" style="height: 38px; <?= $is_default_svg ? 'filter: brightness(0) invert(1);' : '' ?>">
-        </a>
-        <span class="badge badge-sage"><?= htmlspecialchars($badge_label, ENT_QUOTES, 'UTF-8') ?></span>
-        <?php if ($is_super): ?>
-          <span class="badge badge-forest" style="font-size: 0.68rem;">Super Administrator</span>
-        <?php endif; ?>
-      </div>
 
-      <div style="display: flex; align-items: center; gap: 0.65rem; flex-wrap: wrap;">
-        <?php if ($user): ?>
-          <a href="<?= BASE_PATH ?>/admin/profile.php" style="font-size: 0.85rem; color: var(--color-text-inverse-muted); margin-right: 0.35rem; text-decoration: none;" title="My Profile &amp; Security">
-            Logged in as <strong style="color: #ffffff;"><?= htmlspecialchars($user['full_name'] ?: $user['username'], ENT_QUOTES, 'UTF-8') ?></strong>
+    // Fetch live counts for sidebar badges
+    $pdo = get_db_connection();
+    $sb_ref_count = 0;
+    $sb_inq_count = 0;
+    $sb_jrn_count = 0;
+    $sb_app_count = 0;
+    if ($pdo) {
+        try {
+            $sb_ref_count = (int)$pdo->query("SELECT COUNT(*) FROM referrals WHERE status = 'new'")->fetchColumn();
+            $sb_inq_count = (int)$pdo->query("SELECT COUNT(*) FROM inquiries WHERE status = 'new'")->fetchColumn();
+            $sb_jrn_count = (int)$pdo->query("SELECT COUNT(*) FROM journey_leads WHERE status = 'new'")->fetchColumn();
+            $sb_app_count = (int)$pdo->query("SELECT COUNT(*) FROM applications WHERE status = 'new'")->fetchColumn();
+        } catch (Exception $e) {
+            // Ignore count errors
+        }
+    }
+
+    // Determine role label for sidebar header
+    $display_name = $user['full_name'] ?: ($user['username'] ?? 'Principal Administrator');
+    $initial = strtoupper(substr(trim($display_name), 0, 1)) ?: 'S';
+    $role_badge_text = $is_super ? 'SUPER ADMIN' : 'STAFF PORTAL';
+    if (!$is_super && $uid > 0) {
+        $uroles = get_user_roles($uid);
+        if (!empty($uroles[0]['name'])) {
+            $role_badge_text = strtoupper($uroles[0]['name']);
+        }
+    }
+
+    $site_email = function_exists('get_site_setting') ? get_site_setting('site_email', SITE_EMAIL) : SITE_EMAIL;
+    $email_prefix = explode('@', $site_email)[0] . '@';
+    ?>
+    <style>
+      body.ssc-admin-shell {
+        margin: 0;
+        padding-left: 265px;
+        background: #f4f6f9 !important;
+        min-height: 100vh;
+        transition: padding-left 0.25s ease;
+      }
+      body.ssc-admin-shell.sidebar-collapsed {
+        padding-left: 0 !important;
+      }
+      body.ssc-admin-shell.sidebar-collapsed .ssc-sidebar {
+        transform: translateX(-100%);
+      }
+      .ssc-sidebar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        width: 265px;
+        background: #0c1322;
+        color: #94a3b8;
+        z-index: 1050;
+        display: flex;
+        flex-direction: column;
+        border-right: 1px solid rgba(255, 255, 255, 0.07);
+        overflow-y: auto;
+        transition: transform 0.25s ease;
+        font-family: var(--font-sans, 'Plus Jakarta Sans', sans-serif);
+      }
+      .ssc-sidebar::-webkit-scrollbar {
+        width: 6px;
+      }
+      .ssc-sidebar::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.15);
+        border-radius: 3px;
+      }
+      .ssc-sidebar-brand {
+        display: flex;
+        align-items: center;
+        gap: 0.85rem;
+        padding: 1.35rem 1.25rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        text-decoration: none;
+      }
+      .ssc-sidebar-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: #d97706;
+        color: #ffffff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 800;
+        font-size: 1.05rem;
+        flex-shrink: 0;
+        box-shadow: 0 2px 8px rgba(217, 119, 6, 0.35);
+      }
+      .ssc-sidebar-user-title {
+        color: #ffffff;
+        font-weight: 700;
+        font-size: 0.92rem;
+        line-height: 1.25;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .ssc-sidebar-user-role {
+        color: #f59e0b;
+        font-size: 0.68rem;
+        font-weight: 800;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        margin-top: 2px;
+      }
+      .ssc-sidebar-nav {
+        padding: 1rem 0.85rem 2rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.15rem;
+      }
+      .ssc-sidebar-section-label {
+        font-size: 0.68rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: #64748b;
+        padding: 1.1rem 0.75rem 0.45rem;
+      }
+      .ssc-sidebar-link {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.75rem;
+        padding: 0.65rem 0.85rem;
+        border-radius: 8px;
+        color: #cbd5e1;
+        text-decoration: none;
+        font-size: 0.88rem;
+        font-weight: 500;
+        transition: all 0.15s ease;
+      }
+      .ssc-sidebar-link:hover {
+        background: rgba(255, 255, 255, 0.06);
+        color: #ffffff;
+      }
+      .ssc-sidebar-link.is-active {
+        background: rgba(217, 119, 6, 0.16);
+        color: #fbbf24;
+        font-weight: 700;
+        border: 1px solid rgba(245, 158, 11, 0.25);
+      }
+      .ssc-sidebar-link-left {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+      }
+      .ssc-sidebar-link svg {
+        width: 17px;
+        height: 17px;
+        flex-shrink: 0;
+        opacity: 0.85;
+      }
+      .ssc-sidebar-badge {
+        background: #d97706;
+        color: #ffffff;
+        font-size: 0.7rem;
+        font-weight: 800;
+        padding: 0.1rem 0.48rem;
+        border-radius: 999px;
+        line-height: 1.4;
+      }
+      .ssc-topbar {
+        background: #ffffff;
+        border-bottom: 1px solid #e2e8f0;
+        padding: 0.85rem 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 1rem;
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+      }
+      .ssc-topbar-left {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+      }
+      .ssc-sidebar-toggle-btn {
+        background: transparent;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        width: 36px;
+        height: 36px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        color: #334155;
+        cursor: pointer;
+        transition: background 0.15s;
+      }
+      .ssc-sidebar-toggle-btn:hover {
+        background: #f1f5f9;
+      }
+      .ssc-breadcrumb-text {
+        font-size: 0.92rem;
+        color: #64748b;
+        font-weight: 500;
+      }
+      .ssc-breadcrumb-text strong {
+        color: #1e293b;
+        font-weight: 600;
+      }
+      .ssc-topbar-right {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        flex-wrap: wrap;
+      }
+      .ssc-topbar-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.45rem;
+        padding: 0.45rem 0.9rem;
+        border-radius: 8px;
+        border: 1px solid #cbd5e1;
+        background: #ffffff;
+        color: #1e293b;
+        font-size: 0.82rem;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.15s ease;
+      }
+      .ssc-topbar-btn:hover {
+        background: #f8fafc;
+        border-color: #94a3b8;
+      }
+      @media (max-width: 1024px) {
+        body.ssc-admin-shell {
+          padding-left: 0 !important;
+        }
+        .ssc-sidebar {
+          transform: translateX(-100%);
+        }
+        body.ssc-admin-shell.sidebar-mobile-open .ssc-sidebar {
+          transform: translateX(0);
+        }
+      }
+    </style>
+
+    <!-- Left Dark Corporate Sidebar -->
+    <aside class="ssc-sidebar" aria-label="Administrative Sidebar Navigation">
+      <a href="<?= BASE_PATH ?>/admin/profile.php" class="ssc-sidebar-brand" title="Manage My Profile &amp; Security">
+        <div class="ssc-sidebar-avatar"><?= htmlspecialchars($initial, ENT_QUOTES, 'UTF-8') ?></div>
+        <div style="overflow: hidden;">
+          <div class="ssc-sidebar-user-title"><?= htmlspecialchars($display_name, ENT_QUOTES, 'UTF-8') ?></div>
+          <div class="ssc-sidebar-user-role"><?= htmlspecialchars($role_badge_text, ENT_QUOTES, 'UTF-8') ?></div>
+        </div>
+      </a>
+
+      <nav class="ssc-sidebar-nav">
+        <!-- CORE OPERATIONS -->
+        <div class="ssc-sidebar-section-label">Core Operations</div>
+        <a href="<?= BASE_PATH ?>/admin/index.php" class="ssc-sidebar-link <?= ($current_script === 'index.php' && ($curr_view === '' || $curr_view === 'overview')) ? 'is-active' : '' ?>">
+          <span class="ssc-sidebar-link-left">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>
+            <span>Dashboard</span>
+          </span>
+        </a>
+
+        <!-- INTAKE & ENQUIRIES -->
+        <div class="ssc-sidebar-section-label">Intake &amp; Enquiries</div>
+        <a href="<?= BASE_PATH ?>/admin/index.php?section=referrals#sec-referrals" class="ssc-sidebar-link <?= ($_GET['section'] ?? '') === 'referrals' ? 'is-active' : '' ?>">
+          <span class="ssc-sidebar-link-left">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+            <span>Professional Referrals</span>
+          </span>
+          <?php if ($sb_ref_count > 0): ?>
+            <span class="ssc-sidebar-badge"><?= $sb_ref_count ?></span>
+          <?php endif; ?>
+        </a>
+
+        <a href="<?= BASE_PATH ?>/admin/index.php?section=inquiries#sec-inquiries" class="ssc-sidebar-link <?= ($_GET['section'] ?? '') === 'inquiries' ? 'is-active' : '' ?>">
+          <span class="ssc-sidebar-link-left">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            <span>Contact Messages</span>
+          </span>
+          <?php if ($sb_inq_count > 0): ?>
+            <span class="ssc-sidebar-badge"><?= $sb_inq_count ?></span>
+          <?php endif; ?>
+        </a>
+
+        <a href="<?= BASE_PATH ?>/admin/index.php?section=journey#sec-journey" class="ssc-sidebar-link <?= ($_GET['section'] ?? '') === 'journey' ? 'is-active' : '' ?>">
+          <span class="ssc-sidebar-link-left">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>
+            <span>Support Journey Leads</span>
+          </span>
+          <?php if ($sb_jrn_count > 0): ?>
+            <span class="ssc-sidebar-badge"><?= $sb_jrn_count ?></span>
+          <?php endif; ?>
+        </a>
+
+        <a href="<?= BASE_PATH ?>/admin/index.php?section=applications#sec-applications" class="ssc-sidebar-link <?= ($_GET['section'] ?? '') === 'applications' ? 'is-active' : '' ?>">
+          <span class="ssc-sidebar-link-left">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+            <span>Job Applications</span>
+          </span>
+          <?php if ($sb_app_count > 0): ?>
+            <span class="ssc-sidebar-badge"><?= $sb_app_count ?></span>
+          <?php endif; ?>
+        </a>
+
+        <a href="mailto:<?= htmlspecialchars($site_email, ENT_QUOTES, 'UTF-8') ?>" class="ssc-sidebar-link">
+          <span class="ssc-sidebar-link-left">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            <span>Corporate Webmail</span>
+          </span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 13px; height: 13px; opacity: 0.5;"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+        </a>
+
+        <?php if ($can_view_content): ?>
+          <!-- WEBSITE CONTENT & CMS -->
+          <div class="ssc-sidebar-section-label">Website &amp; Sections CMS</div>
+          <a href="<?= BASE_PATH ?>/admin/content.php?tab=branding" class="ssc-sidebar-link <?= ($current_script === 'content.php' && ($curr_tab === 'branding' || $curr_tab === '')) ? 'is-active' : '' ?>">
+            <span class="ssc-sidebar-link-left">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+              <span>Logo &amp; Brand Identity</span>
+            </span>
+          </a>
+
+          <a href="<?= BASE_PATH ?>/admin/content.php?tab=homepage" class="ssc-sidebar-link <?= ($current_script === 'content.php' && $curr_tab === 'homepage') ? 'is-active' : '' ?>">
+            <span class="ssc-sidebar-link-left">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+              <span>Homepage Sections</span>
+            </span>
+          </a>
+
+          <a href="<?= BASE_PATH ?>/admin/content.php?tab=services_cms" class="ssc-sidebar-link <?= ($current_script === 'content.php' && $curr_tab === 'services_cms') ? 'is-active' : '' ?>">
+            <span class="ssc-sidebar-link-left">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+              <span>Support Services (6)</span>
+            </span>
+          </a>
+
+          <a href="<?= BASE_PATH ?>/admin/content.php?tab=about" class="ssc-sidebar-link <?= ($current_script === 'content.php' && $curr_tab === 'about') ? 'is-active' : '' ?>">
+            <span class="ssc-sidebar-link-left">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+              <span>About Us Page</span>
+            </span>
+          </a>
+
+          <a href="<?= BASE_PATH ?>/admin/content.php?tab=faqs" class="ssc-sidebar-link <?= ($current_script === 'content.php' && $curr_tab === 'faqs') ? 'is-active' : '' ?>">
+            <span class="ssc-sidebar-link-left">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+              <span>FAQs &amp; Answers</span>
+            </span>
+          </a>
+
+          <a href="<?= BASE_PATH ?>/admin/content.php?tab=vacancies" class="ssc-sidebar-link <?= ($current_script === 'content.php' && $curr_tab === 'vacancies') ? 'is-active' : '' ?>">
+            <span class="ssc-sidebar-link-left">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+              <span>Careers &amp; Vacancies</span>
+            </span>
+          </a>
+
+          <a href="<?= BASE_PATH ?>/admin/content.php?tab=testimonials" class="ssc-sidebar-link <?= ($current_script === 'content.php' && $curr_tab === 'testimonials') ? 'is-active' : '' ?>">
+            <span class="ssc-sidebar-link-left">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+              <span>Testimonials</span>
+            </span>
           </a>
         <?php endif; ?>
 
-        <a href="<?= BASE_PATH ?>/admin/index.php" class="btn <?= $current_script === 'index.php' ? 'btn-primary' : 'btn-outline-white' ?> btn-sm">Intake Dashboard</a>
-
-        <?php if ($can_view_content): ?>
-          <a href="<?= BASE_PATH ?>/admin/content.php" class="btn <?= $current_script === 'content.php' ? 'btn-primary' : 'btn-outline-white' ?> btn-sm">Content Manager</a>
-        <?php endif; ?>
-
-        <a href="<?= BASE_PATH ?>/admin/modules.php" class="btn <?= $current_script === 'modules.php' ? 'btn-primary' : 'btn-outline-white' ?> btn-sm">Platform Modules</a>
-
         <?php if ($can_view_users): ?>
-          <a href="<?= BASE_PATH ?>/admin/users.php" class="btn <?= in_array($current_script, ['users.php', 'roles.php', 'permissions.php', 'audit-logs.php'], true) ? 'btn-primary' : 'btn-outline-white' ?> btn-sm">User &amp; Role Management</a>
+          <!-- ACCESS CONTROL & RBAC -->
+          <div class="ssc-sidebar-section-label">Users, Roles &amp; RBAC</div>
+          <a href="<?= BASE_PATH ?>/admin/users.php?tab=users" class="ssc-sidebar-link <?= ($current_script === 'users.php' && ($curr_tab === 'users' || $curr_tab === '' || $curr_tab === 'user_detail')) ? 'is-active' : '' ?>">
+            <span class="ssc-sidebar-link-left">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+              <span>User Management</span>
+            </span>
+          </a>
+
+          <a href="<?= BASE_PATH ?>/admin/users.php?tab=create_user" class="ssc-sidebar-link <?= (($current_script === 'users.php' && $curr_tab === 'create_user') || ($current_script === 'index.php' && $curr_view === 'create_user')) ? 'is-active' : '' ?>">
+            <span class="ssc-sidebar-link-left">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg>
+              <span>Create New User</span>
+            </span>
+          </a>
+
+          <a href="<?= BASE_PATH ?>/admin/users.php?tab=roles" class="ssc-sidebar-link <?= ($current_script === 'users.php' && $curr_tab === 'roles') ? 'is-active' : '' ?>">
+            <span class="ssc-sidebar-link-left">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+              <span>Roles &amp; Matrix</span>
+            </span>
+          </a>
+
+          <a href="<?= BASE_PATH ?>/admin/users.php?tab=permissions" class="ssc-sidebar-link <?= ($current_script === 'users.php' && $curr_tab === 'permissions') ? 'is-active' : '' ?>">
+            <span class="ssc-sidebar-link-left">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+              <span>Granular Permissions</span>
+            </span>
+          </a>
+
+          <a href="<?= BASE_PATH ?>/admin/modules.php" class="ssc-sidebar-link <?= $current_script === 'modules.php' ? 'is-active' : '' ?>">
+            <span class="ssc-sidebar-link-left">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+              <span>Platform Modules</span>
+            </span>
+          </a>
+
+          <a href="<?= BASE_PATH ?>/admin/users.php?tab=audit_logs" class="ssc-sidebar-link <?= ($current_script === 'users.php' && $curr_tab === 'audit_logs') ? 'is-active' : '' ?>">
+            <span class="ssc-sidebar-link-left">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+              <span>Audit Logs</span>
+            </span>
+          </a>
         <?php endif; ?>
 
-        <a href="<?= BASE_PATH ?>/index.php" class="btn btn-outline-white btn-sm" target="_blank">View Website</a>
-        <a href="<?= BASE_PATH ?>/admin/logout.php" class="btn btn-secondary btn-sm" style="color: #ffffff; border-color: rgba(255,255,255,0.3);">Log Out</a>
+        <div class="ssc-sidebar-section-label">Account &amp; Security</div>
+        <a href="<?= BASE_PATH ?>/admin/profile.php" class="ssc-sidebar-link <?= $current_script === 'profile.php' ? 'is-active' : '' ?>">
+          <span class="ssc-sidebar-link-left">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            <span>My Profile &amp; Password</span>
+          </span>
+        </a>
+      </nav>
+    </aside>
+
+    <!-- Top White Utility Bar -->
+    <header class="ssc-topbar">
+      <div class="ssc-topbar-left">
+        <button type="button" class="ssc-sidebar-toggle-btn" onclick="document.body.classList.toggle('sidebar-collapsed'); document.body.classList.toggle('sidebar-mobile-open');" aria-label="Toggle Sidebar Menu">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </button>
+        <div class="ssc-breadcrumb-text">
+          CMS Admin &rarr; <strong><?= htmlspecialchars($badge_label, ENT_QUOTES, 'UTF-8') ?></strong>
+        </div>
+      </div>
+
+      <div class="ssc-topbar-right">
+        <a href="mailto:<?= htmlspecialchars($site_email, ENT_QUOTES, 'UTF-8') ?>" class="ssc-topbar-btn">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          Webmail (<?= htmlspecialchars($email_prefix, ENT_QUOTES, 'UTF-8') ?>)
+        </a>
+
+        <a href="<?= BASE_PATH ?>/index.php" target="_blank" class="ssc-topbar-btn">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          View Public Website
+        </a>
+
+        <?php if ($user): ?>
+          <span style="font-size: 0.85rem; color: #64748b; padding: 0 0.25rem;">
+            Logged in as: <strong style="color: #0f172a;"><?= htmlspecialchars($user['username'], ENT_QUOTES, 'UTF-8') ?></strong>
+          </span>
+        <?php endif; ?>
+
+        <a href="<?= BASE_PATH ?>/admin/logout.php" class="ssc-topbar-btn">
+          Sign Out
+        </a>
       </div>
     </header>
+    <script>
+      document.body.classList.add('ssc-admin-shell');
+    </script>
     <?php
 }
 
