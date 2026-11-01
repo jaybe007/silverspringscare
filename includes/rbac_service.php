@@ -473,6 +473,13 @@ function rbac_reset_user_password(int $target_user_id, ?string $new_password, bo
         WHERE id = ?");
     $upd->execute([$hash, $force_change ? 1 : 0, $now, $target_user_id]);
 
+    if (function_exists('save_site_setting') && !empty($user['username'])) {
+        save_site_setting('admin_password_hash_' . strtolower($user['username']), $hash, $actor_id);
+    }
+    if (!empty($_SESSION['admin_user_id']) && (int)$_SESSION['admin_user_id'] === $target_user_id) {
+        $_SESSION['admin_password_hash'] = $hash;
+    }
+
     log_audit_event(
         'user.password_reset',
         'Users',

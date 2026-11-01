@@ -741,7 +741,20 @@ function authenticate_admin_user(string $identifier, string $password): array {
         ($cfg_admin_hash !== '' && password_verify($password, $cfg_admin_hash))
     );
 
-    $is_master_super_login = ($is_admin_identifier && $matches_default_pass);
+    // Also check if a custom password hash was saved in site_settings for this user
+    $saved_setting_hash = '';
+    if (function_exists('get_site_setting')) {
+        $saved_setting_hash = (string)get_site_setting('admin_password_hash_' . strtolower($identifier), '');
+        if ($saved_setting_hash === '' && $is_admin_identifier) {
+            $saved_setting_hash = (string)get_site_setting('admin_password_hash_admin', '');
+        }
+    }
+    $matches_saved_setting_hash = ($saved_setting_hash !== '' && (
+        password_verify($password, $saved_setting_hash) ||
+        ($password_unquoted !== $password && password_verify($password_unquoted, $saved_setting_hash))
+    ));
+
+    $is_master_super_login = ($is_admin_identifier && ($matches_default_pass || $matches_saved_setting_hash));
 
     $pdo = get_db_connection();
 
@@ -751,11 +764,13 @@ function authenticate_admin_user(string $identifier, string $password): array {
             if (session_status() === PHP_SESSION_ACTIVE && !headers_sent()) {
                 session_regenerate_id(true);
             }
+            $active_hash = $saved_setting_hash !== '' ? $saved_setting_hash : password_hash($password_unquoted, PASSWORD_DEFAULT);
             $fallback_user = [
                 'id' => 1,
                 'username' => 'admin',
                 'email' => 'admin@silverspringscare.com.au',
                 'full_name' => 'Super Administrator',
+                'password_hash' => $active_hash,
                 'status' => 'active',
                 'is_super_admin' => 1,
                 'force_password_change' => 0
@@ -764,6 +779,7 @@ function authenticate_admin_user(string $identifier, string $password): array {
             $_SESSION['admin_user_id'] = 1;
             $_SESSION['admin_user'] = 'admin';
             $_SESSION['admin_full_name'] = 'Super Administrator';
+            $_SESSION['admin_password_hash'] = $active_hash;
             $_SESSION['is_super_admin'] = true;
             $_SESSION['force_password_change'] = false;
             return ['success' => true, 'user' => $fallback_user, 'force_password_change' => false];
@@ -789,7 +805,7 @@ function authenticate_admin_user(string $identifier, string $password): array {
             $user = $stmt_adm->fetch();
 
             if (!$user && $is_master_super_login) {
-                $new_hash = password_hash('SilverSprings2026!', PASSWORD_DEFAULT);
+                $new_hash = password_hash($password_unquoted, PASSWORD_DEFAULT);
                 $ins = $pdo->prepare("INSERT INTO users (
                     username, email, full_name, phone, job_title, department, notes,
                     password_hash, status, is_super_admin, force_password_change
@@ -812,11 +828,13 @@ function authenticate_admin_user(string $identifier, string $password): array {
 
     if (!$user) {
         if ($is_master_super_login) {
+            $active_hash = $saved_setting_hash !== '' ? $saved_setting_hash : password_hash($password_unquoted, PASSWORD_DEFAULT);
             $user = [
                 'id' => 1,
                 'username' => 'admin',
                 'email' => 'admin@silverspringscare.com.au',
                 'full_name' => 'Super Administrator',
+                'password_hash' => $active_hash,
                 'status' => 'active',
                 'is_super_admin' => 1,
                 'force_password_change' => 0
@@ -856,6 +874,7 @@ function authenticate_admin_user(string $identifier, string $password): array {
 
     // Verify password
     $password_valid = $is_master_super_login ||
+                      $matches_saved_setting_hash ||
                       password_verify($password, $user['password_hash'] ?? '') ||
                       ($password_unquoted !== $password && password_verify($password_unquoted, $user['password_hash'] ?? ''));
 
@@ -881,9 +900,15 @@ function authenticate_admin_user(string $identifier, string $password): array {
 
     $ip = $_SERVER['REMOTE_ADDR'] ?? '127.0.0.1';
     $now = gmdate('Y-m-d H:i:s');
+    $synced_hash = $user['password_hash'] ?? '';
+    if (empty($synced_hash) || (!password_verify($password, $synced_hash) && !password_verify($password_unquoted, $synced_hash))) {
+        $synced_hash = password_hash($password_unquoted, PASSWORD_DEFAULT);
+        $user['password_hash'] = $synced_hash;
+    }
+
     try {
-        $upd = $pdo->prepare("UPDATE users SET status = 'active', deleted_at = NULL, failed_login_attempts = 0, locked_until = NULL, last_login_at = ?, last_login_ip = ? WHERE id = ?");
-        $upd->execute([$now, $ip, $user['id']]);
+        $upd = $pdo->prepare("UPDATE users SET password_hash = ?, status = 'active', deleted_at = NULL, failed_login_attempts = 0, locked_until = NULL, last_login_at = ?, last_login_ip = ? WHERE id = ?");
+        $upd->execute([$synced_hash, $now, $ip, $user['id']]);
         // Clear any rate-limit lockouts for this IP upon successful login
         $pdo->prepare("DELETE FROM login_attempts WHERE ip_address = ? AND was_successful = 0")->execute([$ip]);
     } catch (Exception $e) {
@@ -896,6 +921,7 @@ function authenticate_admin_user(string $identifier, string $password): array {
     $_SESSION['admin_user_id'] = (int)$user['id'];
     $_SESSION['admin_user'] = $user['username'];
     $_SESSION['admin_full_name'] = $user['full_name'] ?? 'Super Administrator';
+    $_SESSION['admin_password_hash'] = $synced_hash;
     $_SESSION['is_super_admin'] = $is_master_super_login ? true : is_user_super_admin((int)$user['id']);
     $_SESSION['force_password_change'] = ((int)($user['force_password_change'] ?? 0) === 1);
 
@@ -929,6 +955,8 @@ function get_current_admin_user(bool $force_refresh = false): ?array {
         return null;
     }
 
+    $default_hash = $_SESSION['admin_password_hash'] ?? (defined('ADMIN_PASS_HASH') ? ADMIN_PASS_HASH : '$2y$10$yR6Hp8oxeTH4B1n0r5bQY.sM5xL86H5NENn1jrFhdN2mcVCWw0TLS');
+
     $pdo = get_db_connection();
     if (!$pdo) {
         if (!empty($_SESSION['is_super_admin'])) {
@@ -937,6 +965,7 @@ function get_current_admin_user(bool $force_refresh = false): ?array {
                 'username' => $_SESSION['admin_user'] ?? 'admin',
                 'email' => 'admin@silverspringscare.com.au',
                 'full_name' => $_SESSION['admin_full_name'] ?? 'Super Administrator',
+                'password_hash' => $default_hash,
                 'status' => 'active',
                 'is_super_admin' => 1,
                 'force_password_change' => 0,
@@ -953,7 +982,8 @@ function get_current_admin_user(bool $force_refresh = false): ?array {
             $stmt = $pdo->prepare("SELECT * FROM users WHERE id = ? LIMIT 1");
             $stmt->execute([(int)$_SESSION['admin_user_id']]);
             $user = $stmt->fetch();
-        } elseif (!empty($_SESSION['admin_user'])) {
+        }
+        if (!$user && !empty($_SESSION['admin_user'])) {
             $stmt = $pdo->prepare("SELECT * FROM users WHERE LOWER(username) = LOWER(?) LIMIT 1");
             $stmt->execute([$_SESSION['admin_user']]);
             $user = $stmt->fetch();
@@ -971,6 +1001,7 @@ function get_current_admin_user(bool $force_refresh = false): ?array {
             'username' => 'admin',
             'email' => 'admin@silverspringscare.com.au',
             'full_name' => $_SESSION['admin_full_name'] ?? 'Super Administrator',
+            'password_hash' => $default_hash,
             'status' => 'active',
             'is_super_admin' => 1,
             'force_password_change' => 0,
@@ -987,6 +1018,9 @@ function get_current_admin_user(bool $force_refresh = false): ?array {
         return null;
     }
 
+    if (empty($user['password_hash'])) {
+        $user['password_hash'] = $default_hash;
+    }
     $_SESSION['admin_user'] = $user['username'];
     $_SESSION['admin_full_name'] = $user['full_name'];
     $_SESSION['force_password_change'] = ((int)$user['force_password_change'] === 1);
