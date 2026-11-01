@@ -4,6 +4,11 @@
  * Validates all 15 mandatory enterprise RBAC test scenarios + HTTP/API enforcement.
  */
 
+if (PHP_SAPI !== 'cli') {
+    http_response_code(403);
+    exit('403 Forbidden: CLI execution only.');
+}
+
 require_once __DIR__ . '/../includes/config.php';
 require_once __DIR__ . '/../includes/db.php';
 require_once __DIR__ . '/../includes/functions.php';

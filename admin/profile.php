@@ -37,7 +37,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             ($db_hash !== '' && (password_verify($curr_pass, $db_hash) || password_verify($curr_pass_trimmed, $db_hash))) ||
             ($sess_hash !== '' && (password_verify($curr_pass, $sess_hash) || password_verify($curr_pass_trimmed, $sess_hash))) ||
             ($setting_hash !== '' && (password_verify($curr_pass, $setting_hash) || password_verify($curr_pass_trimmed, $setting_hash))) ||
-            ($is_admin_acct && (
+            ($is_admin_acct && $setting_hash === '' && (
                 $curr_pass === 'SilverSprings2026!' ||
                 $curr_pass_trimmed === 'SilverSprings2026!' ||
                 (defined('ADMIN_PASS') && ($curr_pass === ADMIN_PASS || $curr_pass_trimmed === ADMIN_PASS)) ||

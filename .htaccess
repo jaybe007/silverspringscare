@@ -21,7 +21,7 @@ AddDefaultCharset UTF-8
 </IfModule>
 
 # Protect Sensitive Configuration, Database & System Files
-<FilesMatch "(\.(env|sqlite|db|git|htaccess|htpasswd|ini|log|sh|lock|sql|bak)|installed\.lock)$">
+<FilesMatch "(\.(env|sqlite|sqlite-wal|sqlite-shm|db|git|htaccess|htpasswd|ini|log|sh|lock|sql|bak|yml|md)|installed\.lock|composer\.json)$">
     <IfModule mod_authz_core.c>
         Require all denied
     </IfModule>
@@ -30,6 +30,12 @@ AddDefaultCharset UTF-8
         Deny from all
     </IfModule>
 </FilesMatch>
+
+# Block Direct Web Access to Internal Directories (data, includes, tests, .git)
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteRule ^(data|includes|tests|\.git)(/|$) - [F,L]
+</IfModule>
 
 # Compression (Gzip / Deflate for fast Core Web Vitals)
 <IfModule mod_deflate.c>

@@ -4,6 +4,11 @@
  * Tests HTTP responses, database integrity, form handling, and CSRF protection
  */
 
+if (PHP_SAPI !== 'cli') {
+    http_response_code(403);
+    exit('403 Forbidden: CLI execution only.');
+}
+
 $base_url = 'http://localhost/silverspringscare.com.au';
 $results = [];
 

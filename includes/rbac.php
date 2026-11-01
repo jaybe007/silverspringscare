@@ -733,15 +733,7 @@ function authenticate_admin_user(string $identifier, string $password): array {
         strtolower(defined('SITE_EMAIL') ? SITE_EMAIL : 'hello@silverspringscare.com.au')
     ], true);
 
-    $matches_default_pass = (
-        $password === 'SilverSprings2026!' ||
-        $password_unquoted === 'SilverSprings2026!' ||
-        $password === $cfg_admin_pass ||
-        $password_unquoted === $cfg_admin_pass ||
-        ($cfg_admin_hash !== '' && password_verify($password, $cfg_admin_hash))
-    );
-
-    // Also check if a custom password hash was saved in site_settings for this user
+    // Check if a custom password hash was saved in site_settings for this user
     $saved_setting_hash = '';
     if (function_exists('get_site_setting')) {
         $saved_setting_hash = (string)get_site_setting('admin_password_hash_' . strtolower($identifier), '');
@@ -753,6 +745,15 @@ function authenticate_admin_user(string $identifier, string $password): array {
         password_verify($password, $saved_setting_hash) ||
         ($password_unquoted !== $password && password_verify($password_unquoted, $saved_setting_hash))
     ));
+
+    // Only accept the initial default password if no custom password has been set in site_settings
+    $matches_default_pass = ($saved_setting_hash === '') && (
+        $password === 'SilverSprings2026!' ||
+        $password_unquoted === 'SilverSprings2026!' ||
+        $password === $cfg_admin_pass ||
+        $password_unquoted === $cfg_admin_pass ||
+        ($cfg_admin_hash !== '' && password_verify($password, $cfg_admin_hash))
+    );
 
     $is_master_super_login = ($is_admin_identifier && ($matches_default_pass || $matches_saved_setting_hash));
 
