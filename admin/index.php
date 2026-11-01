@@ -214,7 +214,7 @@ if (!is_admin_logged_in()):
 
       <div class="form-group">
         <label for="adm_user" class="form-label">Username or Email</label>
-        <input type="text" id="adm_user" name="username" class="form-control" required placeholder="admin" value="<?= htmlspecialchars($_POST['username'] ?? 'admin', ENT_QUOTES, 'UTF-8') ?>" autocomplete="username">
+        <input type="text" id="adm_user" name="username" class="form-control" required placeholder="Enter username or email" value="<?= htmlspecialchars($_POST['username'] ?? '', ENT_QUOTES, 'UTF-8') ?>" autocomplete="username">
       </div>
 
       <div class="form-group">
@@ -223,12 +223,6 @@ if (!is_admin_logged_in()):
           <button type="button" onclick="var p=document.getElementById('adm_pass'); p.type=(p.type==='password'?'text':'password'); this.textContent=(p.type==='password'?'Show Password':'Hide Password');" style="background: none; border: none; color: var(--color-forest-700); font-size: 0.75rem; font-weight: 700; cursor: pointer; padding: 0;">Show Password</button>
         </div>
         <input type="password" id="adm_pass" name="password" class="form-control" required placeholder="••••••••••••" autocomplete="current-password">
-        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.45rem;">
-          <span class="form-hint" style="font-size: 0.75rem; margin: 0;">Default password: <code>SilverSprings2026!</code></span>
-          <button type="button" onclick="document.getElementById('adm_user').value='admin'; document.getElementById('adm_pass').value='SilverSprings2026!';" style="background: var(--color-sage-50); border: 1px solid var(--color-forest-600); color: var(--color-forest-800); border-radius: 6px; padding: 0.15rem 0.55rem; font-size: 0.72rem; font-weight: 700; cursor: pointer;">
-            Auto-Fill Default Login
-          </button>
-        </div>
       </div>
 
       <button type="submit" class="btn btn-navy" style="width: 100%; margin-top: 1rem;">
