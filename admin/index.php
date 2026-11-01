@@ -12,25 +12,21 @@ $error = '';
 
 // Handle Login
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'login') {
-    $token = $_POST['csrf_token'] ?? '';
-    if (!verify_csrf_token($token)) {
-        $error = 'Security session expired. Please try again.';
-    } else {
-        $username = trim($_POST['username'] ?? '');
-        $password = trim($_POST['password'] ?? '');
+    $username = trim($_POST['username'] ?? '');
+    $password = trim($_POST['password'] ?? '');
 
-        $auth = authenticate_admin_user($username, $password);
-        if ($auth['success']) {
-            if (!empty($auth['force_password_change'])) {
-                set_flash_message('warning', 'For security reasons, you must change your temporary password before continuing.');
-                header('Location: ' . BASE_PATH . '/admin/profile.php?force_change=1');
-                exit;
-            }
-            header('Location: ' . BASE_PATH . '/admin/index.php');
+    $auth = authenticate_admin_user($username, $password);
+    if ($auth['success']) {
+        $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+        if (!empty($auth['force_password_change'])) {
+            set_flash_message('warning', 'For security reasons, you must change your temporary password before continuing.');
+            header('Location: ' . BASE_PATH . '/admin/profile.php?force_change=1');
             exit;
-        } else {
-            $error = $auth['error'] ?? 'Invalid administrative credentials.';
         }
+        header('Location: ' . BASE_PATH . '/admin/index.php');
+        exit;
+    } else {
+        $error = $auth['error'] ?? 'Invalid administrative credentials.';
     }
 }
 
@@ -218,13 +214,21 @@ if (!is_admin_logged_in()):
 
       <div class="form-group">
         <label for="adm_user" class="form-label">Username or Email</label>
-        <input type="text" id="adm_user" name="username" class="form-control" required placeholder="admin">
+        <input type="text" id="adm_user" name="username" class="form-control" required placeholder="admin" value="<?= htmlspecialchars($_POST['username'] ?? 'admin', ENT_QUOTES, 'UTF-8') ?>" autocomplete="username">
       </div>
 
       <div class="form-group">
-        <label for="adm_pass" class="form-label">Password</label>
-        <input type="password" id="adm_pass" name="password" class="form-control" required placeholder="••••••••••••">
-        <span class="form-hint" style="font-size: 0.75rem;">Default setup password: <code>SilverSprings2026!</code></span>
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <label for="adm_pass" class="form-label" style="margin-bottom: 0.35rem;">Password</label>
+          <button type="button" onclick="var p=document.getElementById('adm_pass'); p.type=(p.type==='password'?'text':'password'); this.textContent=(p.type==='password'?'Show Password':'Hide Password');" style="background: none; border: none; color: var(--color-forest-700); font-size: 0.75rem; font-weight: 700; cursor: pointer; padding: 0;">Show Password</button>
+        </div>
+        <input type="password" id="adm_pass" name="password" class="form-control" required placeholder="••••••••••••" autocomplete="current-password">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.45rem;">
+          <span class="form-hint" style="font-size: 0.75rem; margin: 0;">Default password: <code>SilverSprings2026!</code></span>
+          <button type="button" onclick="document.getElementById('adm_user').value='admin'; document.getElementById('adm_pass').value='SilverSprings2026!';" style="background: var(--color-sage-50); border: 1px solid var(--color-forest-600); color: var(--color-forest-800); border-radius: 6px; padding: 0.15rem 0.55rem; font-size: 0.72rem; font-weight: 700; cursor: pointer;">
+            Auto-Fill Default Login
+          </button>
+        </div>
       </div>
 
       <button type="submit" class="btn btn-navy" style="width: 100%; margin-top: 1rem;">

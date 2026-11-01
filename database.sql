@@ -279,4 +279,8 @@ CREATE TABLE IF NOT EXISTS `login_attempts` (
   INDEX `idx_login_ip_time` (`ip_address`, `attempted_at`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+-- Seed default Super Administrator account (Username: admin / Password: SilverSprings2026!)
+INSERT IGNORE INTO `users` (`username`, `email`, `full_name`, `job_title`, `department`, `password_hash`, `status`, `is_super_admin`, `force_password_change`)
+VALUES ('admin', 'admin@silverspringscare.com.au', 'Principal Super Administrator', 'Super Administrator', 'Executive Governance', '$2y$10$yR6Hp8oxeTH4B1n0r5bQY.sM5xL86H5NENn1jrFhdN2mcVCWw0TLS', 'active', 1, 0);
+
 SET FOREIGN_KEY_CHECKS = 1;

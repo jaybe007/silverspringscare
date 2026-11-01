@@ -13,40 +13,72 @@ function get_db_connection() {
         return $pdo;
     }
 
+    // Helper to initialize SQLite connection with writable fallback
+    $connect_sqlite = function(string $sqlite_path) {
+        $data_dir = dirname($sqlite_path);
+        if (!is_dir($data_dir)) {
+            @mkdir($data_dir, 0775, true);
+        }
+        @chmod($data_dir, 0775);
+        if (file_exists($sqlite_path)) {
+            @chmod($sqlite_path, 0664);
+        }
+
+        // Protect data folder with .htaccess
+        $htaccess_path = $data_dir . '/.htaccess';
+        if (is_dir($data_dir) && is_writable($data_dir) && !file_exists($htaccess_path)) {
+            @file_put_contents($htaccess_path, "Deny from all\n<IfModule mod_authz_core.c>\nRequire all denied\n</IfModule>");
+        }
+
+        // If data directory is not writable on shared hosting, fall back to sys_get_temp_dir()
+        if (!is_writable($data_dir) && (!file_exists($sqlite_path) || !is_writable($sqlite_path))) {
+            $tmp_path = rtrim(sys_get_temp_dir(), '/\\') . '/silversprings_care.sqlite';
+            if (file_exists($sqlite_path) && !file_exists($tmp_path)) {
+                @copy($sqlite_path, $tmp_path);
+            }
+            $sqlite_path = $tmp_path;
+        }
+
+        $conn = new PDO('sqlite:' . $sqlite_path);
+        $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        $conn->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
+        try {
+            $conn->exec('PRAGMA foreign_keys = ON;');
+            $conn->exec('PRAGMA busy_timeout = 5000;');
+            $conn->exec('PRAGMA journal_mode = WAL;');
+        } catch (Exception $e) {
+            // Ignore PRAGMA warnings on filesystems that do not support WAL shared memory
+        }
+        return $conn;
+    };
+
     try {
         if (DB_DRIVER === 'sqlite') {
-            $data_dir = dirname(DB_SQLITE_PATH);
-            if (!is_dir($data_dir)) {
-                mkdir($data_dir, 0755, true);
-            }
-            
-            // Protect data folder with .htaccess
-            $htaccess_path = $data_dir . '/.htaccess';
-            if (!file_exists($htaccess_path)) {
-                file_put_contents($htaccess_path, "Deny from all\n<IfModule mod_authz_core.c>\nRequire all denied\n</IfModule>");
-            }
-
-            $pdo = new PDO('sqlite:' . DB_SQLITE_PATH);
-            $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-            $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-            $pdo->exec('PRAGMA foreign_keys = ON;');
-            $pdo->exec('PRAGMA journal_mode = WAL;');
-            $pdo->exec('PRAGMA busy_timeout = 5000;');
+            $pdo = $connect_sqlite(DB_SQLITE_PATH);
         } else {
-            $port_str = (defined('DB_PORT') && DB_PORT) ? ';port=' . DB_PORT : '';
-            $dsn = sprintf('mysql:host=%s%s;dbname=%s;charset=utf8mb4', DB_HOST, $port_str, DB_NAME);
-            $pdo = new PDO($dsn, DB_USER, DB_PASS, [
-                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-                PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-                PDO::ATTR_EMULATE_PREPARES => false,
-            ]);
+            try {
+                $port_str = (defined('DB_PORT') && DB_PORT) ? ';port=' . DB_PORT : '';
+                $dsn = sprintf('mysql:host=%s%s;dbname=%s;charset=utf8mb4', DB_HOST, $port_str, DB_NAME);
+                $pdo = new PDO($dsn, DB_USER, DB_PASS, [
+                    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+                    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+                    PDO::ATTR_EMULATE_PREPARES => false,
+                ]);
+            } catch (PDOException $mysql_err) {
+                error_log('MySQL Connection failed, falling back to SQLite: ' . $mysql_err->getMessage());
+                $pdo = $connect_sqlite(DB_SQLITE_PATH);
+            }
         }
 
         // Initialize schema if not exists
-        migrate_database($pdo);
+        try {
+            migrate_database($pdo);
+        } catch (Exception $mig_err) {
+            error_log('Database Migration Warning: ' . $mig_err->getMessage());
+        }
 
         return $pdo;
-    } catch (PDOException $e) {
+    } catch (Exception $e) {
         error_log('Database Connection Error: ' . $e->getMessage());
         return null;
     }

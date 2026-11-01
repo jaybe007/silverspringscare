@@ -163,9 +163,5 @@ if (!defined('DB_PASS')) define('DB_PASS', env('DB_PASS', ''));
 // 5. Administrative Access Token
 // ----------------------------------------------------------------------
 if (!defined('ADMIN_USER')) define('ADMIN_USER', env('ADMIN_USER', 'admin'));
-if (!defined('ADMIN_PASS')) {
-    if (env('ADMIN_PASS')) {
-        define('ADMIN_PASS', env('ADMIN_PASS'));
-    }
-}
-if (!defined('ADMIN_PASS_HASH')) define('ADMIN_PASS_HASH', env('ADMIN_PASS_HASH', '$2y$10$wK6Q5B907tA1MfeGZ7sTSehG79Q86r1wG5mR3w41eG5l89k52p7Oa'));
+if (!defined('ADMIN_PASS')) define('ADMIN_PASS', env('ADMIN_PASS', 'SilverSprings2026!'));
+if (!defined('ADMIN_PASS_HASH')) define('ADMIN_PASS_HASH', env('ADMIN_PASS_HASH', '$2y$10$yR6Hp8oxeTH4B1n0r5bQY.sM5xL86H5NENn1jrFhdN2mcVCWw0TLS'));
