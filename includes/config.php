@@ -101,8 +101,12 @@ if (file_exists(__DIR__ . '/config.local.php')) {
 if (!defined('APP_ENV')) define('APP_ENV', env('APP_ENV', 'production'));
 if (!defined('APP_NAME')) define('APP_NAME', env('APP_NAME', 'Silver Springs Care'));
 if (!defined('APP_TAGLINE')) define('APP_TAGLINE', env('APP_TAGLINE', 'Empowering Abilities, Enriching Lives.'));
-if (!defined('APP_LEGAL_ENTITY')) define('APP_LEGAL_ENTITY', env('APP_LEGAL_ENTITY', 'Silver Springs Care Pty Ltd'));
-if (!defined('APP_ABN')) define('APP_ABN', env('APP_ABN', 'XX XXX XXX XXX')); // Pending client confirmation
+if (!defined('APP_LEGAL_ENTITY')) define('APP_LEGAL_ENTITY', env('APP_LEGAL_ENTITY', 'SILVER SPRINGS CARE PTY LTD'));
+if (!defined('APP_ACN')) define('APP_ACN', env('APP_ACN', '687 128 801'));
+if (!defined('APP_ABN')) define('APP_ABN', env('APP_ABN', '68 712 880 1'));
+if (!defined('REGISTERED_ADDRESS')) define('REGISTERED_ADDRESS', env('REGISTERED_ADDRESS', 'Unit 11, 75 Churnwood Drive, Fletcher NSW 2287'));
+if (!defined('POSTAL_ADDRESS')) define('POSTAL_ADDRESS', env('POSTAL_ADDRESS', 'PO Box 4000, Gippsland Mail Centre VIC 3841'));
+if (!defined('SITE_MOTTO')) define('SITE_MOTTO', env('SITE_MOTTO', 'Silver Springs Care — Nurturing Independence, Delivering Excellence.'));
 
 // Auto-detect base URL and base path dynamically for XAMPP subdirectories and production domains
 $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || (isset($_SERVER['SERVER_PORT']) && $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
@@ -121,8 +125,8 @@ if (!defined('BASE_URL')) {
 // ----------------------------------------------------------------------
 // 3. Contact Details
 // ----------------------------------------------------------------------
-if (!defined('SITE_PHONE')) define('SITE_PHONE', env('SITE_PHONE', '1300 772 273'));
-if (!defined('SITE_PHONE_RAW')) define('SITE_PHONE_RAW', env('SITE_PHONE_RAW', '1300772273'));
+if (!defined('SITE_PHONE')) define('SITE_PHONE', env('SITE_PHONE', '1300 300 630'));
+if (!defined('SITE_PHONE_RAW')) define('SITE_PHONE_RAW', env('SITE_PHONE_RAW', '1300300630'));
 if (!defined('SITE_EMAIL')) define('SITE_EMAIL', env('SITE_EMAIL', 'hello@silverspringscare.com.au'));
 if (!defined('SITE_REFERRAL_EMAIL')) define('SITE_REFERRAL_EMAIL', env('SITE_REFERRAL_EMAIL', 'referrals@silverspringscare.com.au'));
 if (!defined('SITE_HOURS')) define('SITE_HOURS', env('SITE_HOURS', 'Monday to Friday: 8:30am – 5:00pm AEST'));
@@ -135,7 +139,7 @@ if (!defined('BEYOND_BLUE_PHONE')) define('BEYOND_BLUE_PHONE', '1300 22 4636');
 if (!defined('NDIS_COMMISSION_PHONE')) define('NDIS_COMMISSION_PHONE', '1800 035 544');
 
 // Primary Service Locations
-if (!defined('PRIMARY_LOCATIONS')) define('PRIMARY_LOCATIONS', 'Melbourne Metropolitan, Geelong & Surrounding Victorian Regions');
+if (!defined('PRIMARY_LOCATIONS')) define('PRIMARY_LOCATIONS', 'Fletcher, Newcastle, Hunter Region NSW & Victorian Communities');
 
 // ----------------------------------------------------------------------
 // 4. Database Configuration (SQLite default with MySQL support)

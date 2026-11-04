@@ -47,35 +47,31 @@ $footer_custom_logo = get_site_setting('site_logo_url', 'assets/images/logo.svg'
         <!-- Col 1: Brand & Philosophy -->
         <div class="footer-brand">
           <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 0.75rem;">
-            <?php if ($footer_custom_logo !== 'assets/images/logo.svg' && $footer_custom_logo !== ''): ?>
-              <img src="<?= htmlspecialchars(get_site_asset_url('site_logo_url', 'assets/images/logo.svg'), ENT_QUOTES, 'UTF-8') ?>" alt="<?= htmlspecialchars($footer_site_name, ENT_QUOTES, 'UTF-8') ?>" style="height: 36px; width: auto; max-width: 200px; object-fit: contain;">
-            <?php else: ?>
-              <svg width="34" height="34" viewBox="0 0 64 64" fill="none" aria-hidden="true">
-                <rect width="64" height="64" rx="14" fill="#397B50"/>
-                <path d="M 28 8 C 16 8, 6 18, 6 30 C 6 42, 16 52, 28 52 C 35 52, 41 49, 45 44 C 43 44, 40 44, 38 43 C 29 39, 23 31, 23 22 C 23 16, 26 10, 30 7 Z" fill="#A9C9A5"/>
-                <path d="M 28 14 C 21 18, 17 26, 18 34 C 19 41, 25 47, 32 48 C 40 49, 47 43, 48 35 C 49 26, 41 17, 28 14 Z" fill="#ffffff"/>
-              </svg>
-              <span style="font-size: 1.25rem; font-weight: 800; color: #ffffff; letter-spacing: -0.02em;">SILVER SPRINGS <span style="color: var(--color-sage-300); font-weight: 400;">CARE</span></span>
-            <?php endif; ?>
+            <img src="<?= htmlspecialchars(get_site_asset_url('site_logo_white_url', 'assets/images/logo-white.svg'), ENT_QUOTES, 'UTF-8') ?>" alt="<?= htmlspecialchars($footer_site_name, ENT_QUOTES, 'UTF-8') ?>" style="height: 48px; width: auto; max-width: 220px; object-fit: contain;">
           </div>
-          <p>
-            <em>“<?= htmlspecialchars($footer_tagline, ENT_QUOTES, 'UTF-8') ?>”</em>
+          <p style="color: var(--color-sage-300); font-weight: 700; margin-bottom: 0.25rem;">
+            <?= htmlspecialchars(get_site_setting('company_motto', 'Silver Springs Care — Nurturing Independence, Delivering Excellence.'), ENT_QUOTES, 'UTF-8') ?>
           </p>
-          <p style="font-size: 0.85rem; color: rgba(255, 255, 255, 0.65); margin-top: 0.75rem;">
+          <p style="font-size: 0.85rem; color: rgba(255, 255, 255, 0.7); margin-top: 0.5rem; line-height: 1.5;">
             <?= htmlspecialchars($footer_brand_summary, ENT_QUOTES, 'UTF-8') ?>
           </p>
+          <div style="margin-top: 0.75rem; font-size: 0.78rem; color: rgba(255, 255, 255, 0.65); border-top: 1px solid rgba(255,255,255,0.1); padding-top: 0.6rem;">
+            <div><strong>Registered Office:</strong> Unit 11, 75 Churnwood Drive, Fletcher NSW 2287</div>
+            <div><strong>Postal:</strong> PO Box 4000, Gippsland Mail Centre VIC 3841</div>
+            <div><strong>ACN:</strong> 687 128 801 • Registered NDIS Provider</div>
+          </div>
         </div>
 
         <!-- Col 2: Services -->
         <div>
           <h4 class="footer-col-title">Support Services</h4>
           <ul class="footer-links">
-            <li><a href="<?= BASE_PATH ?>/services.php#daily-life" class="footer-link"><?= htmlspecialchars(get_site_setting('service_1_title', 'Assistance with Daily Life'), ENT_QUOTES, 'UTF-8') ?></a></li>
-            <li><a href="<?= BASE_PATH ?>/services.php#community" class="footer-link"><?= htmlspecialchars(get_site_setting('service_2_title', 'Community & Social Participation'), ENT_QUOTES, 'UTF-8') ?></a></li>
-            <li><a href="<?= BASE_PATH ?>/services.php#sil" class="footer-link"><?= htmlspecialchars(get_site_setting('service_3_title', 'Supported Independent Living (SIL)'), ENT_QUOTES, 'UTF-8') ?></a></li>
-            <li><a href="<?= BASE_PATH ?>/services.php#capacity" class="footer-link"><?= htmlspecialchars(get_site_setting('service_4_title', 'Capacity Building & Life Skills'), ENT_QUOTES, 'UTF-8') ?></a></li>
-            <li><a href="<?= BASE_PATH ?>/services.php#respite" class="footer-link"><?= htmlspecialchars(get_site_setting('service_5_title', 'Short-Term Accommodation & Respite'), ENT_QUOTES, 'UTF-8') ?></a></li>
-            <li><a href="<?= BASE_PATH ?>/services.php#coordination" class="footer-link"><?= htmlspecialchars(get_site_setting('service_6_title', 'Support Coordination Guidance'), ENT_QUOTES, 'UTF-8') ?></a></li>
+            <li><a href="<?= BASE_PATH ?>/services.php#daily-life" class="footer-link"><?= htmlspecialchars(get_site_setting('service_1_title', 'Daily Personal Activities'), ENT_QUOTES, 'UTF-8') ?></a></li>
+            <li><a href="<?= BASE_PATH ?>/services.php#household" class="footer-link"><?= htmlspecialchars(get_site_setting('service_2_title', 'Household Tasks'), ENT_QUOTES, 'UTF-8') ?></a></li>
+            <li><a href="<?= BASE_PATH ?>/services.php#community" class="footer-link"><?= htmlspecialchars(get_site_setting('service_3_title', 'Participation in Community, Social & Civic Activities'), ENT_QUOTES, 'UTF-8') ?></a></li>
+            <li><a href="<?= BASE_PATH ?>/services.php#capacity" class="footer-link"><?= htmlspecialchars(get_site_setting('service_4_title', 'Development of Daily Living & Life Skills'), ENT_QUOTES, 'UTF-8') ?></a></li>
+            <li><a href="<?= BASE_PATH ?>/services.php#transport" class="footer-link"><?= htmlspecialchars(get_site_setting('service_5_title', 'Assistance with Travel / Transport Arrangements'), ENT_QUOTES, 'UTF-8') ?></a></li>
+            <li><a href="<?= BASE_PATH ?>/services.php#sil" class="footer-link"><?= htmlspecialchars(get_site_setting('service_6_title', 'Innovative Community Participation & Living Options'), ENT_QUOTES, 'UTF-8') ?></a></li>
           </ul>
         </div>
 
@@ -126,6 +122,22 @@ $footer_custom_logo = get_site_setting('site_logo_url', 'assets/images/logo.svg'
               Lodge a Referral
             </a>
           </div>
+        </div>
+      </div>
+
+      <!-- Official Company Motto Ribbon -->
+      <div style="background: rgba(255, 255, 255, 0.06); border-radius: var(--radius-lg); padding: 1rem 1.5rem; margin-top: 2.25rem; border: 1px solid rgba(255, 255, 255, 0.12); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+        <div style="font-size: 0.95rem; color: #ffffff; font-weight: 600; display: flex; align-items: center; gap: 0.65rem; flex-wrap: wrap;">
+          <span>We listen.</span>
+          <span style="color: var(--color-sage-300);">♥</span>
+          <span>We care.</span>
+          <span style="color: var(--color-sage-300);">♥</span>
+          <span>We empower.</span>
+          <span style="color: var(--color-sage-300);">♥</span>
+          <span style="font-family: var(--font-serif); font-style: italic; color: var(--color-sage-300); font-size: 1.05rem; font-weight: 700;">Together, we thrive.</span>
+        </div>
+        <div style="font-size: 0.88rem; color: rgba(255, 255, 255, 0.75); font-style: italic;">
+          <?= htmlspecialchars(get_site_setting('brand_secondary_motto', 'Caring today, empowering tomorrow.'), ENT_QUOTES, 'UTF-8') ?>
         </div>
       </div>
 

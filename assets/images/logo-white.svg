@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 130" fill="none" role="img" aria-label="Silver Springs Care Official Logo">
+  <!-- Top Sweeping Green & Blue Arcs -->
+  <g>
+    <path d="M 142 36 C 162 12, 196 3, 232 8 C 204 8, 173 19, 149 38 C 146 39, 143 38, 142 36 Z" fill="#9BD062"/>
+    <path d="M 136 45 C 166 19, 214 8, 266 26 C 232 19, 188 26, 148 46 C 143 48, 138 47, 136 45 Z" fill="#78B833"/>
+    <path d="M 198 37 C 222 21, 255 21, 276 39 C 254 29, 224 29, 200 40 C 198 40, 197 38, 198 37 Z" fill="#4DA8E8"/>
+  </g>
+
+  <!-- Primary Brand Typography: Silver Springs -->
+  <text x="210" y="75" text-anchor="middle" font-family="'Plus Jakarta Sans', 'Nunito', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="40" font-weight="800" fill="#FFFFFF" letter-spacing="-0.015em">Silver Springs</text>
+
+  <!-- Tapered Horizontal Lines & CARE Subtitle -->
+  <g>
+    <polygon points="105,94 168,92.2 168,95.8" fill="#CBE7AC"/>
+    <text x="210" y="101" text-anchor="middle" font-family="'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="21" font-weight="600" fill="#CBE7AC" letter-spacing="0.08em">CARE</text>
+    <polygon points="315,94 252,92.2 252,95.8" fill="#CBE7AC"/>
+  </g>
+
+  <!-- Bottom Flowing Springs Water Waves -->
+  <g>
+    <path d="M 198 111 C 225 117, 252 112, 270 98 C 254 116, 225 122, 198 111 Z" fill="#7ED0D2"/>
+    <path d="M 145 109 C 194 122, 252 121, 280 96 C 262 126, 200 130, 145 109 Z" fill="#4DA8E8"/>
+    <path d="M 157 116 C 202 130, 252 127, 278 104 C 254 133, 198 135, 157 116 Z" fill="#2A92DC"/>
+  </g>
+</svg>
+

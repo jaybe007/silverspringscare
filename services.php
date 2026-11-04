@@ -30,14 +30,14 @@ require_once __DIR__ . '/includes/header.php';
       Explore our range of person-centred disability support services designed to build independence, nurture community connection, and respect your personal choices.
     </p>
 
-    <!-- Quick Navigation Jump Links -->
+    <!-- Quick Navigation Jump Links Aligned with Verified NDIS Categories -->
     <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 2rem;">
-      <a href="#daily-life" class="btn btn-white btn-sm">Daily Life &amp; Personal Care</a>
-      <a href="#community" class="btn btn-white btn-sm">Community &amp; Social</a>
-      <a href="#sil" class="btn btn-white btn-sm">Supported Independent Living</a>
-      <a href="#respite" class="btn btn-white btn-sm">Respite &amp; Short-Term Stay</a>
-      <a href="#capacity" class="btn btn-white btn-sm">Capacity Building</a>
-      <a href="#coordination" class="btn btn-white btn-sm">Support Coordination</a>
+      <a href="#daily-life" class="btn btn-white btn-sm">Daily Personal Activities</a>
+      <a href="#household" class="btn btn-white btn-sm">Household Tasks</a>
+      <a href="#community" class="btn btn-white btn-sm">Community, Social &amp; Civic</a>
+      <a href="#capacity" class="btn btn-white btn-sm">Daily Living &amp; Life Skills</a>
+      <a href="#transport" class="btn btn-white btn-sm">Travel / Transport</a>
+      <a href="#sil" class="btn btn-white btn-sm">Innovative Community &amp; Living</a>
     </div>
   </div>
 </div>
@@ -61,11 +61,12 @@ require_once __DIR__ . '/includes/header.php';
         </p>
 
         <h3 style="font-size: 1.25rem; margin-top: 1.75rem; margin-bottom: 0.75rem; color: var(--color-navy-900);">What Support Can Involve</h3>
+        <span id="household" style="display: block; position: relative; top: -80px; visibility: hidden;"></span>
         <ul style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.95rem; margin-bottom: 1.5rem;">
-          <li style="display: flex; gap: 0.5rem;"><span style="color: var(--color-forest-600); font-weight: 700;">&check;</span> Showering, dressing, grooming, and personal hygiene with utmost privacy and dignity.</li>
-          <li style="display: flex; gap: 0.5rem;"><span style="color: var(--color-forest-600); font-weight: 700;">&check;</span> Meal planning, grocery shopping, and nutritious meal preparation.</li>
-          <li style="display: flex; gap: 0.5rem;"><span style="color: var(--color-forest-600); font-weight: 700;">&check;</span> Domestic tasks including laundry, dishwashing, bed making, and light home tidying.</li>
-          <li style="display: flex; gap: 0.5rem;"><span style="color: var(--color-forest-600); font-weight: 700;">&check;</span> Medication prompts and health appointment accompaniment.</li>
+          <li style="display: flex; gap: 0.5rem;"><span style="color: var(--color-forest-600); font-weight: 700;">&check;</span> <strong>Personal Care:</strong> Showering, dressing, grooming, and personal hygiene with utmost privacy and dignity.</li>
+          <li style="display: flex; gap: 0.5rem;"><span style="color: var(--color-forest-600); font-weight: 700;">&check;</span> <strong>Household Tasks:</strong> Domestic assistance including laundry, dishwashing, bed making, vacuuming, and home tidying.</li>
+          <li style="display: flex; gap: 0.5rem;"><span style="color: var(--color-forest-600); font-weight: 700;">&check;</span> <strong>Nutrition &amp; Meals:</strong> Meal planning, grocery shopping, and nutritious meal preparation tailored to your tastes.</li>
+          <li style="display: flex; gap: 0.5rem;"><span style="color: var(--color-forest-600); font-weight: 700;">&check;</span> <strong>Wellbeing Routine:</strong> Medication prompts and health appointment accompaniment.</li>
         </ul>
 
         <div style="background: var(--color-warm-ivory); border-radius: var(--radius-lg); padding: 1.5rem; border: 1px solid var(--color-slate-200); margin-bottom: 1.5rem;">
@@ -267,11 +268,12 @@ require_once __DIR__ . '/includes/header.php';
         </p>
 
         <h3 style="font-size: 1.25rem; margin-top: 1.75rem; margin-bottom: 0.75rem; color: var(--color-navy-900);">What Support Involves</h3>
+        <span id="transport" style="display: block; position: relative; top: -80px; visibility: hidden;"></span>
         <ul style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.95rem; margin-bottom: 1.5rem;">
-          <li style="display: flex; gap: 0.5rem;"><span style="color: var(--color-forest-600); font-weight: 700;">&check;</span> Myki travel training and bus, train, and tram route practice.</li>
-          <li style="display: flex; gap: 0.5rem;"><span style="color: var(--color-forest-600); font-weight: 700;">&check;</span> Cooking and nutrition workshops focused on easy, healthy recipes.</li>
-          <li style="display: flex; gap: 0.5rem;"><span style="color: var(--color-forest-600); font-weight: 700;">&check;</span> Digital literacy: using smartphones, navigating government apps, and online safety.</li>
-          <li style="display: flex; gap: 0.5rem;"><span style="color: var(--color-forest-600); font-weight: 700;">&check;</span> Household budgeting, bill payment routines, and money awareness.</li>
+          <li style="display: flex; gap: 0.5rem;"><span style="color: var(--color-forest-600); font-weight: 700;">&check;</span> <strong>Travel &amp; Transport Arrangements:</strong> Independent travel training, accompaniment to medical appointments, and transit navigation.</li>
+          <li style="display: flex; gap: 0.5rem;"><span style="color: var(--color-forest-600); font-weight: 700;">&check;</span> <strong>Cooking &amp; Meal Prep:</strong> Hands-on kitchen workshops focused on healthy nutrition, cooking routines, and pantry safety.</li>
+          <li style="display: flex; gap: 0.5rem;"><span style="color: var(--color-forest-600); font-weight: 700;">&check;</span> <strong>Digital Literacy:</strong> Using smartphones, tablets, community navigation apps, and cyber safety awareness.</li>
+          <li style="display: flex; gap: 0.5rem;"><span style="color: var(--color-forest-600); font-weight: 700;">&check;</span> <strong>Financial Autonomy:</strong> Daily budgeting, bill payment routines, banking confidence, and goal tracking.</li>
         </ul>
 
         <div style="display: flex; gap: 1rem; flex-wrap: wrap;">

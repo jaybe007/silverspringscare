@@ -1,8 +1,13 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
-  <rect width="64" height="64" rx="16" fill="#17233B"/>
-  <g transform="translate(4, 4)">
-    <path d="M 28 6 C 16 6, 6 16, 6 28 C 6 40, 16 50, 28 50 C 35 50, 41 47, 45 42 C 43 42, 40 42, 38 41 C 29 37, 23 29, 23 20 C 23 14, 26 8, 30 5 Z" fill="#A9C9A5"/>
-    <path d="M 28 12 C 21 16, 17 24, 18 32 C 19 39, 25 45, 32 46 C 40 47, 47 41, 48 33 C 49 24, 41 15, 28 12 Z" fill="#397B50"/>
-    <circle cx="34" cy="27" r="3.5" fill="#FFFFFF"/>
-  </g>
+  <rect width="64" height="64" rx="14" fill="#FFFFFF"/>
+  <rect x="1" y="1" width="62" height="62" rx="13" stroke="#E2E8F0" stroke-width="2"/>
+  <!-- Top Green & Blue Swooshes -->
+  <path d="M 12 22 C 20 10, 34 6, 48 11 C 36 10, 22 15, 14 23 Z" fill="#82B541"/>
+  <path d="M 10 27 C 22 14, 40 10, 54 19 C 42 15, 25 18, 12 28 Z" fill="#5E9E26"/>
+  <path d="M 28 23 C 36 16, 47 16, 54 24 C 46 19, 36 19, 28 24 Z" fill="#1B75BC"/>
+  <!-- Center Monogram SS -->
+  <text x="32" y="40" text-anchor="middle" font-family="'Plus Jakarta Sans', sans-serif" font-size="18" font-weight="800" fill="#0D3559">SSC</text>
+  <!-- Bottom Blue & Teal Waves -->
+  <path d="M 26 48 C 36 51, 46 48, 52 41 C 46 50, 36 53, 26 48 Z" fill="#68B8BA"/>
+  <path d="M 12 47 C 28 54, 46 53, 55 41 C 48 56, 28 58, 12 47 Z" fill="#1B75BC"/>
 </svg>

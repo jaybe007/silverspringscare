@@ -55,10 +55,19 @@ require_once __DIR__ . '/includes/header.php';
         </p>
 
         <div style="background: var(--color-warm-ivory); border-radius: var(--radius-xl); padding: 1.75rem; border: 1px solid var(--color-slate-200); margin-top: 1.75rem;">
-          <h4 style="font-size: 1.05rem; color: var(--color-navy-900); margin-bottom: 0.5rem;">Our Statement on Credentials &amp; Transparency</h4>
-          <p style="font-size: 0.88rem; color: var(--color-text-muted); line-height: 1.6; margin: 0;">
-            We publish only verified operational facts. Silver Springs Care supports participants under Plan-Managed and Self-Managed NDIS funding across Victoria. We do not display unverified government seals, claim government endorsements, or present preliminary applications as finalized registrations.
+          <h4 style="font-size: 1.05rem; color: var(--color-navy-900); margin-bottom: 0.5rem;">Corporate Entity &amp; NDIS Practice Standards</h4>
+          <p style="font-size: 0.88rem; color: var(--color-text-muted); line-height: 1.6; margin-bottom: 0.75rem;">
+            <strong>SILVER SPRINGS CARE PTY LTD</strong> (ACN: <?= htmlspecialchars(defined('APP_ACN') ? APP_ACN : '687 128 801', ENT_QUOTES, 'UTF-8') ?>)<br>
+            Registered Office: <?= htmlspecialchars(defined('REGISTERED_ADDRESS') ? REGISTERED_ADDRESS : 'Unit 11, 75 Churnwood Drive, Fletcher NSW 2287', ENT_QUOTES, 'UTF-8') ?><br>
+            Correspondence: <?= htmlspecialchars(defined('POSTAL_ADDRESS') ? POSTAL_ADDRESS : 'PO Box 4000, Gippsland Mail Centre VIC 3841', ENT_QUOTES, 'UTF-8') ?><br>
+            Direct Inquiries: <?= htmlspecialchars(defined('SITE_PHONE') ? SITE_PHONE : '1300 300 630', ENT_QUOTES, 'UTF-8') ?>
           </p>
+          <ul style="font-size: 0.85rem; color: var(--color-text-main); margin: 0; padding-left: 1.2rem; display: flex; flex-direction: column; gap: 0.25rem;">
+            <li>Respecting individual rights and choices</li>
+            <li>Promoting independence and inclusion</li>
+            <li>Ensuring safety, quality and continuous improvement</li>
+            <li>Upholding the NDIS Practice Standards</li>
+          </ul>
         </div>
       </div>
 

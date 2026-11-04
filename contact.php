@@ -77,15 +77,28 @@ require_once __DIR__ . '/includes/header.php';
             </div>
           </div>
 
-          <!-- Locations -->
-          <div style="display: flex; gap: 1rem; align-items: flex-start; background: var(--color-warm-ivory); padding: 1.5rem; border-radius: var(--radius-xl); border: 1px solid var(--color-slate-200);">
-            <div style="width: 44px; height: 44px; border-radius: 50%; background: var(--color-forest-600); color: #ffffff; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          <!-- Locations & Corporate Entity Details -->
+          <div style="background: var(--color-warm-ivory); padding: 1.5rem; border-radius: var(--radius-xl); border: 1px solid var(--color-slate-200); display: flex; flex-direction: column; gap: 1rem;">
+            <div style="display: flex; gap: 1rem; align-items: flex-start;">
+              <div style="width: 44px; height: 44px; border-radius: 50%; background: var(--color-forest-600); color: #ffffff; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+              </div>
+              <div>
+                <div style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--color-text-muted); font-weight: 700;">Registered Address</div>
+                <div style="font-size: 1.05rem; font-weight: 750; color: var(--color-navy-900); margin: 0.2rem 0;"><?= htmlspecialchars(defined('REGISTERED_ADDRESS') ? REGISTERED_ADDRESS : 'Unit 11, 75 Churnwood Drive, Fletcher NSW 2287', ENT_QUOTES, 'UTF-8') ?></div>
+                <div style="font-size: 0.85rem; color: var(--color-text-muted);">Principal Registered Office (ACN: <?= htmlspecialchars(defined('APP_ACN') ? APP_ACN : '687 128 801', ENT_QUOTES, 'UTF-8') ?>)</div>
+              </div>
             </div>
-            <div>
-              <div style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--color-text-muted); font-weight: 700;">Service Regions</div>
-              <div style="font-size: 1.1rem; font-weight: 750; color: var(--color-navy-900); margin: 0.2rem 0;"><?= htmlspecialchars($cnt_locations, ENT_QUOTES, 'UTF-8') ?></div>
-              <div style="font-size: 0.85rem; color: var(--color-text-muted);">In-home and community-based support across Victoria.</div>
+
+            <div style="display: flex; gap: 1rem; align-items: flex-start; padding-top: 0.75rem; border-top: 1px solid var(--color-slate-200);">
+              <div style="width: 44px; height: 44px; border-radius: 50%; background: var(--color-spring-blue); color: #ffffff; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+              </div>
+              <div>
+                <div style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--color-text-muted); font-weight: 700;">Correspondence &amp; Postal Address</div>
+                <div style="font-size: 1.05rem; font-weight: 750; color: var(--color-navy-900); margin: 0.2rem 0;"><?= htmlspecialchars(defined('POSTAL_ADDRESS') ? POSTAL_ADDRESS : 'PO Box 4000, Gippsland Mail Centre VIC 3841', ENT_QUOTES, 'UTF-8') ?></div>
+                <div style="font-size: 0.85rem; color: var(--color-text-muted);">Serving Fletcher NSW, Hunter Region &amp; Victorian Communities.</div>
+              </div>
             </div>
           </div>
         </div>

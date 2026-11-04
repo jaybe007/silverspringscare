@@ -4,41 +4,46 @@
  */
 
 :root {
-  /* Brand Core Palette */
-  --color-navy-950: #0d1624;
-  --color-navy-900: #17233B; /* Primary Midnight Navy */
-  --color-navy-850: #1c2a46;
-  --color-navy-800: #223456;
-  --color-navy-700: #2d426d;
+  /* Brand Core Palette - Official Silver Springs Care Identity */
+  --color-navy-950: #07192C;
+  --color-navy-900: #0D3559; /* Official Brand Deep Navy */
+  --color-navy-850: #103F6B;
+  --color-navy-800: #174C7D;
+  --color-navy-700: #1E629E;
   
-  --color-forest-800: #235235;
-  --color-forest-700: #2d6340;
-  --color-forest-600: #397B50; /* Primary Forest Green Accent */
-  --color-forest-500: #469362;
-  --color-forest-400: #58ab76;
+  --color-forest-800: #386414;
+  --color-forest-700: #4B821A;
+  --color-forest-600: #64A12D; /* Official Brand Fresh Leaf Green Accent */
+  --color-forest-500: #76B738;
+  --color-forest-400: #88C94B;
   
-  --color-sage-300: #A9C9A5; /* Fresh Sage */
-  --color-sage-200: #c2dac0;
-  --color-sage-100: #e2efe0;
-  --color-sage-50: #f2f7f1;
+  --color-spring-blue: #1B75BC; /* Flowing Springs Ocean Blue */
+  --color-spring-cyan: #2380C0; /* Secondary Wave Azure */
+  --color-spring-teal: #68B8BA; /* Springs Ripple Aqua */
+  --color-ndis-purple: #5B2C82; /* Registered NDIS Provider Purple */
   
-  --color-warm-ivory: #F8F7F2; /* Warm Ivory background */
-  --color-warm-cream: #f2ede2;
+  --color-sage-300: #8ECF52; /* Fresh Lime / Sage */
+  --color-sage-200: #C2E89D;
+  --color-sage-100: #E4F5D1;
+  --color-sage-50: #F3F9EA;
+  
+  --color-warm-ivory: #F8FBF6; /* Soft Clean Brand Ivory */
+  --color-warm-cream: #F1F6EA;
   --color-white: #ffffff;
   
-  --color-slate-900: #1e2837;
-  --color-slate-700: #414d60;
-  --color-slate-600: #596579;
-  --color-slate-400: #8894a6;
-  --color-slate-200: #dde2ea;
-  --color-slate-100: #eff2f6;
-  --color-slate-50: #f8fafc;
+  --color-slate-900: #142232;
+  --color-slate-700: #334458;
+  --color-slate-600: #4B5E75;
+  --color-slate-400: #7E92A9;
+  --color-slate-200: #DCE5EE;
+  --color-slate-100: #EDF3F8;
+  --color-slate-50: #F6F9FC;
   
   /* Accessible Text Colors (WCAG AA & AAA compliant) */
-  --color-text-main: #202c3d;      /* 9.4:1 contrast on white, 8.6:1 on warm ivory */
-  --color-text-muted: #4e5c70;     /* 5.1:1 contrast on white */
+  --color-text-main: #142232;      /* >11:1 contrast on white */
+  --color-text-muted: #4B5E75;     /* >5.5:1 contrast on white */
   --color-text-inverse: #ffffff;
-  --color-text-inverse-muted: #c9d3e2;
+  --color-text-inverse-muted: #D3E2EE;
   
   /* State Colors */
   --color-success: #227042;

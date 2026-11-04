@@ -1,19 +1,34 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 340 70" fill="none" role="img" aria-label="Silver Springs Care Logo">
-  <!-- Brand Emblem: Flowing Springs & Growth Curves -->
-  <g transform="translate(6, 6)">
-    <!-- Outer spring arc - deep navy / forest green -->
-    <path d="M 28 4 C 14 4, 4 15, 4 29 C 4 43, 15 54, 29 54 C 36 54, 43 51, 48 45 C 46 45, 43 45, 40 44 C 30 40, 24 31, 24 20 C 24 13, 27 7, 32 3 C 30.7 3.3, 29.3 3.6, 28 4 Z" fill="#17233B" opacity="0.95"/>
-    <!-- Inner growth leaf curve - forest green -->
-    <path d="M 29 11 C 21 16, 17 24, 18 33 C 19 41, 25 48, 33 49 C 42 50, 50 43, 51 34 C 52 24, 43 14, 29 11 Z" fill="#397B50"/>
-    <!-- Fresh Sage spring ripple accent -->
-    <path d="M 33 19 C 28 23, 27 29, 29 35 C 31 40, 36 43, 41 42 C 45 41, 47 37, 47 32 C 47 25, 41 20, 33 19 Z" fill="#A9C9A5"/>
-    <!-- Center spark of agency / life -->
-    <circle cx="37" cy="28" r="3.5" fill="#FFFFFF"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 130" fill="none" role="img" aria-label="Silver Springs Care Official Logo">
+  <!-- Top Sweeping Green & Blue Arcs (Emblem Crown) -->
+  <g>
+    <!-- Upper outer green leaf-wave swoosh -->
+    <path d="M 142 36 C 162 12, 196 3, 232 8 C 204 8, 173 19, 149 38 C 146 39, 143 38, 142 36 Z" fill="#82B541"/>
+    <!-- Middle broad green swoosh -->
+    <path d="M 136 45 C 166 19, 214 8, 266 26 C 232 19, 188 26, 148 46 C 143 48, 138 47, 136 45 Z" fill="#64A12D"/>
+    <!-- Inner ocean blue crest swoosh -->
+    <path d="M 198 37 C 222 21, 255 21, 276 39 C 254 29, 224 29, 200 40 C 198 40, 197 38, 198 37 Z" fill="#1B75BC"/>
   </g>
-  <!-- Wordmark -->
-  <g transform="translate(74, 16)">
-    <text x="0" y="24" font-family="'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="22" font-weight="800" fill="#17233B" letter-spacing="-0.02em">SILVER SPRINGS</text>
-    <text x="180" y="24" font-family="'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="22" font-weight="400" fill="#397B50" letter-spacing="0.06em"> CARE</text>
-    <text x="1" y="40" font-family="'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="9.5" font-weight="600" fill="#596579" letter-spacing="0.14em">DISABILITY SUPPORT &amp; CARE SERVICES</text>
+
+  <!-- Primary Brand Typography: Silver Springs -->
+  <text x="210" y="75" text-anchor="middle" font-family="'Plus Jakarta Sans', 'Nunito', 'Quicksand', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="40" font-weight="800" fill="#0D3559" letter-spacing="-0.015em">Silver Springs</text>
+
+  <!-- Tapered Horizontal Lines & CARE Subtitle -->
+  <g>
+    <!-- Left tapered line -->
+    <polygon points="105,94 168,92.2 168,95.8" fill="#0D3559"/>
+    <!-- CARE text -->
+    <text x="210" y="101" text-anchor="middle" font-family="'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="21" font-weight="600" fill="#0D3559" letter-spacing="0.08em">CARE</text>
+    <!-- Right tapered line -->
+    <polygon points="315,94 252,92.2 252,95.8" fill="#0D3559"/>
+  </g>
+
+  <!-- Bottom Flowing Springs Water Waves -->
+  <g>
+    <!-- Upper inner teal ripple -->
+    <path d="M 198 111 C 225 117, 252 112, 270 98 C 254 116, 225 122, 198 111 Z" fill="#68B8BA"/>
+    <!-- Middle cerulean wave -->
+    <path d="M 145 109 C 194 122, 252 121, 280 96 C 262 126, 200 130, 145 109 Z" fill="#2380C0"/>
+    <!-- Lower deep spring blue wave -->
+    <path d="M 157 116 C 202 130, 252 127, 278 104 C 254 133, 198 135, 157 116 Z" fill="#1B75BC"/>
   </g>
 </svg>

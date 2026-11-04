@@ -25,11 +25,26 @@ require_once __DIR__ . '/includes/header.php';
   <div class="container-narrow">
     <div style="font-size: 1.05rem; line-height: 1.8; color: var(--color-text-main);">
 
-      <div style="background: var(--color-sage-50); border-left: 4px solid var(--color-forest-600); padding: 1.5rem; border-radius: 0 var(--radius-md) var(--radius-md) 0; margin-bottom: 2rem;">
-        <h3 style="font-size: 1.25rem; color: var(--color-forest-800); margin-bottom: 0.5rem;">Our Guarantee to You</h3>
-        <p style="margin: 0; font-size: 0.95rem; color: var(--color-text-main);">
-          Speaking up is always welcome. We treat all feedback with absolute confidentiality, dignity, and prompt attention. You can involve family members, a friend, or an independent advocate at every stage.
+      <div style="background: var(--color-sage-50); border: 2px solid var(--color-forest-500); padding: 1.75rem; border-radius: var(--radius-xl); margin-bottom: 2rem;">
+        <span class="badge badge-forest" style="margin-bottom: 0.5rem;">We Welcome Your Feedback</span>
+        <h3 style="font-size: 1.35rem; color: var(--color-forest-800); margin-bottom: 0.5rem;">How to Share Your Voice</h3>
+        <p style="margin: 0 0 1rem; font-size: 0.95rem; color: var(--color-text-main);">
+          We welcome your feedback to help us improve our services. We will listen, act and respond in a timely manner.
         </p>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; font-size: 0.9rem;">
+          <div style="background: #ffffff; padding: 1rem; border-radius: var(--radius-md); border: 1px solid var(--color-forest-200);">
+            <strong style="color: var(--color-forest-700);">👤 Speak with our staff</strong>
+            <p style="margin: 0.25rem 0 0; font-size: 0.85rem; color: var(--color-text-muted);">Directly with your support worker or care supervisor.</p>
+          </div>
+          <div style="background: #ffffff; padding: 1rem; border-radius: var(--radius-md); border: 1px solid var(--color-forest-200);">
+            <strong style="color: var(--color-forest-700);">✉ Email or write to us</strong>
+            <p style="margin: 0.25rem 0 0; font-size: 0.85rem; color: var(--color-text-muted);"><?= htmlspecialchars(defined('SITE_EMAIL') ? SITE_EMAIL : 'hello@silverspringscare.com.au', ENT_QUOTES, 'UTF-8') ?><br><?= htmlspecialchars(defined('POSTAL_ADDRESS') ? POSTAL_ADDRESS : 'PO Box 4000, Gippsland Mail Centre VIC 3841', ENT_QUOTES, 'UTF-8') ?></p>
+          </div>
+          <div style="background: #ffffff; padding: 1rem; border-radius: var(--radius-md); border: 1px solid var(--color-forest-200);">
+            <strong style="color: var(--color-forest-700);">📞 Call 1300 300 630</strong>
+            <p style="margin: 0.25rem 0 0; font-size: 0.85rem; color: var(--color-text-muted);">Monday &ndash; Friday 8:30am &ndash; 5:00pm AEST</p>
+          </div>
+        </div>
       </div>
 
       <h2 style="font-size: 1.6rem; color: var(--color-navy-900); margin: 2rem 0 1rem;">Our 4-Step Resolution Process</h2>
