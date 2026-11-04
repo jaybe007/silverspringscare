@@ -883,28 +883,28 @@ require_once __DIR__ . '/includes/header.php';
     </div>
 
     <div class="grid-3" style="gap: 1.75rem;">
-      <div class="trust-badge-card" style="background: #ffffff;">
+      <div class="trust-badge-card" style="background: #ffffff; border: 1.5px solid var(--color-slate-200); box-shadow: var(--shadow-sm); border-radius: var(--radius-xl); padding: 2rem;">
         <div style="color: var(--color-forest-600); margin-bottom: 0.75rem;">
           <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
         </div>
-        <h4><?= htmlspecialchars(get_site_setting('safeguard_1_title', 'NDIS Practice Standards'), ENT_QUOTES, 'UTF-8') ?></h4>
-        <p><?= htmlspecialchars(get_site_setting('safeguard_1_desc', 'Our organisation and workers uphold the NDIS Practice Standards and Code of Conduct, promoting rights, dignity, and zero tolerance for abuse or neglect.'), ENT_QUOTES, 'UTF-8') ?></p>
+        <h4 style="color: var(--color-navy-900); font-weight: 750; font-size: 1.25rem; margin-bottom: 0.5rem;"><?= htmlspecialchars(get_site_setting('safeguard_1_title', 'NDIS Practice Standards'), ENT_QUOTES, 'UTF-8') ?></h4>
+        <p style="color: var(--color-text-main); font-size: 0.95rem; line-height: 1.6; margin: 0;"><?= htmlspecialchars(get_site_setting('safeguard_1_desc', 'Our organisation and workers uphold the NDIS Practice Standards and Code of Conduct, promoting rights, dignity, and zero tolerance for abuse or neglect.'), ENT_QUOTES, 'UTF-8') ?></p>
       </div>
 
-      <div class="trust-badge-card" style="background: #ffffff;">
+      <div class="trust-badge-card" style="background: #ffffff; border: 1.5px solid var(--color-slate-200); box-shadow: var(--shadow-sm); border-radius: var(--radius-xl); padding: 2rem;">
         <div style="color: var(--color-spring-blue); margin-bottom: 0.75rem;">
           <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><polyline points="16 11 18 13 22 9"/></svg>
         </div>
-        <h4><?= htmlspecialchars(get_site_setting('safeguard_2_title', 'Rigorous Worker Screening'), ENT_QUOTES, 'UTF-8') ?></h4>
-        <p><?= htmlspecialchars(get_site_setting('safeguard_2_desc', '100% of workers undergo verified Australian NDIS Worker Screening Checks, National Police Checks, Working with Children Checks, and First Aid certification.'), ENT_QUOTES, 'UTF-8') ?></p>
+        <h4 style="color: var(--color-navy-900); font-weight: 750; font-size: 1.25rem; margin-bottom: 0.5rem;"><?= htmlspecialchars(get_site_setting('safeguard_2_title', 'Rigorous Worker Screening'), ENT_QUOTES, 'UTF-8') ?></h4>
+        <p style="color: var(--color-text-main); font-size: 0.95rem; line-height: 1.6; margin: 0;"><?= htmlspecialchars(get_site_setting('safeguard_2_desc', '100% of workers undergo verified Australian NDIS Worker Screening Checks, National Police Checks, Working with Children Checks, and First Aid certification.'), ENT_QUOTES, 'UTF-8') ?></p>
       </div>
 
-      <div class="trust-badge-card" style="background: #ffffff;">
+      <div class="trust-badge-card" style="background: #ffffff; border: 1.5px solid var(--color-slate-200); box-shadow: var(--shadow-sm); border-radius: var(--radius-xl); padding: 2rem;">
         <div style="color: var(--color-forest-600); margin-bottom: 0.75rem;">
           <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
         </div>
-        <h4><?= htmlspecialchars(get_site_setting('safeguard_3_title', 'Transparent Agreements'), ENT_QUOTES, 'UTF-8') ?></h4>
-        <p><?= htmlspecialchars(get_site_setting('safeguard_3_desc', 'Clear, plain-English service agreements with no hidden exit fees or surprise invoicing. You maintain full oversight of your NDIS budget usage.'), ENT_QUOTES, 'UTF-8') ?></p>
+        <h4 style="color: var(--color-navy-900); font-weight: 750; font-size: 1.25rem; margin-bottom: 0.5rem;"><?= htmlspecialchars(get_site_setting('safeguard_3_title', 'Transparent Agreements'), ENT_QUOTES, 'UTF-8') ?></h4>
+        <p style="color: var(--color-text-main); font-size: 0.95rem; line-height: 1.6; margin: 0;"><?= htmlspecialchars(get_site_setting('safeguard_3_desc', 'Clear, plain-English service agreements with no hidden exit fees or surprise invoicing. You maintain full oversight of your NDIS budget usage.'), ENT_QUOTES, 'UTF-8') ?></p>
       </div>
     </div>
   </div>
