@@ -22,14 +22,16 @@ require_once __DIR__ . '/includes/header.php';
     <div class="hero-grid">
       <!-- Hero Narrative -->
       <div>
-        <div style="display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; margin-bottom: 0.85rem;">
-          <span class="badge" style="background: var(--color-ndis-purple); color: #ffffff; font-weight: 700; padding: 0.35rem 0.85rem; border-radius: 999px; display: inline-flex; align-items: center; gap: 6px; font-size: 0.82rem;">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="#a855f7" aria-hidden="true"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
-            Registered NDIS Provider
-          </span>
-          <span class="badge badge-sage">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
-            <?= htmlspecialchars(get_site_setting('hero_badge', 'Registered NDIS Provider'), ENT_QUOTES, 'UTF-8') ?>
+        <div style="display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; margin-bottom: 1rem;">
+          <div class="hero-ndis-badge-card" style="background: var(--color-ndis-purple, #5B2C82); color: #ffffff; font-weight: 800; padding: 0.45rem 1.15rem; border-radius: 999px; display: inline-flex; align-items: center; gap: 8px; font-size: 0.88rem; box-shadow: 0 4px 14px rgba(91, 44, 130, 0.3);">
+            <span style="font-size: 0.95rem;">We</span>
+            <span style="color: #8ECF52; font-size: 1.25rem; line-height: 1;">&#9829;</span>
+            <span style="font-size: 0.95rem;">ndis</span>
+            <span style="width: 1px; height: 16px; background: rgba(255,255,255,0.35); display: inline-block;"></span>
+            <span style="text-transform: uppercase; font-size: 0.76rem; letter-spacing: 0.06em; font-weight: 750;">Registered NDIS Provider</span>
+          </div>
+          <span class="badge badge-sage" style="font-weight: 700; padding: 0.45rem 0.85rem; font-size: 0.82rem;">
+            ACN: <?= htmlspecialchars(defined('APP_ACN') ? APP_ACN : '687 128 801', ENT_QUOTES, 'UTF-8') ?>
           </span>
         </div>
 
@@ -166,8 +168,20 @@ require_once __DIR__ . '/includes/header.php';
       </h3>
     </div>
 
-    <!-- 4 Foundation Values from Poster Bottom -->
-    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.5rem; margin-bottom: 3rem;">
+    <!-- 5 Foundation Values from Poster Bottom (Including Official NDIS Registered Provider Card) -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.25rem; margin-bottom: 3rem;">
+      <!-- Official Registered NDIS Provider Box (From Flyer) -->
+      <div style="background: var(--color-ndis-purple, #5B2C82); color: #ffffff; border-radius: var(--radius-xl); padding: 1.5rem; text-align: center; box-shadow: 0 4px 14px rgba(91, 44, 130, 0.25); display: flex; flex-direction: column; justify-content: center; align-items: center;">
+        <div style="font-size: 1.3rem; font-weight: 800; display: flex; align-items: center; justify-content: center; gap: 6px; margin-bottom: 0.35rem; color: #ffffff;">
+          <span>We</span>
+          <span style="color: #8ECF52; font-size: 1.5rem; line-height: 1;">&#9829;</span>
+          <span>ndis</span>
+        </div>
+        <div style="font-weight: 800; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; color: #ffffff; line-height: 1.35;">
+          Proud NDIS Registered Provider
+        </div>
+      </div>
+
       <div style="background: var(--color-slate-50); border: 1px solid var(--color-slate-200); border-radius: var(--radius-xl); padding: 1.5rem; text-align: center;">
         <div style="width: 44px; height: 44px; border-radius: 50%; background: #E9F3FA; color: var(--color-spring-blue); display: flex; align-items: center; justify-content: center; margin: 0 auto 0.75rem;">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>

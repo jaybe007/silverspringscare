@@ -24,9 +24,15 @@ require_once __DIR__ . '/includes/header.php';
 
 <div class="service-detail-hero">
   <div class="container">
-    <div style="display: flex; gap: 0.5rem; align-items: center; margin-bottom: 1rem; flex-wrap: wrap;">
-      <span class="badge badge-sage">Registered NDIS Provider</span>
-      <span class="badge badge-outline-white">ACN: <?= htmlspecialchars(defined('APP_ACN') ? APP_ACN : '687 128 801', ENT_QUOTES, 'UTF-8') ?></span>
+    <div style="display: flex; gap: 0.75rem; align-items: center; margin-bottom: 1rem; flex-wrap: wrap;">
+      <div style="background: var(--color-ndis-purple, #5B2C82); color: #ffffff; font-weight: 800; padding: 0.4rem 1rem; border-radius: 999px; display: inline-flex; align-items: center; gap: 8px; font-size: 0.85rem; box-shadow: 0 4px 12px rgba(0,0,0,0.25);">
+        <span>We</span>
+        <span style="color: #8ECF52; font-size: 1.15rem; line-height: 1;">&#9829;</span>
+        <span>ndis</span>
+        <span style="width: 1px; height: 14px; background: rgba(255,255,255,0.35); display: inline-block;"></span>
+        <span style="text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.05em; font-weight: 750;">Registered Provider</span>
+      </div>
+      <span class="badge badge-sage">ACN: <?= htmlspecialchars(defined('APP_ACN') ? APP_ACN : '687 128 801', ENT_QUOTES, 'UTF-8') ?></span>
     </div>
     <h1 style="color: #ffffff; margin-bottom: 1rem;"><?= htmlspecialchars(get_site_setting('about_hero_title', 'Empowering Abilities, Enriching Lives.'), ENT_QUOTES, 'UTF-8') ?></h1>
     <p class="lead" style="color: var(--color-text-inverse-muted); max-width: 760px;">

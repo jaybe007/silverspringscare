@@ -46,8 +46,14 @@ $footer_custom_logo = get_site_setting('site_logo_url', 'assets/images/logo.svg'
       <div class="footer-top">
         <!-- Col 1: Brand & Philosophy -->
         <div class="footer-brand">
-          <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 0.75rem;">
+          <div style="display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 0.85rem; flex-wrap: wrap;">
             <img src="<?= htmlspecialchars(get_site_asset_url('site_logo_white_url', 'assets/images/logo-white.svg'), ENT_QUOTES, 'UTF-8') ?>" alt="<?= htmlspecialchars($footer_site_name, ENT_QUOTES, 'UTF-8') ?>" style="height: 48px; width: auto; max-width: 220px; object-fit: contain;">
+            <div style="background: var(--color-ndis-purple, #5B2C82); color: #ffffff; padding: 0.35rem 0.75rem; border-radius: 999px; font-size: 0.75rem; font-weight: 750; display: inline-flex; align-items: center; gap: 5px; box-shadow: 0 2px 8px rgba(0,0,0,0.3);">
+              <span>We</span>
+              <span style="color: #8ECF52; font-size: 0.95rem; line-height: 1;">&#9829;</span>
+              <span>ndis</span>
+              <span style="border-left: 1px solid rgba(255,255,255,0.3); padding-left: 5px; font-size: 0.7rem; text-transform: uppercase;">Registered</span>
+            </div>
           </div>
           <p style="color: var(--color-sage-300); font-weight: 700; margin-bottom: 0.25rem;">
             <?= htmlspecialchars(get_site_setting('company_motto', 'Silver Springs Care — Nurturing Independence, Delivering Excellence.'), ENT_QUOTES, 'UTF-8') ?>
