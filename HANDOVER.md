@@ -7,7 +7,7 @@
 
 ## 1. Executive Summary & Delivery Overview
 
-This platform has been built from the ground up to reflect the strategic depth, visual dignity, and technical excellence of a premium **$10,000 digital engagement**. It positions **Silver Springs Care Pty Ltd** as a mature, trustworthy, and institutionally credible Australian disability support provider across Melbourne and Victoria.
+This platform has been built from the ground up to reflect the strategic depth, visual dignity, and technical excellence of a premium **$10,000 digital engagement**. It positions **Silver Springs Care Pty Ltd** as a mature, trustworthy, and institutionally credible Australian disability support provider across Australia.
 
 ### Delivered Scope & Architecture
 - **8 Core Public Pages**: Homepage (`index.php`), About Us (`about.php`), Services Suite (`services.php`), For Participants & Families (`participants-families.php`), Professional Referrals (`referrals.php`), Careers (`careers.php`), Resources & Knowledge Hub (`resources.php`), Contact Us (`contact.php`).
@@ -69,8 +69,8 @@ chmod 664 /path/to/silverspringscare.com.au/data/silversprings.sqlite
 1. Copy `config.example.php` to `includes/config.php` if custom overrides are needed.
 2. In `includes/config.php`, update:
    - `ADMIN_PASS`: Set to a strong 16+ character passphrase.
-   - `SITE_PHONE`: Confirmed primary Australian contact number (currently configured as `1300 772 273`).
-   - `SITE_EMAIL`: Primary intake inbox (e.g., `hello@silverspringscare.com.au`).
+   - `SITE_PHONE`: Confirmed primary Australian contact number (currently configured as `+61428996879`).
+   - `SITE_EMAIL`: Primary intake inbox (e.g., `info@silverspringscare.com.au`).
    - `SITE_REFERRAL_EMAIL`: Dedicated intake inbox for referrers (e.g., `referrals@silverspringscare.com.au`).
    - `APP_ABN`: Insert the official Australian Business Number once confirmed.
 

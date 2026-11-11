@@ -72,7 +72,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         $ins = $pdo->prepare("INSERT INTO users (
                             username, email, full_name, phone, job_title, department, notes,
                             password_hash, status, is_super_admin, force_password_change
-                        ) VALUES ('admin', 'admin@silverspringscare.com.au', 'Super Administrator', '1300 772 273', 'Chief Systems & Governance Administrator', 'Executive Governance', 'Primary protected Super Administrator account.', ?, 'active', 1, 0)");
+                        ) VALUES ('admin', 'admin@silverspringscare.com.au', 'Super Administrator', '+61428996879', 'Chief Systems & Governance Administrator', 'Executive Governance', 'Primary protected Super Administrator account.', ?, 'active', 1, 0)");
                         $ins->execute([$new_hash]);
                         $uid = (int)$pdo->lastInsertId();
                         if ($uid > 0) {

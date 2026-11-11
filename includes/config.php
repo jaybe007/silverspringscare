@@ -125,9 +125,9 @@ if (!defined('BASE_URL')) {
 // ----------------------------------------------------------------------
 // 3. Contact Details
 // ----------------------------------------------------------------------
-if (!defined('SITE_PHONE')) define('SITE_PHONE', env('SITE_PHONE', '1300 300 630'));
-if (!defined('SITE_PHONE_RAW')) define('SITE_PHONE_RAW', env('SITE_PHONE_RAW', '1300300630'));
-if (!defined('SITE_EMAIL')) define('SITE_EMAIL', env('SITE_EMAIL', 'hello@silverspringscare.com.au'));
+if (!defined('SITE_PHONE')) define('SITE_PHONE', env('SITE_PHONE', '+61428996879'));
+if (!defined('SITE_PHONE_RAW')) define('SITE_PHONE_RAW', env('SITE_PHONE_RAW', '+61428996879'));
+if (!defined('SITE_EMAIL')) define('SITE_EMAIL', env('SITE_EMAIL', 'info@silverspringscare.com.au'));
 if (!defined('SITE_REFERRAL_EMAIL')) define('SITE_REFERRAL_EMAIL', env('SITE_REFERRAL_EMAIL', 'referrals@silverspringscare.com.au'));
 if (!defined('SITE_HOURS')) define('SITE_HOURS', env('SITE_HOURS', 'Monday to Friday: 8:30am – 5:00pm AEST'));
 if (!defined('SITE_AFTER_HOURS')) define('SITE_AFTER_HOURS', env('SITE_AFTER_HOURS', 'On-call participant coordination available 24/7 for active participants'));
@@ -139,7 +139,7 @@ if (!defined('BEYOND_BLUE_PHONE')) define('BEYOND_BLUE_PHONE', '1300 22 4636');
 if (!defined('NDIS_COMMISSION_PHONE')) define('NDIS_COMMISSION_PHONE', '1800 035 544');
 
 // Primary Service Locations
-if (!defined('PRIMARY_LOCATIONS')) define('PRIMARY_LOCATIONS', 'Fletcher, Newcastle, Hunter Region NSW & Victorian Communities');
+if (!defined('PRIMARY_LOCATIONS')) define('PRIMARY_LOCATIONS', 'Serving All Australians Nationwide');
 
 // ----------------------------------------------------------------------
 // 4. Database Configuration (SQLite default with MySQL support)

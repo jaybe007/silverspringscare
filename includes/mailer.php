@@ -71,7 +71,7 @@ function ensure_webmail_schema(): void {
         // Backfill existing inquiries/referrals if webmail_messages is empty
         $count = (int)$pdo->query("SELECT COUNT(*) FROM webmail_messages")->fetchColumn();
         if ($count === 0) {
-            $site_email = defined('SITE_EMAIL') ? SITE_EMAIL : 'hello@silverspringscare.com.au';
+            $site_email = defined('SITE_EMAIL') ? SITE_EMAIL : 'info@silverspringscare.com.au';
 
             // Sync existing Inquiries ("Send Our Team a Message")
             $inqs = $pdo->query("SELECT * FROM inquiries ORDER BY id ASC")->fetchAll();

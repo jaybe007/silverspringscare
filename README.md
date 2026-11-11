@@ -7,7 +7,7 @@
 
 ## 1. Executive Summary & Brand Identity
 
-Silver Springs Care provides individualised, person-centred disability support across Melbourne Metropolitan and Victorian regional hubs. This platform was engineered from the ground up to embody:
+Silver Springs Care provides individualised, person-centred disability support across Australia. This platform was engineered from the ground up to embody:
 
 - **Deep Trust & Professional Credibility:** Designed to reassure participants, inspire confidence in support coordinators, and present institutional maturity to government stakeholders.
 - **Refined Editorial Aesthetic:** Warm Ivory (`#F8F7F2`), Midnight Navy (`#17233B`), Forest Green (`#397B50`), and Fresh Sage (`#A9C9A5`), combined with editorial typography (`Plus Jakarta Sans` and `Fraunces`).
@@ -96,7 +96,7 @@ c:\xampp\htdocs\silverspringscare.com.au\
 6. **Referrals Hub (`referrals.php`)**: Professional portal for Support Coordinators, LACs, Allied Health, and Hospital Planners with a secure form collecting referrer details, participant preferences, support categories, and mandatory consent confirmation.
 7. **Careers (`careers.php`)**: Values-driven recruitment, culture highlights, current vacancies, mandatory screening criteria (NDIS worker check, First Aid), and application form.
 8. **Resources (`resources.php`)**: Plain-English educational articles demystifying NDIS plan reviews, Core vs. Capacity budgets, SIL transitions, dignity of risk, and official Australian government links (NDIS, Commission, Carer Gateway, DANA).
-9. **Contact Us (`contact.php`)**: Direct phone (`1300 772 273`), email, office hours, service regions, working inquiry form, and verified Australian emergency numbers (`000`, Lifeline `13 11 14`, Beyond Blue `1300 22 4636`).
+9. **Contact Us (`contact.php`)**: Direct phone (`+61428996879`), email (`info@silverspringscare.com.au`), office hours, service regions across Australia, working inquiry form, and verified Australian emergency numbers (`000`, Lifeline `13 11 14`, Beyond Blue `1300 22 4636`).
 10. **Signature Feature &mdash; The Support Journey (`support-journey.php`)**: Interactive 4-step discovery wizard: 1) What You're Seeking, 2) Tell Us How to Contact You, 3) Choose the Next Step, 4) Understand What Happens Next, with full progressive enhancement when JavaScript is disabled.
 11. **Staff Intake Portal (`admin/index.php`)**: Password-protected management dashboard where intake staff can view, filter, and update the status of referrals, inquiries, journey leads, and job applications.
 12. **Governance & Legal**: Privacy Policy, Accessibility Statement, Feedback & Complaints Policy, Terms of Use, and 404 Error page.

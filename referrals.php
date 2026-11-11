@@ -5,7 +5,7 @@
  */
 
 $page_title = "Make a Referral | Silver Springs Care | Professional Intake Hub";
-$page_desc = "Fast, secure referral portal for NDIS Support Coordinators, LACs, Allied Health practitioners, and families. 24-hour turnaround on all Melbourne and Victorian referrals.";
+$page_desc = "Fast, secure referral portal for NDIS Support Coordinators, LACs, Allied Health practitioners, and families. 24-hour turnaround on all referrals across Australia.";
 
 require_once __DIR__ . '/includes/config.php';
 require_once __DIR__ . '/includes/header.php';

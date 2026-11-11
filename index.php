@@ -9,7 +9,7 @@ require_once __DIR__ . '/includes/config.php';
 require_once __DIR__ . '/includes/functions.php';
 
 $page_title = get_site_setting('site_name', 'Silver Springs Care') . " | " . rtrim(get_site_setting('site_tagline', 'Empowering Abilities, Enriching Lives'), '.') . " | Registered NDIS Provider";
-$page_desc = "Silver Springs Care delivers personalised, high-quality disability support across Fletcher, Newcastle, NSW and Victorian communities. Daily personal activities, household tasks, community participation, life skills and transport.";
+$page_desc = "Silver Springs Care delivers personalised, high-quality disability support across Australia. Daily personal activities, household tasks, community participation, life skills and transport.";
 
 require_once __DIR__ . '/includes/header.php';
 ?>
@@ -612,7 +612,7 @@ require_once __DIR__ . '/includes/header.php';
             </div>
             <div>
               <div style="font-size: 0.8rem; font-weight: 700; color: var(--color-text-muted); text-transform: uppercase;">Direct Telephone</div>
-              <a href="tel:<?= htmlspecialchars(preg_replace('/[^0-9+]/', '', get_site_setting('site_phone', '1300 300 630')), ENT_QUOTES, 'UTF-8') ?>" style="font-size: 1.25rem; font-weight: 800; color: var(--color-forest-700);"><?= htmlspecialchars(get_site_setting('site_phone', '1300 300 630'), ENT_QUOTES, 'UTF-8') ?></a>
+              <a href="tel:<?= htmlspecialchars(preg_replace('/[^0-9+]/', '', get_site_setting('site_phone', '+61428996879')), ENT_QUOTES, 'UTF-8') ?>" style="font-size: 1.25rem; font-weight: 800; color: var(--color-forest-700);"><?= htmlspecialchars(get_site_setting('site_phone', '+61428996879'), ENT_QUOTES, 'UTF-8') ?></a>
             </div>
           </div>
         </div>
@@ -780,7 +780,7 @@ require_once __DIR__ . '/includes/header.php';
         <div class="step-number">01</div>
         <h3 class="step-title"><?= htmlspecialchars(get_site_setting('step_1_title', 'Enquire & Connect'), ENT_QUOTES, 'UTF-8') ?></h3>
         <p class="step-desc">
-          <?= htmlspecialchars(get_site_setting('step_1_desc', 'Reach out by calling 1300 300 630 or submitting an online enquiry. We listen carefully to your goals and current support situation.'), ENT_QUOTES, 'UTF-8') ?>
+          <?= htmlspecialchars(get_site_setting('step_1_desc', 'Reach out by calling +61428996879 or submitting an online enquiry. We listen carefully to your goals and current support situation.'), ENT_QUOTES, 'UTF-8') ?>
         </p>
       </div>
 
@@ -848,8 +848,8 @@ require_once __DIR__ . '/includes/header.php';
             <a href="<?= BASE_PATH ?>/referrals.php" class="btn btn-primary btn-lg">
               Lodge a Professional Referral
             </a>
-            <a href="tel:<?= htmlspecialchars(preg_replace('/[^0-9+]/', '', get_site_setting('site_phone', '1300 300 630')), ENT_QUOTES, 'UTF-8') ?>" class="btn btn-outline-white btn-lg">
-              Call <?= htmlspecialchars(get_site_setting('site_phone', '1300 300 630'), ENT_QUOTES, 'UTF-8') ?>
+            <a href="tel:<?= htmlspecialchars(preg_replace('/[^0-9+]/', '', get_site_setting('site_phone', '+61428996879')), ENT_QUOTES, 'UTF-8') ?>" class="btn btn-outline-white btn-lg">
+              Call <?= htmlspecialchars(get_site_setting('site_phone', '+61428996879'), ENT_QUOTES, 'UTF-8') ?>
             </a>
           </div>
         </div>
@@ -943,7 +943,7 @@ require_once __DIR__ . '/includes/header.php';
       $faqs_list = [
         ['question' => 'What NDIS funding categories can be used with Silver Springs Care?', 'answer' => 'We support participants across Core Supports (Daily Personal Activities, Household Tasks, Community & Social Participation) and Capacity Building (Life Skills Development, Transport and Civic Participation). Contact our team to discuss your current NDIS plan.'],
         ['question' => 'Do I get to choose my support workers?', 'answer' => 'Yes, absolutely. We believe that mutual rapport is essential. During our initial consultation, we discuss the qualities, interests, gender preferences, and cultural background you prefer in a support worker. We introduce workers before service commences, and you can request adjustments anytime.'],
-        ['question' => 'What geographic areas do you service?', 'answer' => 'Silver Springs Care provides supports across Fletcher, Newcastle, the Hunter Region NSW, as well as Victorian communities. Please call 1300 300 630 to confirm support worker availability in your specific suburb.'],
+        ['question' => 'What geographic areas do you service?', 'answer' => 'Silver Springs Care provides supports across Australia to participants and families nationwide. Please call +61428996879 to confirm support worker availability in your specific area.'],
         ['question' => 'How are your support rates determined?', 'answer' => 'All our rates adhere strictly to the limits published in the current official NDIS Pricing Arrangements and Price Limits (Price Guide). We never charge above the set price limits, and all service agreements provide a transparent, itemised breakdown before services begin.'],
         ['question' => 'What happens if my needs or goals change during the year?', 'answer' => 'Support agreements are flexible and participant-led. We conduct regular check-ins, but you or your coordinator can request a service adjustment at any time to adapt to your new priorities.']
       ];
@@ -981,7 +981,7 @@ require_once __DIR__ . '/includes/header.php';
         <div style="background: #ffffff; padding: 2rem; border-radius: var(--radius-xl); border: 1px solid var(--color-slate-200); margin: 2rem 0; box-shadow: var(--shadow-xs);">
           <h4 style="margin-bottom: 1rem; color: var(--color-navy-900);">Direct Ways to Connect</h4>
           <p style="margin-bottom: 0.75rem;">
-            <strong>Phone:</strong> <a href="tel:<?= htmlspecialchars(preg_replace('/[^0-9+]/', '', get_site_setting('site_phone', '1300 300 630')), ENT_QUOTES, 'UTF-8') ?>" style="color: var(--color-forest-600); font-weight: 700;"><?= htmlspecialchars(get_site_setting('site_phone', '1300 300 630'), ENT_QUOTES, 'UTF-8') ?></a>
+            <strong>Phone:</strong> <a href="tel:<?= htmlspecialchars(preg_replace('/[^0-9+]/', '', get_site_setting('site_phone', '+61428996879')), ENT_QUOTES, 'UTF-8') ?>" style="color: var(--color-forest-600); font-weight: 700;"><?= htmlspecialchars(get_site_setting('site_phone', '+61428996879'), ENT_QUOTES, 'UTF-8') ?></a>
           </p>
           <p style="margin-bottom: 0.75rem;">
             <strong>General Email:</strong> <a href="mailto:<?= htmlspecialchars(get_site_setting('site_email', SITE_EMAIL), ENT_QUOTES, 'UTF-8') ?>" style="color: var(--color-forest-600);"><?= htmlspecialchars(get_site_setting('site_email', SITE_EMAIL), ENT_QUOTES, 'UTF-8') ?></a>

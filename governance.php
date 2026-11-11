@@ -33,7 +33,7 @@ require_once __DIR__ . '/includes/header.php';
     </div>
     <h1 style="color: #ffffff; margin-bottom: 1rem;">Trust, Quality &amp; Governance Framework</h1>
     <p class="lead" style="color: var(--color-text-inverse-muted); max-width: 820px;">
-      Organisational maturity built on verifiable safeguards, transparent boundaries, and an uncompromising commitment to participant rights, dignity, and safety across Victoria.
+      Organisational maturity built on verifiable safeguards, transparent boundaries, and an uncompromising commitment to participant rights, dignity, and safety across Australia.
     </p>
   </div>
 </div>
@@ -60,7 +60,7 @@ require_once __DIR__ . '/includes/header.php';
             <strong>SILVER SPRINGS CARE PTY LTD</strong> (ACN: <?= htmlspecialchars(defined('APP_ACN') ? APP_ACN : '687 128 801', ENT_QUOTES, 'UTF-8') ?>)<br>
             Registered Office: <?= htmlspecialchars(defined('REGISTERED_ADDRESS') ? REGISTERED_ADDRESS : 'Unit 11, 75 Churnwood Drive, Fletcher NSW 2287', ENT_QUOTES, 'UTF-8') ?><br>
             Correspondence: <?= htmlspecialchars(defined('POSTAL_ADDRESS') ? POSTAL_ADDRESS : 'PO Box 4000, Gippsland Mail Centre VIC 3841', ENT_QUOTES, 'UTF-8') ?><br>
-            Direct Inquiries: <?= htmlspecialchars(defined('SITE_PHONE') ? SITE_PHONE : '1300 300 630', ENT_QUOTES, 'UTF-8') ?>
+            Direct Inquiries: <?= htmlspecialchars(defined('SITE_PHONE') ? SITE_PHONE : '+61428996879', ENT_QUOTES, 'UTF-8') ?>
           </p>
           <ul style="font-size: 0.85rem; color: var(--color-text-main); margin: 0; padding-left: 1.2rem; display: flex; flex-direction: column; gap: 0.25rem;">
             <li>Respecting individual rights and choices</li>

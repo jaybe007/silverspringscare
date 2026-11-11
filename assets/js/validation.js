@@ -75,7 +75,7 @@ document.addEventListener('DOMContentLoaded', () => {
       } catch (err) {
         if (feedback) {
           feedback.className = 'alert alert-danger';
-          feedback.textContent = 'A connection error occurred. Please check your internet connection or call 1300 772 273.';
+          feedback.textContent = 'A connection error occurred. Please check your internet connection or call +61428996879.';
           feedback.style.display = 'flex';
         }
         if (submitBtn) {

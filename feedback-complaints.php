@@ -38,10 +38,10 @@ require_once __DIR__ . '/includes/header.php';
           </div>
           <div style="background: #ffffff; padding: 1rem; border-radius: var(--radius-md); border: 1px solid var(--color-forest-200);">
             <strong style="color: var(--color-forest-700);">✉ Email or write to us</strong>
-            <p style="margin: 0.25rem 0 0; font-size: 0.85rem; color: var(--color-text-muted);"><?= htmlspecialchars(defined('SITE_EMAIL') ? SITE_EMAIL : 'hello@silverspringscare.com.au', ENT_QUOTES, 'UTF-8') ?><br><?= htmlspecialchars(defined('POSTAL_ADDRESS') ? POSTAL_ADDRESS : 'PO Box 4000, Gippsland Mail Centre VIC 3841', ENT_QUOTES, 'UTF-8') ?></p>
+            <p style="margin: 0.25rem 0 0; font-size: 0.85rem; color: var(--color-text-muted);"><?= htmlspecialchars(defined('SITE_EMAIL') ? SITE_EMAIL : 'info@silverspringscare.com.au', ENT_QUOTES, 'UTF-8') ?><br><?= htmlspecialchars(defined('POSTAL_ADDRESS') ? POSTAL_ADDRESS : 'PO Box 4000, Gippsland Mail Centre VIC 3841', ENT_QUOTES, 'UTF-8') ?></p>
           </div>
           <div style="background: #ffffff; padding: 1rem; border-radius: var(--radius-md); border: 1px solid var(--color-forest-200);">
-            <strong style="color: var(--color-forest-700);">📞 Call 1300 300 630</strong>
+            <strong style="color: var(--color-forest-700);">📞 Call <?= htmlspecialchars(defined('SITE_PHONE') ? SITE_PHONE : '+61428996879', ENT_QUOTES, 'UTF-8') ?></strong>
             <p style="margin: 0.25rem 0 0; font-size: 0.85rem; color: var(--color-text-muted);">Monday &ndash; Friday 8:30am &ndash; 5:00pm AEST</p>
           </div>
         </div>

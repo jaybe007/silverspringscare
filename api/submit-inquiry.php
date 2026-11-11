@@ -82,5 +82,5 @@ try {
     ]);
 } catch (PDOException $e) {
     error_log('Inquiry Insert Error: ' . $e->getMessage());
-    json_response(['success' => false, 'message' => 'An error occurred while saving your message. Please call 1300 772 273.'], 500);
+    json_response(['success' => false, 'message' => 'An error occurred while saving your message. Please call ' . (defined('SITE_PHONE') ? SITE_PHONE : '+61428996879') . '.'], 500);
 }

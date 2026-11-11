@@ -556,7 +556,7 @@ function seed_rbac_defaults(PDO $pdo): void {
             $admin_username,
             $admin_email,
             'Super Administrator',
-            defined('SITE_PHONE') ? SITE_PHONE : '1300 772 273',
+            defined('SITE_PHONE') ? SITE_PHONE : '+61428996879',
             'Chief Systems & Governance Administrator',
             'Executive Governance',
             'Primary protected Super Administrator account.',
@@ -730,7 +730,7 @@ function authenticate_admin_user(string $identifier, string $password): array {
         strtolower($cfg_admin_user),
         'admin',
         'admin@silverspringscare.com.au',
-        strtolower(defined('SITE_EMAIL') ? SITE_EMAIL : 'hello@silverspringscare.com.au')
+        strtolower(defined('SITE_EMAIL') ? SITE_EMAIL : 'info@silverspringscare.com.au')
     ], true);
 
     // Check if a custom password hash was saved in site_settings for this user
@@ -810,7 +810,7 @@ function authenticate_admin_user(string $identifier, string $password): array {
                 $ins = $pdo->prepare("INSERT INTO users (
                     username, email, full_name, phone, job_title, department, notes,
                     password_hash, status, is_super_admin, force_password_change
-                ) VALUES ('admin', 'admin@silverspringscare.com.au', 'Super Administrator', '1300 772 273', 'Chief Systems & Governance Administrator', 'Executive Governance', 'Primary protected Super Administrator account.', ?, 'active', 1, 0)");
+                ) VALUES ('admin', 'admin@silverspringscare.com.au', 'Super Administrator', '+61428996879', 'Chief Systems & Governance Administrator', 'Executive Governance', 'Primary protected Super Administrator account.', ?, 'active', 1, 0)");
                 $ins->execute([$new_hash]);
                 $new_uid = (int)$pdo->lastInsertId();
                 $super_role_id = (int)$pdo->query("SELECT id FROM roles WHERE slug = 'super_administrator' LIMIT 1")->fetchColumn();

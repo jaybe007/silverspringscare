@@ -223,7 +223,7 @@ document.addEventListener('DOMContentLoaded', () => {
     } catch (err) {
       if (feedbackBox) {
         feedbackBox.className = 'alert alert-danger';
-        feedbackBox.textContent = 'Network error. Please try submitting again or call 1300 772 273 directly.';
+        feedbackBox.textContent = 'Network error. Please try submitting again or call +61428996879 directly.';
         feedbackBox.style.display = 'block';
       }
       if (submitBtn) {

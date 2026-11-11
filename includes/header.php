@@ -15,12 +15,12 @@ $site_email = get_site_setting('site_email', SITE_EMAIL);
 $site_logo_src = get_site_asset_url('site_logo_url', 'assets/images/logo.svg');
 $site_logo_alt = get_site_setting('site_logo_alt', 'Silver Springs Care - Empowering Abilities, Enriching Lives');
 $site_favicon_src = get_site_asset_url('site_favicon_url', 'assets/images/favicon.svg');
-$utility_bar_text = get_site_setting('utility_bar_text', 'Registered NDIS Provider • Serving Fletcher, Newcastle & Victorian Communities');
+$utility_bar_text = get_site_setting('utility_bar_text', 'Registered NDIS Provider • Serving All Australians Nationwide');
 $header_cta_primary_text = get_site_setting('header_cta_primary_text', 'Make an Enquiry');
 $header_cta_secondary_text = get_site_setting('header_cta_secondary_text', 'Support Journey');
 
 $page_title = $page_title ?? ($site_name . ' | ' . rtrim($site_tagline, '.'));
-$page_desc = $page_desc ?? 'Discover personalised Australian disability support services designed around your choices, goals, and dignity. Serving Melbourne and Victorian communities.';
+$page_desc = $page_desc ?? 'Discover personalised Australian disability support services designed around your choices, goals, and dignity. Serving participants and families across Australia.';
 ?>
 <!DOCTYPE html>
 <html lang="en-AU" class="no-js">
@@ -58,12 +58,12 @@ $page_desc = $page_desc ?? 'Discover personalised Australian disability support 
         "url": "<?= BASE_URL ?>",
         "logo": "<?= htmlspecialchars($site_logo_src, ENT_QUOTES, 'UTF-8') ?>",
         "slogan": "<?= htmlspecialchars($site_tagline, ENT_QUOTES, 'UTF-8') ?>",
-        "description": "Australian person-centred disability support services across Melbourne and Victoria.",
+        "description": "Australian person-centred disability support services across Australia.",
         "telephone": "<?= htmlspecialchars($site_phone, ENT_QUOTES, 'UTF-8') ?>",
         "email": "<?= htmlspecialchars($site_email, ENT_QUOTES, 'UTF-8') ?>",
         "areaServed": {
           "@type": "AdministrativeArea",
-          "name": "Victoria, Australia"
+          "name": "Australia"
         }
       },
       {

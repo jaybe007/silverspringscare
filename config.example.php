@@ -32,10 +32,10 @@ define('DB_USER', 'cpaneluser_dbuser');
 define('DB_PASS', 'YourSecurePasswordHere');
 
 // Contact Details & Australian Business Number
-// define('APP_ABN', 'XX XXX XXX XXX');
-// define('SITE_PHONE', '1300 772 273');
-// define('SITE_PHONE_RAW', '1300772273');
-// define('SITE_EMAIL', 'hello@silverspringscare.com.au');
+// define('APP_ABN', '68 712 880 1');
+// define('SITE_PHONE', '+61428996879');
+// define('SITE_PHONE_RAW', '+61428996879');
+// define('SITE_EMAIL', 'info@silverspringscare.com.au');
 // define('SITE_REFERRAL_EMAIL', 'referrals@silverspringscare.com.au');
 
 // Administrative Portal Credentials (/admin/)

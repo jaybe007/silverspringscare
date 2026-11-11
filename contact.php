@@ -4,8 +4,8 @@
  * Welcoming, Accessible Contact Page with Verified Australian Emergency Protocols
  */
 
-$page_title = "Contact Us | Silver Springs Care | Melbourne & Victoria";
-$page_desc = "Get in touch with Silver Springs Care. Speak with our friendly intake coordinators about disability support, referrals, or service availability in Victoria.";
+$page_title = "Contact Us | Silver Springs Care | Australia";
+$page_desc = "Get in touch with Silver Springs Care. Speak with our friendly intake coordinators about disability support, referrals, or service availability across Australia.";
 
 require_once __DIR__ . '/includes/config.php';
 require_once __DIR__ . '/includes/header.php';
@@ -97,7 +97,7 @@ require_once __DIR__ . '/includes/header.php';
               <div>
                 <div style="font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--color-text-muted); font-weight: 700;">Correspondence &amp; Postal Address</div>
                 <div style="font-size: 1.05rem; font-weight: 750; color: var(--color-navy-900); margin: 0.2rem 0;"><?= htmlspecialchars(defined('POSTAL_ADDRESS') ? POSTAL_ADDRESS : 'PO Box 4000, Gippsland Mail Centre VIC 3841', ENT_QUOTES, 'UTF-8') ?></div>
-                <div style="font-size: 0.85rem; color: var(--color-text-muted);">Serving Fletcher NSW, Hunter Region &amp; Victorian Communities.</div>
+                <div style="font-size: 0.85rem; color: var(--color-text-muted);">Serving All Australians Nationwide.</div>
               </div>
             </div>
           </div>

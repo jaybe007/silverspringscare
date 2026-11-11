@@ -337,8 +337,8 @@ function seed_default_content(PDO $pdo) {
                 'Support Team', 2
             ],
             [
-                'What geographic areas do you service in Victoria?',
-                'We currently provide support services across Melbourne Metropolitan regions (Northern, Western, Eastern, and South-Eastern suburbs), Geelong, and surrounding Victorian regional districts.',
+                'What geographic areas do you service?',
+                'We provide support services to participants and families across Australia nationwide. Contact our intake team to confirm availability in your specific area.',
                 'Service Areas', 3
             ],
             [
@@ -365,19 +365,19 @@ function seed_default_content(PDO $pdo) {
             [
                 'Disability Support Worker (Core & Community)',
                 'Casual / Part-Time',
-                'Melbourne (North, West, South-East) & Geelong',
+                'Multiple Locations Across Australia',
                 'Provide 1:1 in-home daily support, personal care, and accompany participants on community outings, life skills activities, and hobbies.'
             ],
             [
                 'Weekend & Respite Support Worker',
                 'Casual / Weekend Focus',
-                'Melbourne Metropolitan & Regional Hubs',
+                'Metro & Regional Communities Nationwide',
                 'Deliver compassionate weekend support and short-term respite care. Excellent penalty rates and guaranteed shift allowances.'
             ],
             [
                 'Support Coordinator / Case Manager',
                 'Full-Time / Part-Time',
-                'Melbourne Office & Hybrid Work',
+                'National Remote & Hybrid Work',
                 'Assist participants and families to implement their NDIS plans, connect with accredited clinicians, and resolve complex service barriers.'
             ]
         ];
@@ -403,7 +403,7 @@ function seed_default_content(PDO $pdo) {
             ],
             [
                 'Claire B.',
-                'Senior Support Coordinator • Melbourne',
+                'Senior Support Coordinator • Australia',
                 'As a Support Coordinator, what I value most is their prompt responsiveness. When a referral is sent, I receive confirmation the same day and a clear service agreement within 48 hours.'
             ]
         ];

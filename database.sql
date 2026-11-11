@@ -107,7 +107,7 @@ CREATE TABLE IF NOT EXISTS `faqs` (
 INSERT INTO `faqs` (`question`, `answer`, `category`, `sort_order`, `is_active`) VALUES
 ('What NDIS funding categories can be used with Silver Springs Care?', 'We support participants with Plan-Managed and Self-Managed NDIS plans across Core Supports (Assistance with Daily Life, Community Participation) and Capacity Building (Increased Social and Community Participation, Improved Daily Living Skills).', 'Funding', 1, 1),
 ('Do I get to choose my support workers?', 'Yes, absolutely. We believe mutual rapport is essential. During our initial consultation, we discuss qualities, interests, gender preferences, and cultural background. We introduce workers before service commences, and changes can be requested at any time.', 'Support Team', 2, 1),
-('What geographic areas do you service in Victoria?', 'We currently provide support services across Melbourne Metropolitan regions (Northern, Western, Eastern, and South-Eastern suburbs), Geelong, and surrounding Victorian regional districts.', 'Service Areas', 3, 1),
+('What geographic areas do you service?', 'We provide support services to participants and families across Australia nationwide. Contact our intake team to confirm availability in your specific area.', 'Service Areas', 3, 1),
 ('How are your support rates determined?', 'All rates adhere strictly to the limits published in the current official NDIS Pricing Arrangements and Price Limits. We never charge above price limits, and service agreements provide itemised breakdowns.', 'Pricing', 4, 1),
 ('What happens if my needs or goals change during the year?', 'Support agreements are flexible. We conduct regular check-ins, and you or your support coordinator can request adjustments at any time as your funding or personal goals evolve.', 'Flexibility', 5, 1);
 
@@ -125,9 +125,9 @@ CREATE TABLE IF NOT EXISTS `vacancies` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 INSERT INTO `vacancies` (`title`, `role_type`, `location`, `summary`, `is_active`) VALUES
-('Disability Support Worker (Core & Community)', 'Casual / Part-Time', 'Melbourne (North, West, South-East) & Geelong', 'Provide 1:1 in-home daily support, personal care, and accompany participants on community outings, life skills activities, and hobbies.', 1),
-('Weekend & Respite Support Worker', 'Casual / Weekend Focus', 'Melbourne Metropolitan & Regional Hubs', 'Deliver compassionate weekend support and short-term respite care. Excellent penalty rates and guaranteed shift allowances.', 1),
-('Support Coordinator / Case Manager', 'Full-Time / Part-Time', 'Melbourne Office & Hybrid Work', 'Assist participants and families to implement their NDIS plans, connect with accredited clinicians, and resolve complex service barriers.', 1);
+('Disability Support Worker (Core & Community)', 'Casual / Part-Time', 'Multiple Locations Across Australia', 'Provide 1:1 in-home daily support, personal care, and accompany participants on community outings, life skills activities, and hobbies.', 1),
+('Weekend & Respite Support Worker', 'Casual / Weekend Focus', 'Metro & Regional Communities Nationwide', 'Deliver compassionate weekend support and short-term respite care. Excellent penalty rates and guaranteed shift allowances.', 1),
+('Support Coordinator / Case Manager', 'Full-Time / Part-Time', 'National Remote & Hybrid Work', 'Assist participants and families to implement their NDIS plans, connect with accredited clinicians, and resolve complex service barriers.', 1);
 
 -- ------------------------------------------------------------------------------
 -- 8. Approved Testimonials Table & Default Data
@@ -144,7 +144,7 @@ CREATE TABLE IF NOT EXISTS `testimonials` (
 INSERT INTO `testimonials` (`author_name`, `role_label`, `quote`, `is_active`) VALUES
 ('Julian T.', 'Participant • Independent Living Support', 'My support worker Marcus doesn''t just do things for me — he does things with me. I learned how to cook my own pasta sauce and now I host my brother for dinner on Fridays.', 1),
 ('Elena & Mark S.', 'Family Carers • Respite Care', 'Finding reliable respite care used to give me immense anxiety. Silver Springs Care took the time to meet our daughter twice before her weekend stay. She came home smiling.', 1),
-('Claire B.', 'Senior Support Coordinator • Melbourne', 'As a Support Coordinator, what I value most is their prompt responsiveness. When a referral is sent, I receive confirmation the same day and a clear service agreement within 48 hours.', 1);
+('Claire B.', 'Senior Support Coordinator • Australia', 'As a Support Coordinator, what I value most is their prompt responsiveness. When a referral is sent, I receive confirmation the same day and a clear service agreement within 48 hours.', 1);
 
 -- ------------------------------------------------------------------------------
 -- 9. Educational Resources Table & Default Data

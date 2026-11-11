@@ -432,9 +432,9 @@ $ext_webmail_val  = get_site_setting('external_webmail_url', '');
 
             <div class="form-group">
               <label class="form-label">Receiving / Forwarding Email Address for Website Forms</label>
-              <input type="email" name="notification_email" class="form-control" required value="<?= htmlspecialchars($notify_email_val, ENT_QUOTES, 'UTF-8') ?>" placeholder="hello@silverspringscare.com.au">
+              <input type="email" name="notification_email" class="form-control" required value="<?= htmlspecialchars($notify_email_val, ENT_QUOTES, 'UTF-8') ?>" placeholder="info@silverspringscare.com.au">
               <span class="form-hint">
-                Every message submitted through <strong>Send Our Team a Message</strong> is saved in this Webmail Inbox AND emailed to this address. You can set this to `hello@silverspringscare.com.au` or your personal Gmail/Outlook address.
+                Every message submitted through <strong>Send Our Team a Message</strong> is saved in this Webmail Inbox AND emailed to this address. You can set this to `info@silverspringscare.com.au` or your personal Gmail/Outlook address.
               </span>
             </div>
 

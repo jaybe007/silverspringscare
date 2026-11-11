@@ -45,7 +45,7 @@ if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
 
 $pdo = get_db_connection();
 if (!$pdo) {
-    json_response(['success' => false, 'message' => 'Service currently unavailable. Please call 1300 772 273.'], 500);
+    json_response(['success' => false, 'message' => 'Service currently unavailable. Please call ' . (defined('SITE_PHONE') ? SITE_PHONE : '+61428996879') . '.'], 500);
 }
 
 try {
@@ -93,5 +93,5 @@ try {
     ]);
 } catch (PDOException $e) {
     error_log('Journey Lead Insert Error: ' . $e->getMessage());
-    json_response(['success' => false, 'message' => 'Unable to save support preferences. Please call 1300 772 273.'], 500);
+    json_response(['success' => false, 'message' => 'Unable to save support preferences. Please call ' . (defined('SITE_PHONE') ? SITE_PHONE : '+61428996879') . '.'], 500);
 }

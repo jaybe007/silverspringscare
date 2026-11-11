@@ -5,7 +5,7 @@
  */
 
 $page_title = "Careers | Silver Springs Care | Join Our Disability Support Team";
-$page_desc = "Join a compassionate, values-driven disability care provider in Melbourne and Victoria. Flexible rosters, supportive management, and meaningful person-centred work.";
+$page_desc = "Join a compassionate, values-driven disability care provider in Australia. Flexible rosters, supportive management, and meaningful person-centred work.";
 
 require_once __DIR__ . '/includes/config.php';
 require_once __DIR__ . '/includes/header.php';
@@ -50,7 +50,7 @@ require_once __DIR__ . '/includes/header.php';
         </div>
         <h3 style="font-size: 1.25rem; margin-bottom: 0.5rem; color: var(--color-navy-900);">Flexible, Balanced Rosters</h3>
         <p style="font-size: 0.9rem; color: var(--color-text-muted); line-height: 1.6;">
-          Work shifts that fit your life, family, or studies. Morning, afternoon, evening, and weekend opportunities across Melbourne suburbs.
+          Work shifts that fit your life, family, or studies. Morning, afternoon, evening, and weekend opportunities across Australian communities.
         </p>
       </div>
 
@@ -89,7 +89,7 @@ require_once __DIR__ . '/includes/header.php';
         <span class="badge badge-forest">Open Opportunities</span>
         <h2 class="section-title">Current Positions &amp; Expressions of Interest</h2>
         <p class="lead">
-          We are actively seeking compassionate professionals across Melbourne Metropolitan and Geelong regions.
+          We are actively seeking compassionate professionals across Australia.
         </p>
 
         <div style="display: flex; flex-direction: column; gap: 1rem; margin-top: 1.5rem;">
@@ -98,7 +98,7 @@ require_once __DIR__ . '/includes/header.php';
           if (empty($vacancies)):
           ?>
             <div style="background: #ffffff; padding: 1.75rem; border-radius: var(--radius-xl); border: 1px solid var(--color-slate-200);">
-              <p style="color: var(--color-text-muted); margin: 0;">We welcome ongoing expressions of interest from dedicated disability support workers across Victoria.</p>
+              <p style="color: var(--color-text-muted); margin: 0;">We welcome ongoing expressions of interest from dedicated disability support workers across Australia.</p>
             </div>
           <?php else: ?>
             <?php foreach ($vacancies as $vac): ?>
@@ -123,7 +123,7 @@ require_once __DIR__ . '/includes/header.php';
           <ul style="font-size: 0.85rem; color: var(--color-text-muted); display: flex; flex-direction: column; gap: 0.35rem;">
             <li>&bull; Current Australian NDIS Worker Screening Check (or willingness to obtain)</li>
             <li>&bull; Current HLTAID011 Provide First Aid &amp; CPR certificate</li>
-            <li>&bull; Valid Victorian Driver's Licence &amp; reliable insured vehicle (preferred)</li>
+            <li>&bull; Valid Australian Driver's Licence &amp; reliable insured vehicle (preferred)</li>
             <li>&bull; Right to work in Australia</li>
           </ul>
         </div>
@@ -172,7 +172,7 @@ require_once __DIR__ . '/includes/header.php';
 
             <div class="form-group">
               <label for="app_loc" class="form-label">Preferred Location / Suburb</label>
-              <input type="text" id="app_loc" name="location_pref" class="form-control" placeholder="e.g. Northern Melbourne">
+              <input type="text" id="app_loc" name="location_pref" class="form-control" placeholder="e.g. Your Suburb or Region">
             </div>
           </div>
 
