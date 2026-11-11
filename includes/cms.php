@@ -33,6 +33,7 @@ function get_cms_defaults(): array {
         'utility_bar_text'          => 'Registered NDIS Provider • Serving All Australians Nationwide',
         'header_cta_primary_text'   => 'Make an Enquiry',
         'header_cta_secondary_text' => 'Support Journey',
+        'external_webmail_url'      => 'https://silverspringscare.com.au:2096',
 
         // 2. Company Vision, Mission, Motto & Core Identity
         'brand_slogan_banner'       => 'COMPASSIONATE CARE. EMPOWERED LIVES. STRONGER COMMUNITIES.',

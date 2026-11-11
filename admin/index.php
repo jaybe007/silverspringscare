@@ -252,8 +252,11 @@ $pdo = get_db_connection();
 $referrals_count = 0;
 $new_referrals_count = 0;
 $inquiries_count = 0;
+$new_inquiries_count = 0;
 $applications_count = 0;
+$new_applications_count = 0;
 $journey_count = 0;
+$new_journey_count = 0;
 $users_count = 0;
 $roles_count = 0;
 $perms_count = 0;
@@ -266,8 +269,11 @@ if ($pdo) {
     $referrals_count = (int)$pdo->query("SELECT COUNT(*) FROM referrals")->fetchColumn();
     $new_referrals_count = (int)$pdo->query("SELECT COUNT(*) FROM referrals WHERE status = 'new'")->fetchColumn();
     $inquiries_count = (int)$pdo->query("SELECT COUNT(*) FROM inquiries")->fetchColumn();
+    $new_inquiries_count = (int)$pdo->query("SELECT COUNT(*) FROM inquiries WHERE status = 'new'")->fetchColumn();
     $applications_count = (int)$pdo->query("SELECT COUNT(*) FROM applications")->fetchColumn();
+    $new_applications_count = (int)$pdo->query("SELECT COUNT(*) FROM applications WHERE status = 'new'")->fetchColumn();
     $journey_count = (int)$pdo->query("SELECT COUNT(*) FROM journey_leads")->fetchColumn();
+    $new_journey_count = (int)$pdo->query("SELECT COUNT(*) FROM journey_leads WHERE status = 'new'")->fetchColumn();
     $users_count = (int)$pdo->query("SELECT COUNT(*) FROM users WHERE status != 'deleted' AND deleted_at IS NULL")->fetchColumn();
     $roles_count = (int)$pdo->query("SELECT COUNT(*) FROM roles")->fetchColumn();
     $perms_count = (int)$pdo->query("SELECT COUNT(*) FROM permissions")->fetchColumn();
@@ -290,8 +296,8 @@ if (!$is_super_actor) {
         $role_display = $uroles[0]['name'];
     }
 }
-$site_email = get_site_setting('site_email', SITE_EMAIL);
-$email_short = explode('@', $site_email)[0] . '@';
+$site_email = get_site_setting('site_email', defined('SITE_EMAIL') ? SITE_EMAIL : 'info@silverspringscare.com.au');
+$webmail_url = get_site_setting('external_webmail_url', 'https://silverspringscare.com.au:2096') ?: 'https://silverspringscare.com.au:2096';
 ?>
 <!DOCTYPE html>
 <html lang="en-AU">
@@ -415,11 +421,10 @@ $email_short = explode('@', $site_email)[0] . '@';
       justify-content: center;
       flex-shrink: 0;
     }
-    .exec-main-split {
-      display: grid;
-      grid-template-columns: 2.15fr 1fr;
+    .intake-pipeline-wrap {
+      display: flex;
+      flex-direction: column;
       gap: 1.5rem;
-      align-items: start;
     }
     .exec-panel {
       background: #ffffff;
@@ -462,9 +467,6 @@ $email_short = explode('@', $site_email)[0] . '@';
     @media (max-width: 1200px) {
       .exec-kpi-grid {
         grid-template-columns: repeat(2, 1fr);
-      }
-      .exec-main-split {
-        grid-template-columns: 1fr;
       }
     }
     @media (max-width: 640px) {
@@ -664,46 +666,38 @@ $email_short = explode('@', $site_email)[0] . '@';
          ====================================================================== -->
     <?php else: ?>
 
-      <!-- 1. Dark Navy Hero Welcome Banner -->
+      <!-- 1. Executive Intake Command Banner -->
       <section class="exec-hero-banner" aria-label="Administrator Welcome Banner">
         <h1 class="exec-hero-title">Welcome back, <?= htmlspecialchars($welcome_name, ENT_QUOTES, 'UTF-8') ?>!</h1>
         <p class="exec-hero-sub">
-          Role: <span class="role-accent"><?= htmlspecialchars($role_display, ENT_QUOTES, 'UTF-8') ?></span>
-          &bull; Service Region: <strong style="color: #ffffff;"><?= htmlspecialchars($s['primary_locations'] ?? PRIMARY_LOCATIONS, ENT_QUOTES, 'UTF-8') ?></strong>
+          Signed in as: <span class="role-accent"><?= htmlspecialchars($role_display, ENT_QUOTES, 'UTF-8') ?></span>
         </p>
 
         <div class="exec-hero-actions">
-          <a href="<?= BASE_PATH ?>/admin/webmail.php" class="exec-btn-glass">
+          <a href="<?= htmlspecialchars($webmail_url, ENT_QUOTES, 'UTF-8') ?>" target="_blank" rel="noopener noreferrer" class="exec-btn-amber" style="background: #2563eb; border-color: #3b82f6;" title="Direct login to check webmail for info@silverspringscare.com.au">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-            Open Webmail (<?= htmlspecialchars($email_short, ENT_QUOTES, 'UTF-8') ?>)
+            Check Webmail (info@silverspringscare.com.au) &nearr;
           </a>
 
           <a href="#sec-referrals" class="exec-btn-amber">
             Review Referrals (<?= $new_referrals_count ?> New)
           </a>
 
-          <?php if ($can_edit_content): ?>
-            <a href="<?= BASE_PATH ?>/admin/content.php?tab=branding" class="exec-btn-glass">
-              + Edit Website &amp; Logo
-            </a>
-          <?php endif; ?>
-
-          <?php if ($can_manage_users): ?>
-            <a href="<?= BASE_PATH ?>/admin/users.php?tab=create_user" class="exec-btn-glass">
-              + Create User &amp; Assign Role
-            </a>
-          <?php endif; ?>
+          <a href="<?= BASE_PATH ?>/admin/webmail.php" class="exec-btn-glass" title="View form submissions saved in website database">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            Website Messages (<?= $inquiries_count ?>)
+          </a>
         </div>
       </section>
 
-      <!-- 2. 4 KPI Metric Cards with Colored Icon Badges -->
+      <!-- 2. 4 Clean Metric Cards for the 4 Intake Channels -->
       <div class="exec-kpi-grid">
         <!-- KPI 1: Professional Referrals -->
         <div class="exec-kpi-card">
           <div>
             <div class="exec-kpi-label">Professional Referrals</div>
             <div class="exec-kpi-value"><?= $referrals_count ?></div>
-            <div class="exec-kpi-sub">Total Referrals: <?= $referrals_count ?> (<?= $new_referrals_count ?> New)</div>
+            <div class="exec-kpi-sub"><?= $new_referrals_count ?> New &bull; <?= max(0, $referrals_count - $new_referrals_count) ?> Actioned</div>
           </div>
           <div class="exec-kpi-icon" style="background: #fef3c7; color: #d97706;">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
@@ -715,7 +709,7 @@ $email_short = explode('@', $site_email)[0] . '@';
           <div>
             <div class="exec-kpi-label">Contact Enquiries</div>
             <div class="exec-kpi-value"><?= $inquiries_count ?></div>
-            <div class="exec-kpi-sub">Participant &amp; Family Messages</div>
+            <div class="exec-kpi-sub"><?= $new_inquiries_count ?> New Messages &bull; <?= $inquiries_count ?> Total</div>
           </div>
           <div class="exec-kpi-icon" style="background: #eff6ff; color: #2563eb;">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
@@ -727,19 +721,19 @@ $email_short = explode('@', $site_email)[0] . '@';
           <div>
             <div class="exec-kpi-label">Support Journey Leads</div>
             <div class="exec-kpi-value"><?= $journey_count ?></div>
-            <div class="exec-kpi-sub">Interactive Wizard Submissions</div>
+            <div class="exec-kpi-sub"><?= $new_journey_count ?> New Submissions &bull; <?= $journey_count ?> Total</div>
           </div>
           <div class="exec-kpi-icon" style="background: #ecfdf5; color: #10b981;">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
           </div>
         </div>
 
-        <!-- KPI 4: Staff Accounts & Careers -->
+        <!-- KPI 4: Job Applications -->
         <div class="exec-kpi-card">
           <div>
-            <div class="exec-kpi-label">Users &amp; Job Applications</div>
-            <div class="exec-kpi-value"><?= $users_count ?> <span style="font-size: 1rem; color: #64748b; font-weight: 600;">/ <?= $applications_count ?></span></div>
-            <div class="exec-kpi-sub"><?= $users_count ?> Staff Users &bull; <?= $roles_count ?> RBAC Roles</div>
+            <div class="exec-kpi-label">Job Applications</div>
+            <div class="exec-kpi-value"><?= $applications_count ?></div>
+            <div class="exec-kpi-sub"><?= $new_applications_count ?> New Candidates &bull; <?= $applications_count ?> Total</div>
           </div>
           <div class="exec-kpi-icon" style="background: #f5f3ff; color: #7c3aed;">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
@@ -747,11 +741,25 @@ $email_short = explode('@', $site_email)[0] . '@';
         </div>
       </div>
 
-      <!-- 3. 2-Column Split: Intake Tables (Left) + Corporate Settings & RBAC Control (Right) -->
-      <div class="exec-main-split">
-        
-        <!-- LEFT COLUMN: Intake Tables -->
-        <div>
+      <!-- Quick Navigation Filter for Intake Queues -->
+      <div style="display: flex; gap: 0.75rem; margin-bottom: 1.5rem; flex-wrap: wrap; align-items: center; background: #ffffff; padding: 0.85rem 1.25rem; border-radius: 12px; border: 1px solid #e2e8f0;">
+        <span style="font-size: 0.8rem; font-weight: 800; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em; margin-right: 0.25rem;">Intake Queues:</span>
+        <a href="#sec-referrals" class="ssc-topbar-btn" style="font-size: 0.8rem;">
+          Referrals (<?= $referrals_count ?><?= $new_referrals_count > 0 ? " • {$new_referrals_count} New" : '' ?>)
+        </a>
+        <a href="#sec-inquiries" class="ssc-topbar-btn" style="font-size: 0.8rem;">
+          Contact Enquiries (<?= $inquiries_count ?><?= $new_inquiries_count > 0 ? " • {$new_inquiries_count} New" : '' ?>)
+        </a>
+        <a href="#sec-journey" class="ssc-topbar-btn" style="font-size: 0.8rem;">
+          Support Journey Leads (<?= $journey_count ?><?= $new_journey_count > 0 ? " • {$new_journey_count} New" : '' ?>)
+        </a>
+        <a href="#sec-applications" class="ssc-topbar-btn" style="font-size: 0.8rem;">
+          Job Applications (<?= $applications_count ?><?= $new_applications_count > 0 ? " • {$new_applications_count} New" : '' ?>)
+        </a>
+      </div>
+
+      <!-- 3. Full-Width Intake Management Sections -->
+      <div class="intake-pipeline-wrap">
           <!-- Panel 1: Recent Professional Referrals -->
           <section id="sec-referrals" class="exec-panel">
             <div class="exec-panel-header">
@@ -1017,113 +1025,6 @@ $email_short = explode('@', $site_email)[0] . '@';
               </div>
             <?php endif; ?>
           </section>
-        </div>
-
-        <!-- RIGHT COLUMN: Corporate Settings, Logo & RBAC Quick Control -->
-        <div>
-          <!-- Right Card 1: Corporate & Brand Settings (matching screenshot) -->
-          <aside class="exec-panel" aria-label="Corporate Settings">
-            <div class="exec-panel-header">
-              <h2 class="exec-panel-title">Corporate Settings</h2>
-              <?php if ($can_edit_content): ?>
-                <a href="<?= BASE_PATH ?>/admin/content.php?tab=branding" class="ssc-topbar-btn" style="font-size: 0.75rem; padding: 0.3rem 0.65rem;">Edit &rarr;</a>
-              <?php endif; ?>
-            </div>
-
-            <!-- Active Website Logo Preview & Direct 1-Click Upload -->
-            <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 1rem; text-align: center; margin-bottom: 1rem;">
-              <div style="font-size: 0.7rem; text-transform: uppercase; color: #64748b; font-weight: 700; margin-bottom: 0.5rem;">Active Website Logo</div>
-              <img id="dash_card_logo_preview" src="<?= htmlspecialchars(get_site_asset_url('site_logo_url', 'assets/images/logo.svg'), ENT_QUOTES, 'UTF-8') ?>" alt="Website Logo" style="max-height: 48px; max-width: 100%; object-fit: contain; margin: 0 auto;">
-              <div id="dash_card_logo_badge" style="display: none; margin-top: 0.4rem; font-size: 0.7rem; font-weight: 700; color: var(--color-forest-700);">New Logo Preview &mdash; Click &ldquo;Save Logo&rdquo;</div>
-
-              <?php if ($can_edit_content): ?>
-                <form method="POST" action="<?= BASE_PATH ?>/admin/index.php" enctype="multipart/form-data" style="margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px dashed #cbd5e1; text-align: left;">
-                  <?= get_csrf_field() ?>
-                  <input type="hidden" name="action" value="save_cms_settings">
-                  <input type="hidden" name="return_view" value="overview">
-                  <input type="hidden" id="dash_card_logo_b64" name="upload_site_logo_base64" value="">
-                  <label for="dash_upload_logo" style="display: block; font-size: 0.72rem; font-weight: 700; color: #334155; margin-bottom: 0.35rem;">Quick Upload / Replace Logo:</label>
-                  <input type="file" id="dash_upload_logo" name="upload_site_logo" class="form-control" accept=".svg,.png,.jpg,.jpeg,.webp,.gif" style="font-size: 0.75rem; padding: 0.35rem; margin-bottom: 0.45rem;" data-preview-target="dash_card_logo_preview" data-badge-target="dash_card_logo_badge" data-b64-target="dash_card_logo_b64">
-                  <div style="display: flex; gap: 0.4rem;">
-                    <button type="submit" class="btn btn-primary btn-sm" style="flex: 1; font-size: 0.75rem; padding: 0.35rem 0.5rem;">Save Logo</button>
-                    <button type="submit" name="reset_logo" value="1" class="btn btn-secondary btn-sm" style="font-size: 0.75rem; padding: 0.35rem 0.5rem;" title="Restore Default Logo">Reset</button>
-                  </div>
-                </form>
-              <?php endif; ?>
-            </div>
-
-            <div class="exec-meta-item">
-              <div class="exec-meta-label">Company:</div>
-              <div class="exec-meta-val" style="text-transform: uppercase;"><?= htmlspecialchars($s['site_name'] ?? 'SILVER SPRINGS CARE', ENT_QUOTES, 'UTF-8') ?> PTY LTD</div>
-            </div>
-
-            <div class="exec-meta-item">
-              <div class="exec-meta-label">Tagline:</div>
-              <div class="exec-meta-val"><?= htmlspecialchars($s['site_tagline'] ?? (defined('APP_TAGLINE') ? APP_TAGLINE : 'Empowering Abilities, Enriching Lives.'), ENT_QUOTES, 'UTF-8') ?></div>
-            </div>
-
-            <div class="exec-meta-item">
-              <div class="exec-meta-label">Primary Phone &amp; Hours:</div>
-              <div class="exec-meta-val"><?= htmlspecialchars($s['site_phone'] ?? SITE_PHONE, ENT_QUOTES, 'UTF-8') ?></div>
-              <div style="font-size: 0.76rem; color: #64748b;"><?= htmlspecialchars($s['site_hours'] ?? SITE_HOURS, ENT_QUOTES, 'UTF-8') ?></div>
-            </div>
-
-            <div class="exec-meta-item">
-              <div class="exec-meta-label">Official Emails:</div>
-              <div class="exec-meta-val"><?= htmlspecialchars($s['site_email'] ?? SITE_EMAIL, ENT_QUOTES, 'UTF-8') ?></div>
-              <div style="font-size: 0.76rem; color: #64748b;">Referrals: <?= htmlspecialchars($s['site_referral_email'] ?? SITE_REFERRAL_EMAIL, ENT_QUOTES, 'UTF-8') ?></div>
-            </div>
-
-            <?php if ($can_edit_content): ?>
-              <div style="display: flex; flex-direction: column; gap: 0.55rem; margin-top: 1.15rem;">
-                <a href="<?= BASE_PATH ?>/admin/content.php?tab=branding" class="btn btn-primary btn-sm" style="width: 100%;">
-                  Change Logo &amp; Brand Identity
-                </a>
-                <a href="<?= BASE_PATH ?>/admin/content.php?tab=homepage" class="btn btn-secondary btn-sm" style="width: 100%;">
-                  Edit All Website Sections (CMS)
-                </a>
-              </div>
-            <?php endif; ?>
-          </aside>
-
-          <!-- Right Card 2: Enterprise User, Role & Permission Management -->
-          <?php if ($can_manage_users): ?>
-            <aside class="exec-panel" aria-label="User and Role Management">
-              <div class="exec-panel-header">
-                <h2 class="exec-panel-title">Access Control &amp; RBAC</h2>
-                <a href="<?= BASE_PATH ?>/admin/users.php" class="ssc-topbar-btn" style="font-size: 0.75rem; padding: 0.3rem 0.65rem;">Open &rarr;</a>
-              </div>
-
-              <div class="exec-meta-item">
-                <div class="exec-meta-label">Registered Platform Users:</div>
-                <div class="exec-meta-val"><?= $users_count ?> Active Accounts</div>
-              </div>
-
-              <div class="exec-meta-item">
-                <div class="exec-meta-label">Configured RBAC Roles:</div>
-                <div class="exec-meta-val"><?= $roles_count ?> Dynamic Roles</div>
-              </div>
-
-              <div class="exec-meta-item">
-                <div class="exec-meta-label">Granular Permission Rules:</div>
-                <div class="exec-meta-val"><?= $perms_count ?> Module Permissions</div>
-              </div>
-
-              <div style="display: flex; flex-direction: column; gap: 0.55rem; margin-top: 1.15rem;">
-                <a href="<?= BASE_PATH ?>/admin/users.php?tab=create_user" class="btn btn-navy btn-sm" style="width: 100%;">
-                  + Create New User Account
-                </a>
-                <a href="<?= BASE_PATH ?>/admin/users.php?tab=roles" class="btn btn-secondary btn-sm" style="width: 100%;">
-                  Assign Roles &amp; Permissions
-                </a>
-                <a href="<?= BASE_PATH ?>/admin/users.php?tab=audit_logs" class="btn btn-secondary btn-sm" style="width: 100%;">
-                  View Security Audit Logs
-                </a>
-              </div>
-            </aside>
-          <?php endif; ?>
-        </div>
-
       </div>
 
     <?php endif; ?>

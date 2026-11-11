@@ -161,7 +161,7 @@ if ($pdo && $selected_id > 0) {
 
 $flash = get_flash_message();
 $notify_email_val = get_site_setting('notification_email', get_site_setting('site_email', SITE_EMAIL));
-$ext_webmail_val  = get_site_setting('external_webmail_url', '');
+$ext_webmail_val  = get_site_setting('external_webmail_url', 'https://silverspringscare.com.au:2096') ?: 'https://silverspringscare.com.au:2096';
 ?>
 <!DOCTYPE html>
 <html lang="en-AU">
@@ -275,13 +275,12 @@ $ext_webmail_val  = get_site_setting('external_webmail_url', '');
       </div>
 
       <div style="display: flex; gap: 0.65rem; flex-wrap: wrap;">
-        <a href="?folder=compose" class="btn btn-primary btn-sm">+ Compose Email</a>
+        <a href="<?= htmlspecialchars($ext_webmail_val, ENT_QUOTES, 'UTF-8') ?>" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-sm" style="background: #2563eb; border-color: #1d4ed8; font-weight: 700;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: -2px; margin-right: 4px;"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+          Check Webmail (info@silverspringscare.com.au) &nearr;
+        </a>
+        <a href="?folder=compose" class="btn btn-navy btn-sm">+ Compose Email</a>
         <a href="?folder=settings" class="btn btn-secondary btn-sm">Mail Forwarding &amp; cPanel Settings</a>
-        <?php if ($ext_webmail_val !== ''): ?>
-          <a href="<?= htmlspecialchars($ext_webmail_val, ENT_QUOTES, 'UTF-8') ?>" target="_blank" rel="noopener" class="btn btn-navy btn-sm">
-            Launch External cPanel Webmail &nearr;
-          </a>
-        <?php endif; ?>
       </div>
     </div>
 

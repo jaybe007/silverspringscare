@@ -1863,10 +1863,18 @@ function render_admin_header(string $badge_label = 'Dashboard Overview'): void {
           <?php endif; ?>
         </a>
 
-        <a href="<?= BASE_PATH ?>/admin/webmail.php" class="ssc-sidebar-link <?= $current_script === 'webmail.php' ? 'is-active' : '' ?>">
+        <?php $sb_webmail_url = function_exists('get_site_setting') ? (get_site_setting('external_webmail_url', 'https://silverspringscare.com.au:2096') ?: 'https://silverspringscare.com.au:2096') : 'https://silverspringscare.com.au:2096'; ?>
+        <a href="<?= htmlspecialchars($sb_webmail_url, ENT_QUOTES, 'UTF-8') ?>" target="_blank" rel="noopener noreferrer" class="ssc-sidebar-link" title="Open cPanel Webmail to check info@silverspringscare.com.au">
           <span class="ssc-sidebar-link-left">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-            <span>Corporate Webmail</span>
+            <span>Check Webmail (info@) &nearr;</span>
+          </span>
+        </a>
+
+        <a href="<?= BASE_PATH ?>/admin/webmail.php" class="ssc-sidebar-link <?= $current_script === 'webmail.php' ? 'is-active' : '' ?>">
+          <span class="ssc-sidebar-link-left">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            <span>Website Form Inbox</span>
           </span>
           <?php if ($sb_inq_count > 0): ?>
             <span class="ssc-sidebar-badge"><?= $sb_inq_count ?></span>
