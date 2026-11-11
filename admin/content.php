@@ -633,6 +633,12 @@ if ($tab === 'resources' && !empty($_GET['edit_id'])) {
           </div>
 
           <div class="form-group">
+            <label for="google_site_verification" class="form-label">Google Search Console Verification Token (Meta Tag)</label>
+            <input type="text" id="google_site_verification" name="settings[google_site_verification]" class="form-control" value="<?= htmlspecialchars($s['google_site_verification'] ?? '', ENT_QUOTES, 'UTF-8') ?>" placeholder="e.g. your Google verification code from Search Console">
+            <span class="form-hint">Paste your Google Search Console verification token here to verify site ownership on Google Search in 1 click.</span>
+          </div>
+
+          <div class="form-group">
             <label for="footer_acknowledgment" class="form-label">Footer Acknowledgment of Country</label>
             <textarea id="footer_acknowledgment" name="settings[footer_acknowledgment]" class="form-control" rows="3"><?= htmlspecialchars($s['footer_acknowledgment'] ?? '', ENT_QUOTES, 'UTF-8') ?></textarea>
           </div>

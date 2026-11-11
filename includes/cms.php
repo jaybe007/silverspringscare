@@ -34,6 +34,7 @@ function get_cms_defaults(): array {
         'header_cta_primary_text'   => 'Make an Enquiry',
         'header_cta_secondary_text' => 'Support Journey',
         'external_webmail_url'      => 'https://silverspringscare.com.au:2096',
+        'google_site_verification'  => '',
 
         // 2. Company Vision, Mission, Motto & Core Identity
         'brand_slogan_banner'       => 'COMPASSIONATE CARE. EMPOWERED LIVES. STRONGER COMMUNITIES.',

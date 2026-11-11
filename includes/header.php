@@ -29,6 +29,11 @@ $page_desc = $page_desc ?? 'Discover personalised Australian disability support 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title><?= htmlspecialchars($page_title, ENT_QUOTES, 'UTF-8') ?></title>
   <meta name="description" content="<?= htmlspecialchars($page_desc, ENT_QUOTES, 'UTF-8') ?>">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+  <?php $g_verify = get_site_setting('google_site_verification'); ?>
+  <?php if (!empty($g_verify)): ?>
+  <meta name="google-site-verification" content="<?= htmlspecialchars($g_verify, ENT_QUOTES, 'UTF-8') ?>">
+  <?php endif; ?>
   
   <!-- Canonical & Open Graph -->
   <link rel="canonical" href="<?= BASE_URL . '/' . htmlspecialchars($current_page === 'index' ? '' : $current_page, ENT_QUOTES, 'UTF-8') ?>">
