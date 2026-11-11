@@ -202,6 +202,29 @@ function migrate_database(PDO $pdo) {
             is_active TINYINT DEFAULT 1,
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;");
+
+        $pdo->exec("CREATE TABLE IF NOT EXISTS webmail_messages (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            direction VARCHAR(20) NOT NULL DEFAULT 'inbound',
+            source_type VARCHAR(50) NOT NULL DEFAULT 'inquiry',
+            source_id INT NULL,
+            ref_code VARCHAR(60) NULL,
+            sender_name VARCHAR(255) NOT NULL,
+            sender_email VARCHAR(255) NOT NULL,
+            sender_phone VARCHAR(80) DEFAULT '',
+            recipient_email VARCHAR(255) NOT NULL,
+            subject VARCHAR(255) NOT NULL,
+            body TEXT NOT NULL,
+            is_read TINYINT(1) NOT NULL DEFAULT 0,
+            is_starred TINYINT(1) NOT NULL DEFAULT 0,
+            folder VARCHAR(30) NOT NULL DEFAULT 'inbox',
+            sent_by_user_id INT NULL,
+            delivery_status VARCHAR(50) DEFAULT 'stored',
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            INDEX idx_folder (folder),
+            INDEX idx_is_read (is_read),
+            INDEX idx_source (source_type, source_id)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;");
     } else {
         // SQLite Schema (Zero-Config Portability)
         $pdo->exec("CREATE TABLE IF NOT EXISTS inquiries (
@@ -312,6 +335,36 @@ function migrate_database(PDO $pdo) {
             is_active INTEGER DEFAULT 1,
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP
         );");
+
+        $pdo->exec("CREATE TABLE IF NOT EXISTS webmail_messages (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            direction TEXT NOT NULL DEFAULT 'inbound',
+            source_type TEXT NOT NULL DEFAULT 'inquiry',
+            source_id INTEGER NULL,
+            ref_code TEXT NULL,
+            sender_name TEXT NOT NULL,
+            sender_email TEXT NOT NULL,
+            sender_phone TEXT DEFAULT '',
+            recipient_email TEXT NOT NULL,
+            subject TEXT NOT NULL,
+            body TEXT NOT NULL,
+            is_read INTEGER NOT NULL DEFAULT 0,
+            is_starred INTEGER NOT NULL DEFAULT 0,
+            folder TEXT NOT NULL DEFAULT 'inbox',
+            sent_by_user_id INTEGER NULL,
+            delivery_status TEXT DEFAULT 'stored',
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+        );");
+    }
+
+    // Auto-migrate legacy configuration values in site_settings if present
+    try {
+        $pdo->exec("UPDATE site_settings SET setting_val = 'info@silverspringscare.com.au' WHERE setting_key = 'site_email' AND (setting_val = 'hello@silverspringscare.com.au' OR setting_val = '' OR setting_val IS NULL)");
+        $pdo->exec("UPDATE site_settings SET setting_val = 'info@silverspringscare.com.au' WHERE setting_key = 'notification_email' AND (setting_val = 'hello@silverspringscare.com.au' OR setting_val = '' OR setting_val IS NULL)");
+        $pdo->exec("UPDATE site_settings SET setting_val = '+61428996879' WHERE setting_key IN ('site_phone', 'site_phone_raw') AND setting_val IN ('1300 772 273', '1300772273')");
+        $pdo->exec("UPDATE site_settings SET setting_val = 'Serving All Australians Nationwide' WHERE setting_key = 'primary_locations' AND setting_val LIKE '%Victoria%'");
+    } catch (Exception $e) {
+        // Ignore if site_settings table not yet ready
     }
 
     // Seed default content if tables are empty

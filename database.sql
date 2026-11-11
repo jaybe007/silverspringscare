@@ -166,7 +166,33 @@ INSERT INTO `resources` (`title`, `category`, `read_time`, `excerpt`, `takeaway`
 ('The Family Guide to Supported Independent Living (SIL) Transitions', 'Living Options', '6 min read', 'What to expect when a family member prepares to move out of the family home into supported accommodation: trial visits, housemate matching, and roster planning.', 'Never rush a move. Ensure multiple pre-transition dinners and overnight trial stays to confirm mutual comfort.', 1);
 
 -- ------------------------------------------------------------------------------
--- 10. Enterprise RBAC: Users, Roles, Permissions, Overrides & Audit Logs
+-- 10. Unified Corporate Webmail & Form Submissions Inbox Table
+-- ------------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `webmail_messages` (
+  `id` INT AUTO_INCREMENT PRIMARY KEY,
+  `direction` VARCHAR(20) NOT NULL DEFAULT 'inbound',
+  `source_type` VARCHAR(50) NOT NULL DEFAULT 'inquiry',
+  `source_id` INT NULL,
+  `ref_code` VARCHAR(60) NULL,
+  `sender_name` VARCHAR(255) NOT NULL,
+  `sender_email` VARCHAR(255) NOT NULL,
+  `sender_phone` VARCHAR(80) DEFAULT '',
+  `recipient_email` VARCHAR(255) NOT NULL,
+  `subject` VARCHAR(255) NOT NULL,
+  `body` TEXT NOT NULL,
+  `is_read` TINYINT(1) NOT NULL DEFAULT 0,
+  `is_starred` TINYINT(1) NOT NULL DEFAULT 0,
+  `folder` VARCHAR(30) NOT NULL DEFAULT 'inbox',
+  `sent_by_user_id` INT NULL,
+  `delivery_status` VARCHAR(50) DEFAULT 'stored',
+  `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP,
+  INDEX `idx_folder` (`folder`),
+  INDEX `idx_is_read` (`is_read`),
+  INDEX `idx_source` (`source_type`, `source_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ------------------------------------------------------------------------------
+-- 11. Enterprise RBAC: Users, Roles, Permissions, Overrides & Audit Logs
 -- ------------------------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS `users` (
   `id` INT AUTO_INCREMENT PRIMARY KEY,
@@ -282,5 +308,14 @@ CREATE TABLE IF NOT EXISTS `login_attempts` (
 -- Seed default Super Administrator account (Username: admin / Password: SilverSprings2026!)
 INSERT IGNORE INTO `users` (`username`, `email`, `full_name`, `job_title`, `department`, `password_hash`, `status`, `is_super_admin`, `force_password_change`)
 VALUES ('admin', 'admin@silverspringscare.com.au', 'Principal Super Administrator', 'Super Administrator', 'Executive Governance', '$2y$10$yR6Hp8oxeTH4B1n0r5bQY.sM5xL86H5NENn1jrFhdN2mcVCWw0TLS', 'active', 1, 0);
+
+-- Seed core site settings defaults
+INSERT IGNORE INTO `site_settings` (`setting_key`, `setting_val`) VALUES
+('site_email', 'info@silverspringscare.com.au'),
+('notification_email', 'info@silverspringscare.com.au'),
+('site_phone', '+61428996879'),
+('site_phone_raw', '+61428996879'),
+('external_webmail_url', 'https://silverspringscare.com.au:2096'),
+('primary_locations', 'Serving All Australians Nationwide');
 
 SET FOREIGN_KEY_CHECKS = 1;

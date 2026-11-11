@@ -157,22 +157,32 @@ function record_and_dispatch_inbound_mail(array $payload): int {
     $body            = trim($payload['body'] ?? '');
 
     $notify_to = function_exists('get_site_setting')
-        ? get_site_setting('notification_email', get_site_setting('site_email', SITE_EMAIL))
-        : SITE_EMAIL;
+        ? get_site_setting('notification_email', get_site_setting('site_email', defined('SITE_EMAIL') ? SITE_EMAIL : 'info@silverspringscare.com.au'))
+        : (defined('SITE_EMAIL') ? SITE_EMAIL : 'info@silverspringscare.com.au');
+    if (empty($notify_to) || $notify_to === 'hello@silverspringscare.com.au') {
+        $notify_to = defined('SITE_EMAIL') ? SITE_EMAIL : 'info@silverspringscare.com.au';
+    }
 
     // 1. Attempt PHP mail() dispatch if configured on host
     $mail_sent = false;
     if ($notify_to !== '' && filter_var($notify_to, FILTER_VALIDATE_EMAIL)) {
-        $from_addr = defined('SITE_EMAIL') ? SITE_EMAIL : 'noreply@silverspringscare.com.au';
+        $from_addr = defined('SITE_EMAIL') ? SITE_EMAIL : 'info@silverspringscare.com.au';
+        if ($from_addr === 'hello@silverspringscare.com.au') {
+            $from_addr = 'info@silverspringscare.com.au';
+        }
         $headers = [
             'MIME-Version: 1.0',
             'Content-Type: text/plain; charset=UTF-8',
             'From: Silver Springs Care Website <' . $from_addr . '>',
-            'Reply-To: ' . ($sender_email ?: $from_addr),
+            'Reply-To: ' . ($sender_email ? "{$sender_name} <{$sender_email}>" : $from_addr),
+            'Return-Path: <' . $from_addr . '>',
             'X-Mailer: SilverSpringsCare-CMS/2.0'
         ];
-        // Suppress local XAMPP warning if local sendmail/Mercury is not running; message is always stored in DB Webmail
-        $mail_sent = @mail($notify_to, $subject, $body, implode("\r\n", $headers));
+        // Pass 5th envelope sender parameter for cPanel/Exim SPF alignment
+        $mail_sent = @mail($notify_to, $subject, $body, implode("\r\n", $headers), "-f " . escapeshellarg($from_addr));
+        if (!$mail_sent) {
+            $mail_sent = @mail($notify_to, $subject, $body, implode("\r\n", $headers));
+        }
     }
 
     $delivery_status = $mail_sent ? 'emailed_and_stored' : 'delivered_to_inbox';
@@ -234,7 +244,10 @@ function send_outbound_webmail(string $to_email, string $subject, string $body, 
         'X-Mailer: SilverSpringsCare-Webmail/2.0'
     ];
 
-    $mail_sent = @mail($to_email, $subject, $body, implode("\r\n", $headers));
+    $mail_sent = @mail($to_email, $subject, $body, implode("\r\n", $headers), "-f " . escapeshellarg($from_email));
+    if (!$mail_sent) {
+        $mail_sent = @mail($to_email, $subject, $body, implode("\r\n", $headers));
+    }
     $delivery_status = $mail_sent ? 'sent_via_smtp' : 'queued_in_outbox';
 
     $new_id = 0;
@@ -284,6 +297,63 @@ function send_outbound_webmail(string $to_email, string $subject, string $body, 
         'message_id'      => $new_id,
         'delivery_status' => $delivery_status,
         'mail_sent'       => $mail_sent
+    ];
+}
+
+/**
+ * Dispatch a diagnostic test email to verify hosting server mail transmission to info@silverspringscare.com.au
+ */
+function dispatch_test_email(string $recipient): array {
+    ensure_webmail_schema();
+    $recipient = trim($recipient);
+    if (!filter_var($recipient, FILTER_VALIDATE_EMAIL)) {
+        return ['success' => false, 'error' => 'Please provide a valid recipient email address.'];
+    }
+
+    $from_addr = defined('SITE_EMAIL') ? SITE_EMAIL : 'info@silverspringscare.com.au';
+    if ($from_addr === 'hello@silverspringscare.com.au') {
+        $from_addr = 'info@silverspringscare.com.au';
+    }
+
+    $subject = "[Diagnostic Test] Silver Springs Care Server Email Verification";
+    $body = "Hello Administrator,\n\n"
+          . "This is an automated server test email from the Silver Springs Care website.\n"
+          . "Timestamp: " . gmdate('Y-m-d H:i:s') . " UTC\n"
+          . "Recipient: " . $recipient . "\n"
+          . "Sender Envelope: " . $from_addr . "\n"
+          . "PHP Version: " . phpversion() . "\n\n"
+          . "If you are reading this email in your cPanel Webmail inbox (info@silverspringscare.com.au), your mail agent is delivering messages 100% reliably!\n\n"
+          . "Warm regards,\nSilver Springs Care Diagnostics";
+
+    $headers = [
+        'MIME-Version: 1.0',
+        'Content-Type: text/plain; charset=UTF-8',
+        'From: Silver Springs Care System <' . $from_addr . '>',
+        'Reply-To: ' . $from_addr,
+        'Return-Path: <' . $from_addr . '>',
+        'X-Mailer: SilverSpringsCare-Test/2.0'
+    ];
+
+    $mail_sent = @mail($recipient, $subject, $body, implode("\r\n", $headers), "-f " . escapeshellarg($from_addr));
+    if (!$mail_sent) {
+        $mail_sent = @mail($recipient, $subject, $body, implode("\r\n", $headers));
+    }
+
+    $msg_id = record_and_dispatch_inbound_mail([
+        'source_type'  => 'inquiry',
+        'ref_code'     => 'TEST-' . strtoupper(substr(bin2hex(random_bytes(3)), 0, 6)),
+        'sender_name'  => 'System Self-Test',
+        'sender_email' => $from_addr,
+        'sender_phone' => '+61428996879',
+        'subject'      => $subject,
+        'body'         => $body
+    ]);
+
+    return [
+        'success'   => true,
+        'mail_sent' => $mail_sent,
+        'msg_id'    => $msg_id,
+        'recipient' => $recipient
     ];
 }
 

@@ -7,6 +7,9 @@
 require_once __DIR__ . '/../includes/config.php';
 require_once __DIR__ . '/../includes/db.php';
 require_once __DIR__ . '/../includes/functions.php';
+require_once __DIR__ . '/../includes/mailer.php';
+
+ensure_webmail_schema();
 
 $error = '';
 
@@ -679,21 +682,38 @@ $webmail_url = get_site_setting('external_webmail_url', 'https://silverspringsca
             Check Webmail (info@silverspringscare.com.au) &nearr;
           </a>
 
+          <a href="#sec-inquiries" class="exec-btn-amber" style="background: #0f766e; border-color: #14b8a6;" title="Jump directly to Contact Enquiries">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            Contact Messages (<?= $inquiries_count ?><?= $new_inquiries_count > 0 ? " • {$new_inquiries_count} New" : '' ?>)
+          </a>
+
           <a href="#sec-referrals" class="exec-btn-amber">
             Review Referrals (<?= $new_referrals_count ?> New)
           </a>
 
           <a href="<?= BASE_PATH ?>/admin/webmail.php" class="exec-btn-glass" title="View form submissions saved in website database">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-            Website Messages (<?= $inquiries_count ?>)
+            Website Form Inbox (<?= $inquiries_count ?>)
           </a>
         </div>
       </section>
 
       <!-- 2. 4 Clean Metric Cards for the 4 Intake Channels -->
       <div class="exec-kpi-grid">
-        <!-- KPI 1: Professional Referrals -->
-        <div class="exec-kpi-card">
+        <!-- KPI 1: Contact Messages -->
+        <div class="exec-kpi-card" style="border-left: 4px solid #2563eb;">
+          <div>
+            <div class="exec-kpi-label">Contact Enquiries (&ldquo;Send Our Team a Message&rdquo;)</div>
+            <div class="exec-kpi-value"><?= $inquiries_count ?></div>
+            <div class="exec-kpi-sub"><?= $new_inquiries_count ?> New &bull; <?= $inquiries_count ?> Total Messages</div>
+          </div>
+          <div class="exec-kpi-icon" style="background: #eff6ff; color: #2563eb;">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          </div>
+        </div>
+
+        <!-- KPI 2: Professional Referrals -->
+        <div class="exec-kpi-card" style="border-left: 4px solid #d97706;">
           <div>
             <div class="exec-kpi-label">Professional Referrals</div>
             <div class="exec-kpi-value"><?= $referrals_count ?></div>
@@ -704,20 +724,8 @@ $webmail_url = get_site_setting('external_webmail_url', 'https://silverspringsca
           </div>
         </div>
 
-        <!-- KPI 2: Contact Messages -->
-        <div class="exec-kpi-card">
-          <div>
-            <div class="exec-kpi-label">Contact Enquiries</div>
-            <div class="exec-kpi-value"><?= $inquiries_count ?></div>
-            <div class="exec-kpi-sub"><?= $new_inquiries_count ?> New Messages &bull; <?= $inquiries_count ?> Total</div>
-          </div>
-          <div class="exec-kpi-icon" style="background: #eff6ff; color: #2563eb;">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-          </div>
-        </div>
-
         <!-- KPI 3: Support Journey Leads -->
-        <div class="exec-kpi-card">
+        <div class="exec-kpi-card" style="border-left: 4px solid #10b981;">
           <div>
             <div class="exec-kpi-label">Support Journey Leads</div>
             <div class="exec-kpi-value"><?= $journey_count ?></div>
@@ -729,7 +737,7 @@ $webmail_url = get_site_setting('external_webmail_url', 'https://silverspringsca
         </div>
 
         <!-- KPI 4: Job Applications -->
-        <div class="exec-kpi-card">
+        <div class="exec-kpi-card" style="border-left: 4px solid #7c3aed;">
           <div>
             <div class="exec-kpi-label">Job Applications</div>
             <div class="exec-kpi-value"><?= $applications_count ?></div>
@@ -741,14 +749,40 @@ $webmail_url = get_site_setting('external_webmail_url', 'https://silverspringsca
         </div>
       </div>
 
+      <!-- Live Intake Notice Bar -->
+      <div style="background: #ffffff; border-left: 4px solid #0f766e; border-radius: 12px; padding: 1.15rem 1.4rem; margin-bottom: 1.5rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; box-shadow: 0 1px 3px rgba(0,0,0,0.04); border: 1px solid #e2e8f0;">
+        <div style="display: flex; align-items: center; gap: 0.85rem;">
+          <div style="width: 38px; height: 38px; border-radius: 9px; background: #ccfbf1; color: #0f766e; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          </div>
+          <div>
+            <div style="font-size: 0.95rem; font-weight: 750; color: #0f172a;">Website Form Submissions &amp; Message Inbox</div>
+            <div style="font-size: 0.82rem; color: #64748b;">
+              Every message submitted from the website (&ldquo;Send Our Team a Message&rdquo;, Referrals, Journey &amp; Careers) is securely recorded directly in this database and forwarded to <strong>info@silverspringscare.com.au</strong>.
+            </div>
+          </div>
+        </div>
+        <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+          <a href="#sec-inquiries" class="btn btn-navy btn-sm" style="font-size: 0.8rem;">
+            View Contact Messages (<?= $inquiries_count ?>) &darr;
+          </a>
+          <a href="<?= BASE_PATH ?>/admin/webmail.php" class="btn btn-secondary btn-sm" style="font-size: 0.8rem;">
+            Open Unified Webmail &rarr;
+          </a>
+          <a href="<?= htmlspecialchars($webmail_url, ENT_QUOTES, 'UTF-8') ?>" target="_blank" rel="noopener noreferrer" class="btn btn-secondary btn-sm" style="font-size: 0.8rem;">
+            cPanel Webmail (info@) &nearr;
+          </a>
+        </div>
+      </div>
+
       <!-- Quick Navigation Filter for Intake Queues -->
       <div style="display: flex; gap: 0.75rem; margin-bottom: 1.5rem; flex-wrap: wrap; align-items: center; background: #ffffff; padding: 0.85rem 1.25rem; border-radius: 12px; border: 1px solid #e2e8f0;">
         <span style="font-size: 0.8rem; font-weight: 800; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em; margin-right: 0.25rem;">Intake Queues:</span>
+        <a href="#sec-inquiries" class="ssc-topbar-btn" style="font-size: 0.8rem; background: #eff6ff; border-color: #bfdbfe; color: #1e40af; font-weight: 700;">
+          Contact Enquiries (<?= $inquiries_count ?><?= $new_inquiries_count > 0 ? " • {$new_inquiries_count} New" : '' ?>)
+        </a>
         <a href="#sec-referrals" class="ssc-topbar-btn" style="font-size: 0.8rem;">
           Referrals (<?= $referrals_count ?><?= $new_referrals_count > 0 ? " • {$new_referrals_count} New" : '' ?>)
-        </a>
-        <a href="#sec-inquiries" class="ssc-topbar-btn" style="font-size: 0.8rem;">
-          Contact Enquiries (<?= $inquiries_count ?><?= $new_inquiries_count > 0 ? " • {$new_inquiries_count} New" : '' ?>)
         </a>
         <a href="#sec-journey" class="ssc-topbar-btn" style="font-size: 0.8rem;">
           Support Journey Leads (<?= $journey_count ?><?= $new_journey_count > 0 ? " • {$new_journey_count} New" : '' ?>)
@@ -760,10 +794,98 @@ $webmail_url = get_site_setting('external_webmail_url', 'https://silverspringsca
 
       <!-- 3. Full-Width Intake Management Sections -->
       <div class="intake-pipeline-wrap">
-          <!-- Panel 1: Recent Professional Referrals -->
+
+          <!-- Panel 1: Recent Contact Enquiries ("Send Our Team a Message") - Placed FIRST for immediate visibility -->
+          <section id="sec-inquiries" class="exec-panel" style="border-top: 3px solid #2563eb;">
+            <div class="exec-panel-header">
+              <div>
+                <h2 class="exec-panel-title" style="color: #0f172a;">Contact Enquiries (&ldquo;Send Our Team a Message&rdquo;)</h2>
+                <div style="font-size: 0.8rem; color: #64748b; margin-top: 0.2rem;">Messages submitted through the website contact form and homepage.</div>
+              </div>
+              <div style="display: flex; gap: 0.5rem; align-items: center;">
+                <a href="<?= BASE_PATH ?>/contact.php" target="_blank" class="ssc-topbar-btn" style="font-size: 0.78rem;">Test / View Form &rarr;</a>
+                <a href="<?= BASE_PATH ?>/admin/webmail.php?folder=inquiry" class="ssc-topbar-btn" style="font-size: 0.78rem; background: #2563eb; color: #ffffff; border-color: #2563eb;">Open in Webmail Inbox &rarr;</a>
+              </div>
+            </div>
+
+            <?php if (empty($recent_inquiries)): ?>
+              <div style="background: #f8fafc; padding: 2.5rem; text-align: center; border-radius: 10px; border: 1px dashed #cbd5e1;">
+                <p style="color: #64748b; margin: 0; font-size: 0.92rem; font-weight: 600;">No contact messages received yet.</p>
+                <p style="color: #94a3b8; margin: 0.35rem 0 0; font-size: 0.84rem;">When visitors submit a message through <a href="<?= BASE_PATH ?>/contact.php" target="_blank" style="color: #2563eb; font-weight: 600;">the Contact Page</a> or the homepage form, they will appear here immediately.</p>
+              </div>
+            <?php else: ?>
+              <div style="overflow-x: auto;">
+                <table class="admin-table" style="box-shadow: none; border: none;">
+                  <thead>
+                    <tr>
+                      <th>ID / DATE</th>
+                      <th>ENQUIRER</th>
+                      <th>INTEREST &amp; ROLE</th>
+                      <th>MESSAGE EXCERPT</th>
+                      <th>STATUS</th>
+                      <th>ACTION</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <?php foreach ($recent_inquiries as $inq): ?>
+                      <tr>
+                        <td>
+                          <strong>#<?= (int)$inq['id'] ?></strong>
+                          <div style="font-size: 0.75rem; color: var(--color-text-muted);"><?= format_date($inq['created_at']) ?></div>
+                        </td>
+                        <td>
+                          <strong><?= htmlspecialchars($inq['full_name'], ENT_QUOTES, 'UTF-8') ?></strong>
+                          <div style="font-size: 0.78rem;"><a href="<?= BASE_PATH ?>/admin/webmail.php?folder=inquiry&amp;q=<?= urlencode($inq['email']) ?>" style="color: #2563eb;"><?= htmlspecialchars($inq['email'], ENT_QUOTES, 'UTF-8') ?></a></div>
+                          <?php if (!empty($inq['phone'])): ?>
+                            <div style="font-size: 0.75rem; color: var(--color-text-muted);"><?= htmlspecialchars($inq['phone'], ENT_QUOTES, 'UTF-8') ?></div>
+                          <?php endif; ?>
+                        </td>
+                        <td>
+                          <strong style="color: #0f172a;"><?= htmlspecialchars($inq['service_interest'], ENT_QUOTES, 'UTF-8') ?></strong>
+                          <div style="font-size: 0.78rem; color: var(--color-text-muted);"><?= htmlspecialchars($inq['participant_role'], ENT_QUOTES, 'UTF-8') ?></div>
+                        </td>
+                        <td style="max-width: 260px; font-size: 0.82rem;">
+                          <?= nl2br(htmlspecialchars(substr($inq['message'], 0, 140) . (strlen($inq['message']) > 140 ? '...' : ''), ENT_QUOTES, 'UTF-8')) ?>
+                        </td>
+                        <td>
+                          <span class="status-badge status-<?= htmlspecialchars($inq['status'], ENT_QUOTES, 'UTF-8') ?>">
+                            <?= htmlspecialchars($inq['status'], ENT_QUOTES, 'UTF-8') ?>
+                          </span>
+                        </td>
+                        <td>
+                          <div style="display: inline-flex; gap: 0.4rem; align-items: center; flex-wrap: wrap;">
+                            <form method="POST" action="" style="display: inline-flex; align-items: center;">
+                              <?= get_csrf_field() ?>
+                              <input type="hidden" name="update_status" value="1">
+                              <input type="hidden" name="item_type" value="inquiries">
+                              <input type="hidden" name="item_id" value="<?= (int)$inq['id'] ?>">
+                              <select name="new_status" class="form-control" style="padding: 0.2rem 0.45rem; font-size: 0.75rem; width: auto;" onchange="this.form.submit()">
+                                <option value="new" <?= $inq['status'] === 'new' ? 'selected' : '' ?>>New</option>
+                                <option value="contacted" <?= $inq['status'] === 'contacted' ? 'selected' : '' ?>>Replied</option>
+                                <option value="in_intake" <?= $inq['status'] === 'in_intake' ? 'selected' : '' ?>>In Review</option>
+                                <option value="completed" <?= $inq['status'] === 'completed' ? 'selected' : '' ?>>Resolved</option>
+                              </select>
+                            </form>
+                            <a href="<?= BASE_PATH ?>/admin/webmail.php?folder=inquiry&amp;q=<?= urlencode($inq['email']) ?>" class="btn btn-secondary btn-sm" style="font-size: 0.75rem; padding: 0.2rem 0.55rem;">
+                              Read &amp; Reply
+                            </a>
+                          </div>
+                        </td>
+                      </tr>
+                    <?php endforeach; ?>
+                  </tbody>
+                </table>
+              </div>
+            <?php endif; ?>
+          </section>
+
+          <!-- Panel 2: Recent Professional Referrals -->
           <section id="sec-referrals" class="exec-panel">
             <div class="exec-panel-header">
-              <h2 class="exec-panel-title">Recent Professional Referrals</h2>
+              <div>
+                <h2 class="exec-panel-title">Recent Professional Referrals</h2>
+                <div style="font-size: 0.8rem; color: #64748b; margin-top: 0.2rem;">Submitted by Support Coordinators, LACs, Allied Health &amp; Families.</div>
+              </div>
               <a href="<?= BASE_PATH ?>/referrals.php" target="_blank" class="ssc-topbar-btn" style="font-size: 0.78rem;">View Referral Form &rarr;</a>
             </div>
 
@@ -816,80 +938,6 @@ $webmail_url = get_site_setting('external_webmail_url', 'https://silverspringsca
                               <option value="completed" <?= $ref['status'] === 'completed' ? 'selected' : '' ?>>Active Service</option>
                             </select>
                           </form>
-                        </td>
-                      </tr>
-                    <?php endforeach; ?>
-                  </tbody>
-                </table>
-              </div>
-            <?php endif; ?>
-          </section>
-
-          <!-- Panel 2: Recent Contact Enquiries -->
-          <section id="sec-inquiries" class="exec-panel">
-            <div class="exec-panel-header">
-              <h2 class="exec-panel-title">Recent Contact Enquiries (&ldquo;Send Our Team a Message&rdquo;)</h2>
-              <a href="<?= BASE_PATH ?>/admin/webmail.php?folder=inquiry" class="ssc-topbar-btn" style="font-size: 0.78rem;">Open in Webmail Inbox &rarr;</a>
-            </div>
-
-            <?php if (empty($recent_inquiries)): ?>
-              <div style="background: #f8fafc; padding: 2rem; text-align: center; border-radius: 10px; border: 1px dashed #cbd5e1;">
-                <p style="color: #64748b; margin: 0; font-size: 0.9rem;">No contact messages received yet. Messages submitted via the contact form will appear here.</p>
-              </div>
-            <?php else: ?>
-              <div style="overflow-x: auto;">
-                <table class="admin-table" style="box-shadow: none; border: none;">
-                  <thead>
-                    <tr>
-                      <th>ID / DATE</th>
-                      <th>ENQUIRER</th>
-                      <th>INTEREST &amp; ROLE</th>
-                      <th>MESSAGE EXCERPT</th>
-                      <th>STATUS</th>
-                      <th>ACTION</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <?php foreach ($recent_inquiries as $inq): ?>
-                      <tr>
-                        <td>
-                          <strong>#<?= (int)$inq['id'] ?></strong>
-                          <div style="font-size: 0.75rem; color: var(--color-text-muted);"><?= format_date($inq['created_at']) ?></div>
-                        </td>
-                        <td>
-                          <strong><?= htmlspecialchars($inq['full_name'], ENT_QUOTES, 'UTF-8') ?></strong>
-                          <div style="font-size: 0.78rem;"><a href="<?= BASE_PATH ?>/admin/webmail.php?folder=inquiry&amp;q=<?= urlencode($inq['email']) ?>"><?= htmlspecialchars($inq['email'], ENT_QUOTES, 'UTF-8') ?></a></div>
-                        </td>
-                        <td>
-                          <strong><?= htmlspecialchars($inq['service_interest'], ENT_QUOTES, 'UTF-8') ?></strong>
-                          <div style="font-size: 0.78rem; color: var(--color-text-muted);"><?= htmlspecialchars($inq['participant_role'], ENT_QUOTES, 'UTF-8') ?></div>
-                        </td>
-                        <td style="max-width: 240px; font-size: 0.82rem;">
-                          <?= nl2br(htmlspecialchars(substr($inq['message'], 0, 120) . (strlen($inq['message']) > 120 ? '...' : ''), ENT_QUOTES, 'UTF-8')) ?>
-                        </td>
-                        <td>
-                          <span class="status-badge status-<?= htmlspecialchars($inq['status'], ENT_QUOTES, 'UTF-8') ?>">
-                            <?= htmlspecialchars($inq['status'], ENT_QUOTES, 'UTF-8') ?>
-                          </span>
-                        </td>
-                        <td>
-                          <div style="display: inline-flex; gap: 0.4rem; align-items: center; flex-wrap: wrap;">
-                            <form method="POST" action="" style="display: inline-flex; align-items: center;">
-                              <?= get_csrf_field() ?>
-                              <input type="hidden" name="update_status" value="1">
-                              <input type="hidden" name="item_type" value="inquiries">
-                              <input type="hidden" name="item_id" value="<?= (int)$inq['id'] ?>">
-                              <select name="new_status" class="form-control" style="padding: 0.2rem 0.45rem; font-size: 0.75rem; width: auto;" onchange="this.form.submit()">
-                                <option value="new" <?= $inq['status'] === 'new' ? 'selected' : '' ?>>New</option>
-                                <option value="contacted" <?= $inq['status'] === 'contacted' ? 'selected' : '' ?>>Replied</option>
-                                <option value="in_intake" <?= $inq['status'] === 'in_intake' ? 'selected' : '' ?>>In Review</option>
-                                <option value="completed" <?= $inq['status'] === 'completed' ? 'selected' : '' ?>>Resolved</option>
-                              </select>
-                            </form>
-                            <a href="<?= BASE_PATH ?>/admin/webmail.php?folder=inquiry&amp;q=<?= urlencode($inq['email']) ?>" class="btn btn-secondary btn-sm" style="font-size: 0.75rem; padding: 0.2rem 0.55rem;">
-                              Read &amp; Reply
-                            </a>
-                          </div>
                         </td>
                       </tr>
                     <?php endforeach; ?>

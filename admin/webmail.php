@@ -90,6 +90,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         header('Location: ' . BASE_PATH . '/admin/webmail.php?folder=settings');
         exit;
     }
+
+    // 6. Send Diagnostic Test Email to Verify Hosting Dispatch
+    if ($action === 'test_email') {
+        $test_recipient = trim($_POST['test_recipient'] ?? 'info@silverspringscare.com.au');
+        $res = dispatch_test_email($test_recipient);
+        if ($res['success']) {
+            if ($res['mail_sent']) {
+                set_flash_message('success', "Test email successfully dispatched to {$test_recipient} via server mail agent. Check your cPanel Webmail inbox (port 2096).");
+            } else {
+                set_flash_message('warning', "Test email recorded in Website Webmail Inbox #{$res['msg_id']}, but server mail() returned false (Expected on local XAMPP without Mercury relay; on live cPanel this dispatches to your mailbox).");
+            }
+        } else {
+            set_flash_message('danger', $res['error'] ?? 'Failed to send test email.');
+        }
+        header('Location: ' . BASE_PATH . '/admin/webmail.php?folder=settings');
+        exit;
+    }
 }
 
 $folder = $_GET['folder'] ?? 'inbox';
@@ -447,6 +464,32 @@ $ext_webmail_val  = get_site_setting('external_webmail_url', 'https://silverspri
 
             <button type="submit" class="btn btn-primary">Save Webmail Configuration</button>
           </form>
+
+          <!-- DIAGNOSTIC TEST EMAIL TOOL -->
+          <div style="margin-top: 2rem; background: #ffffff; border: 1px solid #cbd5e1; border-radius: 12px; padding: 1.5rem;">
+            <div style="display: flex; align-items: center; gap: 0.65rem; margin-bottom: 0.5rem;">
+              <div style="width: 28px; height: 28px; border-radius: 6px; background: #eff6ff; color: #2563eb; display: flex; align-items: center; justify-content: center;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+              </div>
+              <h3 style="font-size: 1.05rem; color: #0f172a; margin: 0; font-weight: 750;">Test Server Email Delivery to info@silverspringscare.com.au</h3>
+            </div>
+            <p style="font-size: 0.85rem; color: #64748b; margin-bottom: 1.25rem;">
+              Use this tool to send a live test message and verify that your web hosting server (cPanel Exim) successfully forwards messages to your cPanel email inbox.
+            </p>
+
+            <form method="POST" action="" style="display: flex; gap: 0.75rem; flex-wrap: wrap; align-items: flex-end;">
+              <?= get_csrf_field() ?>
+              <input type="hidden" name="action" value="test_email">
+              <div class="form-group" style="margin-bottom: 0; flex: 1; min-width: 260px;">
+                <label class="form-label" style="font-size: 0.8rem;">Send Test Notification To:</label>
+                <input type="email" name="test_recipient" class="form-control" required value="<?= htmlspecialchars($notify_email_val, ENT_QUOTES, 'UTF-8') ?>" placeholder="info@silverspringscare.com.au">
+              </div>
+              <button type="submit" class="btn btn-navy" style="white-space: nowrap;">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+                Send Test Email Now
+              </button>
+            </form>
+          </div>
 
           <div style="margin-top: 2rem; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 1.35rem;">
             <h3 style="font-size: 1rem; color: #0f172a; margin: 0 0 0.5rem;">How &ldquo;Send Our Team a Message&rdquo; Works</h3>
