@@ -310,12 +310,14 @@ INSERT IGNORE INTO `users` (`username`, `email`, `full_name`, `job_title`, `depa
 VALUES ('admin', 'admin@silverspringscare.com.au', 'Principal Super Administrator', 'Super Administrator', 'Executive Governance', '$2y$10$yR6Hp8oxeTH4B1n0r5bQY.sM5xL86H5NENn1jrFhdN2mcVCWw0TLS', 'active', 1, 0);
 
 -- Seed core site settings defaults
-INSERT IGNORE INTO `site_settings` (`setting_key`, `setting_val`) VALUES
+INSERT INTO `site_settings` (`setting_key`, `setting_val`) VALUES
 ('site_email', 'info@silverspringscare.com.au'),
 ('notification_email', 'info@silverspringscare.com.au'),
 ('site_phone', '+61428996879'),
 ('site_phone_raw', '+61428996879'),
 ('external_webmail_url', 'https://silverspringscare.com.au:2096'),
-('primary_locations', 'Serving All Australians Nationwide');
+('primary_locations', 'Serving All Australians Nationwide'),
+('utility_bar_text', 'Serving Australia Nationwide')
+ON DUPLICATE KEY UPDATE `setting_val` = VALUES(`setting_val`);
 
 SET FOREIGN_KEY_CHECKS = 1;

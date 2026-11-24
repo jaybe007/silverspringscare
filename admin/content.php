@@ -160,7 +160,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         require_permission('content.create', 'You do not have permission to post vacancies.');
         $title = sanitize_input($_POST['title'] ?? '');
         $role_type = sanitize_input($_POST['role_type'] ?? 'Casual / Part-Time');
-        $location = sanitize_input($_POST['location'] ?? 'Melbourne & Victoria');
+        $location = sanitize_input($_POST['location'] ?? 'Australia Nationwide');
         $summary = sanitize_input($_POST['summary'] ?? '');
         if (!empty($title) && !empty($summary)) {
             $stmt = $pdo->prepare("INSERT INTO vacancies (title, role_type, location, summary) VALUES (?, ?, ?, ?)");
@@ -178,7 +178,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $id = (int)($_POST['id'] ?? 0);
         $title = sanitize_input($_POST['title'] ?? '');
         $role_type = sanitize_input($_POST['role_type'] ?? 'Casual / Part-Time');
-        $location = sanitize_input($_POST['location'] ?? 'Melbourne & Victoria');
+        $location = sanitize_input($_POST['location'] ?? 'Australia Nationwide');
         $summary = sanitize_input($_POST['summary'] ?? '');
         if ($id > 0 && !empty($title) && !empty($summary)) {
             $stmt = $pdo->prepare("UPDATE vacancies SET title = ?, role_type = ?, location = ?, summary = ? WHERE id = ?");
@@ -1331,7 +1331,7 @@ if ($tab === 'resources' && !empty($_GET['edit_id'])) {
 
               <div class="form-group">
                 <label for="vac_loc" class="form-label">Location</label>
-                <input type="text" id="vac_loc" name="location" class="form-control" required placeholder="e.g. Melbourne (Western Suburbs)" value="<?= htmlspecialchars($edit_vacancy['location'] ?? '', ENT_QUOTES, 'UTF-8') ?>">
+                <input type="text" id="vac_loc" name="location" class="form-control" required placeholder="e.g. Australia Nationwide (or specific Region)" value="<?= htmlspecialchars($edit_vacancy['location'] ?? '', ENT_QUOTES, 'UTF-8') ?>">
               </div>
             </div>
 

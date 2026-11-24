@@ -362,7 +362,8 @@ function migrate_database(PDO $pdo) {
         $pdo->exec("UPDATE site_settings SET setting_val = 'info@silverspringscare.com.au' WHERE setting_key = 'site_email' AND (setting_val = 'hello@silverspringscare.com.au' OR setting_val = '' OR setting_val IS NULL)");
         $pdo->exec("UPDATE site_settings SET setting_val = 'info@silverspringscare.com.au' WHERE setting_key = 'notification_email' AND (setting_val = 'hello@silverspringscare.com.au' OR setting_val = '' OR setting_val IS NULL)");
         $pdo->exec("UPDATE site_settings SET setting_val = '+61428996879' WHERE setting_key IN ('site_phone', 'site_phone_raw') AND setting_val IN ('1300 772 273', '1300772273')");
-        $pdo->exec("UPDATE site_settings SET setting_val = 'Serving All Australians Nationwide' WHERE setting_key = 'primary_locations' AND setting_val LIKE '%Victoria%'");
+        $pdo->exec("UPDATE site_settings SET setting_val = 'Serving All Australians Nationwide' WHERE setting_key = 'primary_locations' AND (setting_val LIKE '%Victoria%' OR setting_val LIKE '%Melbourne%')");
+        $pdo->exec("UPDATE site_settings SET setting_val = 'Serving Australia Nationwide' WHERE setting_key = 'utility_bar_text' AND (setting_val LIKE '%Victoria%' OR setting_val LIKE '%Melbourne%' OR setting_val LIKE '%Fletcher%')");
     } catch (Exception $e) {
         // Ignore if site_settings table not yet ready
     }

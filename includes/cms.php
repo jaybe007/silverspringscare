@@ -30,7 +30,7 @@ function get_cms_defaults(): array {
         'site_referral_email'       => defined('SITE_REFERRAL_EMAIL') ? SITE_REFERRAL_EMAIL : 'referrals@silverspringscare.com.au',
         'site_hours'                => defined('SITE_HOURS') ? SITE_HOURS : 'Monday to Friday: 8:30am – 5:00pm AEST',
         'primary_locations'         => defined('PRIMARY_LOCATIONS') ? PRIMARY_LOCATIONS : 'Serving All Australians Nationwide',
-        'utility_bar_text'          => 'Registered NDIS Provider • Serving All Australians Nationwide',
+        'utility_bar_text'          => 'Serving Australia Nationwide',
         'header_cta_primary_text'   => 'Make an Enquiry',
         'header_cta_secondary_text' => 'Support Journey',
         'external_webmail_url'      => 'https://silverspringscare.com.au:2096',

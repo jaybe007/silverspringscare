@@ -113,7 +113,7 @@ require_once __DIR__ . '/includes/header.php';
     <div class="grid-2 gap-8 items-start">
       <div>
         <div style="border-radius: var(--radius-2xl); overflow: hidden; box-shadow: var(--shadow-lg); border: 4px solid #ffffff; margin-bottom: 1.5rem;">
-          <img src="<?= BASE_PATH ?>/assets/images/community-outdoors.jpg" alt="Participant laughing with support companion at an outdoor cafe in Melbourne" width="800" height="600" loading="lazy">
+          <img src="<?= BASE_PATH ?>/assets/images/community-outdoors.jpg" alt="Participant laughing with support companion at an outdoor cafe in Australia" width="800" height="600" loading="lazy">
         </div>
 
         <div style="background: #ffffff; border: 1px solid var(--color-slate-200); border-radius: var(--radius-xl); padding: 1.75rem;">
@@ -264,7 +264,7 @@ require_once __DIR__ . '/includes/header.php';
 
         <h3 style="font-size: 1.25rem; margin-top: 1.75rem; margin-bottom: 0.75rem; color: var(--color-navy-900);">Who This Service May Suit</h3>
         <p>
-          Individuals looking to prepare for independent living, manage their finances, travel independently across Melbourne, or build communication and self-advocacy confidence.
+          Individuals looking to prepare for independent living, manage their finances, travel independently across Australia, or build communication and self-advocacy confidence.
         </p>
 
         <h3 style="font-size: 1.25rem; margin-top: 1.75rem; margin-bottom: 0.75rem; color: var(--color-navy-900);">What Support Involves</h3>

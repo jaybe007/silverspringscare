@@ -192,8 +192,8 @@ require_once __DIR__ . '/includes/header.php';
               </div>
 
               <div class="form-group">
-                <label for="journey_suburb" class="form-label">Suburb / Region in Victoria</label>
-                <input type="text" id="journey_suburb" name="suburb" class="form-control" placeholder="e.g. Footscray, Preston, Geelong">
+                <label for="journey_suburb" class="form-label">Suburb / State in Australia</label>
+                <input type="text" id="journey_suburb" name="suburb" class="form-control" placeholder="e.g. Sydney NSW, Melbourne VIC, Brisbane QLD">
               </div>
             </div>
 

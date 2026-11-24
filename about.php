@@ -70,7 +70,7 @@ require_once __DIR__ . '/includes/header.php';
           <?= htmlspecialchars(get_site_setting('about_story_body_1', 'We believe that support should empower individual agency, not restrict it. We listen first, respect personal choice, and deliver dependable support with warmth, empathy, and professional excellence.'), ENT_QUOTES, 'UTF-8') ?>
         </p>
         <p>
-          <?= htmlspecialchars(get_site_setting('about_story_body_2', 'From our registered base in Fletcher NSW to our communities across Victoria, we partner with participants, families, and support coordinators to build pathways toward independence and meaningful community connection.'), ENT_QUOTES, 'UTF-8') ?>
+          <?= htmlspecialchars(get_site_setting('about_story_body_2', 'From our registered base in Fletcher NSW to communities across Australia, we partner with participants, families, and support coordinators to build pathways toward independence and meaningful community connection.'), ENT_QUOTES, 'UTF-8') ?>
         </p>
       </div>
 

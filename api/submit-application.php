@@ -25,7 +25,7 @@ $full_name = sanitize_input($_POST['full_name'] ?? '');
 $email = sanitize_input($_POST['email'] ?? '');
 $phone = sanitize_input($_POST['phone'] ?? '');
 $role_applied = sanitize_input($_POST['role_applied'] ?? 'Disability Support Worker');
-$location_pref = sanitize_input($_POST['location_pref'] ?? 'Greater Melbourne');
+$location_pref = sanitize_input($_POST['location_pref'] ?? 'Australia');
 $experience_summary = sanitize_input($_POST['experience_summary'] ?? '');
 
 $has_ndis_screening = !empty($_POST['has_ndis_screening']) ? 1 : 0;

@@ -15,7 +15,10 @@ $site_email = get_site_setting('site_email', SITE_EMAIL);
 $site_logo_src = get_site_asset_url('site_logo_url', 'assets/images/logo.svg');
 $site_logo_alt = get_site_setting('site_logo_alt', 'Silver Springs Care - Empowering Abilities, Enriching Lives');
 $site_favicon_src = get_site_asset_url('site_favicon_url', 'assets/images/favicon.svg');
-$utility_bar_text = get_site_setting('utility_bar_text', 'Registered NDIS Provider • Serving All Australians Nationwide');
+$utility_bar_text = get_site_setting('utility_bar_text', 'Serving Australia Nationwide');
+if (empty($utility_bar_text) || stripos($utility_bar_text, 'Melbourne') !== false || stripos($utility_bar_text, 'Victoria') !== false || stripos($utility_bar_text, 'Fletcher') !== false) {
+    $utility_bar_text = 'Serving Australia Nationwide';
+}
 $header_cta_primary_text = get_site_setting('header_cta_primary_text', 'Make an Enquiry');
 $header_cta_secondary_text = get_site_setting('header_cta_secondary_text', 'Support Journey');
 
@@ -246,7 +249,7 @@ $page_desc = $page_desc ?? 'Discover personalised Australian disability support 
 
       <div class="mobile-drawer-footer">
         <div><strong>Silver Springs Care Pty Ltd</strong> (ACN: <?= htmlspecialchars(defined('APP_ACN') ? APP_ACN : '687 128 801', ENT_QUOTES, 'UTF-8') ?>)</div>
-        <div style="margin-top: 0.25rem;">Registered NDIS Provider &bull; Fletcher NSW &amp; Victoria</div>
+        <div style="margin-top: 0.25rem;">Registered NDIS Provider &bull; Serving Australia Nationwide</div>
       </div>
     </div>
   </div>

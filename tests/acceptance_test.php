@@ -127,11 +127,11 @@ run_test("Careers Form API Submission & DB Record Creation", function() use ($ba
         'email' => 'sarah.jenkins.applicant@example.com',
         'phone' => '0412 888 999',
         'role_applied' => 'Disability Support Worker (Core & Community)',
-        'location_pref' => 'Melbourne (North / West)',
+        'location_pref' => 'Australia Nationwide',
         'has_ndis_screening' => '1',
         'has_first_aid' => '1',
         'has_drivers_license' => '1',
-        'experience_summary' => '3 years experience supporting participants with daily routines and community outings in Melbourne.'
+        'experience_summary' => '3 years experience supporting participants with daily routines and community outings across Australia.'
     ];
 
     $ch = curl_init($base_url . '/api/submit-application.php');

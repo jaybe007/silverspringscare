@@ -78,7 +78,7 @@ require_once __DIR__ . '/includes/header.php';
         <strong>Privacy Officer &mdash; Silver Springs Care</strong><br>
         Email: <a href="mailto:<?= SITE_EMAIL ?>" style="color: var(--color-forest-700);"><?= SITE_EMAIL ?></a><br>
         Phone: <?= SITE_PHONE ?><br>
-        Post: Melbourne, Victoria, Australia
+        Post: Australia
       </div>
       <p>
         If you are unsatisfied with our response, you may lodge a complaint with the <strong>Office of the Australian Information Commissioner (OAIC)</strong> at <a href="https://www.oaic.gov.au" target="_blank" rel="noopener noreferrer" style="color: var(--color-forest-700); font-weight: 700;">oaic.gov.au</a> or phone 1300 363 992.

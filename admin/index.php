@@ -977,7 +977,7 @@ $webmail_url = get_site_setting('external_webmail_url', 'https://silverspringsca
                         <td>#<?= (int)$lead['id'] ?></td>
                         <td>
                           <strong><?= htmlspecialchars($lead['full_name'], ENT_QUOTES, 'UTF-8') ?></strong>
-                          <div style="font-size: 0.78rem; color: var(--color-text-muted);"><?= htmlspecialchars($lead['suburb'] ?: 'Victoria') ?> &bull; <?= htmlspecialchars($lead['phone'], ENT_QUOTES, 'UTF-8') ?></div>
+                          <div style="font-size: 0.78rem; color: var(--color-text-muted);"><?= htmlspecialchars($lead['suburb'] ?: 'Australia') ?> &bull; <?= htmlspecialchars($lead['phone'], ENT_QUOTES, 'UTF-8') ?></div>
                         </td>
                         <td style="max-width: 220px; font-size: 0.82rem;">
                           <?= htmlspecialchars($lead['support_goals'], ENT_QUOTES, 'UTF-8') ?>
